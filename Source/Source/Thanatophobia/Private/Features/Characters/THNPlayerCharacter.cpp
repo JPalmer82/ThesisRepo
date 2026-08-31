@@ -19,6 +19,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Features/Puzzles/THNNeuronPuzzleManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Services/THNPlayerCameraService.h"
+#include "Services/THNServiceLocator.h"
 #include "Source/Thanatophobia/Thanatophobia.h"
 
 // Sets default values
@@ -171,9 +174,16 @@ void ATHNPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionVa
 
 void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValue)
 {
+	//TODO: Add IsCameraControllable bool in the Camera Service to check here
 	FVector2D LookInput = InputActionValue.Get<FVector2D>();
 	AddControllerYawInput(LookInput.X);
 	AddControllerPitchInput(LookInput.Y);
+	
+	UTHNPlayerCameraService* CameraService = UTHNServiceLocator::GetService<UTHNPlayerCameraService>("PlayerCamera");
+	CameraService->UpdateCamera(LookInput);
+	
+	//FVector CurrentCamForward = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewTarget()->GetActorForwardVector();
+	//UE_LOG(LogTemp, Warning, TEXT("Look Input: %s"), *CurrentCamForward.ToString());
 }
 
 void ATHNPlayerCharacter::HandleCrouchInput(const FInputActionValue& InputActionValue)
@@ -385,6 +395,8 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 	
 	if (bIsHit && Hit.GetActor())
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetActor()->GetName());
+		
 		if (Cast<ITHNInteractableInterface>(Hit.GetActor()))
 		{
 			Cast<ITHNInteractableInterface>(Hit.GetActor())->OnInteract(this);
