@@ -12,6 +12,9 @@ class ATHNPlayerCharacter;
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNRegisterPlayerCameraDelegate);
+
 UCLASS()
 class UTHNPlayerCameraService : public UObject, public ITHNServiceInterface
 {
@@ -25,10 +28,13 @@ public:
 	
 	void UpdateCamera(FVector2D LookInput);
 	
-	void LerpToNewLocation(float TimeToTake, ATHNPlayerController* PlayerController);
-	
 	//TODO: Make PlayerController a member variable after creating a bootstrapper scene
 	void LookAtTargetWithRadius(ATHNPlayerController* PlayerController, AActor* TargetActor, float Radius);
 	
 	void ReturnToDefaultCamera(ATHNPlayerController* PlayerController);
+	
+	UFUNCTION()
+	void RegisterPlayerCamera();
+	
+	FTHNRegisterPlayerCameraDelegate OnPlayerInitialized;
 };

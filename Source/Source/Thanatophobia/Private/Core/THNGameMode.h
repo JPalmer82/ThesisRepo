@@ -6,12 +6,13 @@
 #include "GameFramework/GameModeBase.h"
 #include "THNGameMode.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameLoadedDelegate);
+
 UCLASS()
 class ATHNGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void OnPostLogin(AController* NewPlayer) override;
 };

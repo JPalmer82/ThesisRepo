@@ -16,6 +16,7 @@ class UTHNServiceLocator : public UObject
 	
 private:
 	// A static map that holds all registered services
+	//UPROPERTY(Transient)
 	static TMap<FName, UObject*> Services;
 	
 public:
