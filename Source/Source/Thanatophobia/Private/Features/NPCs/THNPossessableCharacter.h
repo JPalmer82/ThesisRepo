@@ -40,4 +40,9 @@ private:
 
 	UPROPERTY()
 	UTHNAnimInstance* ProbeNPCAnimInstance;
+
+	UPROPERTY()
+	class UAIPerceptionStimuliSourceComponent* PerceptionStimulusComponent;
+
+	void SetPerceptionStimuliEnabled(bool bStimuliEnabled);
 };

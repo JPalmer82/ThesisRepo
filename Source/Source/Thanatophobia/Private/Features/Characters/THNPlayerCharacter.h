@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Features/Puzzles/THNNeuronPuzzleManager.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 #include "THNPlayerCharacter.generated.h"
 
 class UInputAction;
@@ -59,6 +61,9 @@ private:
 
 	UPROPERTY()
 	UTHNAnimInstance* BaseMeshAnimInstance;
+
+	UPROPERTY()
+	UAIPerceptionStimuliSourceComponent* StimuliSource;
 	
 	/*****************************************************/
 	/*                      Input                        */

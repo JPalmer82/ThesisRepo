@@ -4,6 +4,9 @@
 #include "Features/NPCs/THNPossessableCharacter.h"
 #include "Features/Characters/Animation/THNAnimInstance.h"
 
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
+
 // Sets default values
 ATHNPossessableCharacter::ATHNPossessableCharacter()
 {
@@ -23,6 +26,9 @@ ATHNPossessableCharacter::ATHNPossessableCharacter()
 	ProbeViewMesh->SetupAttachment(GetRootComponent());
 	ProbeViewMesh->bHiddenInSceneCapture = false;
 	ProbeViewMesh->bVisibleInSceneCaptureOnly = true;
+
+	PerceptionStimulusComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>("PerceptionStimulusComponent");
+	PerceptionStimulusComponent->RegisterForSense(UAISense_Sight::StaticClass());
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +40,9 @@ void ATHNPossessableCharacter::BeginPlay()
 	ProbeNPCAnimInstance = Cast<UTHNAnimInstance>(ProbeViewMesh->GetAnimInstance());
 	NPCAnimInstance->IsDead = false;
 	ProbeNPCAnimInstance->IsDead = false;
+
+	PerceptionStimulusComponent->RegisterForSense(UAISense_Sight::StaticClass());
+	PerceptionStimulusComponent->RegisterWithPerceptionSystem();
 }
 
 // Called every frame
@@ -41,6 +50,18 @@ void ATHNPossessableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATHNPossessableCharacter::SetPerceptionStimuliEnabled(bool bStimuliEnabled)
+{
+	if (bStimuliEnabled)
+	{
+		PerceptionStimulusComponent->RegisterWithPerceptionSystem();
+	}
+	else
+	{
+		PerceptionStimulusComponent->UnregisterFromPerceptionSystem();
+	}
 }
 
 // Called to bind functionality to input

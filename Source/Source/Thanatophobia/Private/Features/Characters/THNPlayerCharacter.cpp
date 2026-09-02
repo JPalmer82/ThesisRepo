@@ -23,6 +23,8 @@
 #include "Services/THNPlayerCameraService.h"
 #include "Services/THNServiceLocator.h"
 #include "Source/Thanatophobia/Thanatophobia.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 // Sets default values
 ATHNPlayerCharacter::ATHNPlayerCharacter()
@@ -58,6 +60,10 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 
 	RestProbePosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RestProbePosition"));
 	RestProbePosition->SetupAttachment(WorldSpaceSkeletalMeshComponent);
+
+	StimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimuliSource"));
+	StimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
+	StimuliSource->RegisterWithPerceptionSystem();
 
 	bIsProbeEquipped = false;
 	
