@@ -3,28 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interfaces/THNServiceInterface.h"
-#include "UObject/Object.h"
-#include "THNPlayerCameraService.generated.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "THNCameraManagerSubsystem.generated.h"
 
-class ATHNPlayerController;
-class ATHNPlayerCharacter;
 /**
  * 
  */
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNRegisterPlayerCameraDelegate);
 
+class ATHNPlayerController;
+
 UCLASS()
-class UTHNPlayerCameraService : public UObject, public ITHNServiceInterface
+class UTHNCameraManagerSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
 public:
-	UTHNPlayerCameraService();
-	
-	virtual void InitializeService() override;
-	virtual void ShutdownService() override;
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 	
 	void UpdateCamera(FVector2D LookInput);
 	

@@ -12,16 +12,13 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "THNPlayerController.h"
 #include "Animation/THNAnimInstance.h"
+#include "Core/THNCameraManagerSubsystem.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "Features/NPCs/THNPossessableCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Features/Puzzles/THNNeuronPuzzleManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "Services/THNPlayerCameraService.h"
-#include "Services/THNServiceLocator.h"
 #include "Source/Thanatophobia/Thanatophobia.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
@@ -185,11 +182,8 @@ void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionVa
 	AddControllerYawInput(LookInput.X);
 	AddControllerPitchInput(LookInput.Y);
 	
-	UTHNPlayerCameraService* CameraService = UTHNServiceLocator::GetService<UTHNPlayerCameraService>("PlayerCamera");
-	CameraService->UpdateCamera(LookInput);
-	
-	//FVector CurrentCamForward = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewTarget()->GetActorForwardVector();
-	//UE_LOG(LogTemp, Warning, TEXT("Look Input: %s"), *CurrentCamForward.ToString());
+	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
+	CameraSubsystem->UpdateCamera(LookInput);
 }
 
 void ATHNPlayerCharacter::HandleCrouchInput(const FInputActionValue& InputActionValue)

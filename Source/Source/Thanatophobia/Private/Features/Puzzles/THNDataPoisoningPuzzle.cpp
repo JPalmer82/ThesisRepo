@@ -3,10 +3,9 @@
 
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 
+#include "Core/THNCameraManagerSubsystem.h"
 #include "Features/Characters/THNPlayerController.h"
 #include "Kismet/GameplayStatics.h"
-#include "Services/THNPlayerCameraService.h"
-#include "Services/THNServiceLocator.h"
 
 // Sets default values
 ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
@@ -21,7 +20,7 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PlayerCameraService = UTHNServiceLocator::GetService<UTHNPlayerCameraService>("PlayerCamera");
+	CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 }
 
 // Called every frame
@@ -33,13 +32,13 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 void ATHNDataPoisoningPuzzle::OnInteract(AActor* InitiatorActor)
 {
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PlayerCameraService->LookAtTargetWithRadius(PlayerController, this, 45);
+	CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45);
 }
 
 void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Finished looking at target"));
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PlayerCameraService->ReturnToDefaultCamera(PlayerController);
+	CameraSubsystem->ReturnToDefaultCamera(PlayerController);
 }
 

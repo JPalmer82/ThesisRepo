@@ -30,5 +30,5 @@ public:
 	virtual void OnInteractEnd(AActor* InitiatorActor) override;
 	
 private:
-	UTHNPlayerCameraService* PlayerCameraService;
+	class UTHNCameraManagerSubsystem* CameraSubsystem;
 };
