@@ -33,4 +33,12 @@ public:
 	void RegisterPlayerCamera();
 	
 	FTHNRegisterPlayerCameraDelegate OnPlayerInitialized;
+	
+private:
+	float GetAngleBetweenVectors(FVector vec1, FVector vec2);
+	
+	FVector CachedViewTargetForward = FVector(0);
+	
+	UPROPERTY()
+	AActor* CachedViewTarget = nullptr;
 };
