@@ -106,6 +106,10 @@ void ATHNPlayerCharacter::BeginPlay()
 
 	WorldSpaceAnimInstance = Cast<UTHNAnimInstance>(WorldSpaceSkeletalMeshComponent->GetAnimInstance());
 	BaseMeshAnimInstance = Cast<UTHNAnimInstance>(GetMesh()->GetAnimInstance());
+	
+	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
+	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
+	CameraSubsystem->OnPlayerInitialized.Execute(CamComponent);
 }
 
 // Called every frame
@@ -179,6 +183,7 @@ void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionVa
 {
 	//TODO: Add IsCameraControllable bool in the Camera Service to check here
 	FVector2D LookInput = InputActionValue.Get<FVector2D>();
+	
 	AddControllerYawInput(LookInput.X);
 	AddControllerPitchInput(LookInput.Y);
 	

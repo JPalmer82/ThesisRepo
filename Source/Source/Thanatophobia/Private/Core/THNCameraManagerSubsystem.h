@@ -6,13 +6,21 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "THNCameraManagerSubsystem.generated.h"
 
+class UCameraComponent;
 struct FPuzzleInfo;
 /**
  * 
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNRegisterPlayerCameraDelegate);
+DECLARE_DELEGATE_OneParam(FTHNRegisterPlayerCameraDelegate, UCameraComponent* /*CurrentPlayerCamera*/);
 
 class ATHNPlayerController;
+
+enum class ECameraStates
+{
+	DefaultGame,
+	PuzzleInteraction,
+	Cutscene
+};
 
 UCLASS()
 class UTHNCameraManagerSubsystem : public UGameInstanceSubsystem
@@ -31,18 +39,26 @@ public:
 	void ReturnToDefaultCamera(ATHNPlayerController* PlayerController);
 	
 	UFUNCTION()
-	void RegisterPlayerCamera();
+	void RegisterPlayerCamera(UCameraComponent* PlayerCamera);
 	
 	FTHNRegisterPlayerCameraDelegate OnPlayerInitialized;
 	
 private:
 	float GetAngleBetweenVectors(FVector vec1, FVector vec2);
 	
+	void UpdateDefaultGameCamera(FVector2D LookInput);
+	void UpdatePuzzleInteractionCamera(FVector2D LookInput);
+	
 	FVector CachedViewTargetForward = FVector(0);
 	
 	UPROPERTY()
 	AActor* CachedViewTarget = nullptr;
 	
+	UPROPERTY()
+	UCameraComponent* PlayerCamera;
+	
 	FVector2D AccumulatedLookIinput = FVector2D(0.0f, 0.0f);
 	FVector2D CachedAccumulatedLookInput = FVector2D(0.0f, 0.0f);
+	
+	ECameraStates CurrentCameraState = ECameraStates::DefaultGame;
 };
