@@ -45,7 +45,7 @@ void UTHNCameraManagerSubsystem::LookAtTargetWithRadius(ATHNPlayerController* Pl
 	PlayerController->SetViewTargetWithBlend(TargetActor, 1, VTBlend_Cubic);
 
 	CachedViewTarget = TargetActor;
-	AccumulatedLookIinput = FVector2D(0.0f, 0.0f);
+	AccumulatedLookInput = FVector2D(0.0f, 0.0f);
 	CurrentCameraState = ECameraStates::PuzzleInteraction;
 }
 
@@ -83,16 +83,16 @@ void UTHNCameraManagerSubsystem::UpdatePuzzleInteractionCamera(FVector2D LookInp
 	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(CurrentViewTarget->GetComponentByClass(UCameraComponent::StaticClass()));
 	
 	//Cache the 2D Look vector
-	CachedAccumulatedLookInput = AccumulatedLookIinput;
-	AccumulatedLookIinput += FVector2D(LookInput.X, -LookInput.Y);
+	CachedAccumulatedLookInput = AccumulatedLookInput;
+	AccumulatedLookInput += FVector2D(LookInput.X, -LookInput.Y);
 	
 	//Convert to polar coordinates and back for easy clamping
 	FVector2D OutPolar;
-	FMath::CartesianToPolar(AccumulatedLookIinput, OutPolar);
+	FMath::CartesianToPolar(AccumulatedLookInput, OutPolar);
 	OutPolar.X = FMath::Clamp(OutPolar.X, -80, 80);
-	FMath::PolarToCartesian(OutPolar, AccumulatedLookIinput);
+	FMath::PolarToCartesian(OutPolar, AccumulatedLookInput);
 
 	//Add rotation if clamped look input is different from cached look input
-	FRotator Rot = FRotator(AccumulatedLookIinput.Y - CachedAccumulatedLookInput.Y, AccumulatedLookIinput.X - CachedAccumulatedLookInput.X, 0);
+	FRotator Rot = FRotator(AccumulatedLookInput.Y - CachedAccumulatedLookInput.Y, AccumulatedLookInput.X - CachedAccumulatedLookInput.X, 0);
 	CurrentCamera->AddRelativeRotation(Rot);
 }
