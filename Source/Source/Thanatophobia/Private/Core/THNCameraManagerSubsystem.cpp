@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Features/Characters/THNPlayerCharacter.h"
 #include "Features/Characters/THNPlayerController.h"
+#include "Features/Puzzles/THNPuzzleInfoComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void UTHNCameraManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -39,11 +40,13 @@ void UTHNCameraManagerSubsystem::UpdateCamera(FVector2D LookInput)
 }
 
 void UTHNCameraManagerSubsystem::LookAtTargetWithRadius(ATHNPlayerController* PlayerController, AActor* TargetActor,
-	float Radius)
+	float Radius, FPuzzleInfo PuzzleInfo)
 {
+	PuzzleInfo.Camera->SetRelativeRotation(PuzzleInfo.InitialCameraRotation);
 	PlayerController->SetViewTargetWithBlend(TargetActor, 1, VTBlend_Cubic);
-	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(TargetActor->GetComponentByClass(UCameraComponent::StaticClass()));
-	CachedViewTargetForward = CurrentCamera->GetForwardVector();
+	//UCameraComponent* CurrentCamera = Cast<UCameraComponent>(TargetActor->GetComponentByClass(UCameraComponent::StaticClass()));
+	//CachedViewTargetForward = CurrentCamera->GetForwardVector();
+	//CachedViewTargetForward = PuzzleInfo.InitialCameraRotation;
 	CachedViewTarget = TargetActor;
 	AccumulatedLookIinput = FVector2D(0.0f, 0.0f);
 }
@@ -51,8 +54,6 @@ void UTHNCameraManagerSubsystem::LookAtTargetWithRadius(ATHNPlayerController* Pl
 void UTHNCameraManagerSubsystem::ReturnToDefaultCamera(ATHNPlayerController* PlayerController)
 {
 	PlayerController->SetViewTargetWithBlend(Cast<ATHNPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)), 1, VTBlend_Cubic);
-	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(CachedViewTarget->GetComponentByClass(UCameraComponent::StaticClass()));
-	FQuat AngleBetween = FQuat::FindBetweenVectors(CurrentCamera->GetForwardVector(), CachedViewTargetForward);
 }
 
 void UTHNCameraManagerSubsystem::RegisterPlayerCamera()

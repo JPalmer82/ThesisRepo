@@ -3,6 +3,7 @@
 
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 
+#include "THNPuzzleInfoComponent.h"
 #include "Core/THNCameraManagerSubsystem.h"
 #include "Features/Characters/THNPlayerController.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,7 +33,7 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 void ATHNDataPoisoningPuzzle::OnInteract(AActor* InitiatorActor)
 {
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45);
+	CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45, GetComponentByClass<UTHNPuzzleInfoComponent>()->PuzzleInfo);
 }
 
 void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)

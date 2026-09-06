@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "THNCameraManagerSubsystem.generated.h"
 
+struct FPuzzleInfo;
 /**
  * 
  */
@@ -25,7 +26,7 @@ public:
 	void UpdateCamera(FVector2D LookInput);
 	
 	//TODO: Make PlayerController a member variable after creating a bootstrapper scene
-	void LookAtTargetWithRadius(ATHNPlayerController* PlayerController, AActor* TargetActor, float Radius);
+	void LookAtTargetWithRadius(ATHNPlayerController* PlayerController, AActor* TargetActor, float Radius, FPuzzleInfo PuzzleInfo);
 	
 	void ReturnToDefaultCamera(ATHNPlayerController* PlayerController);
 	
