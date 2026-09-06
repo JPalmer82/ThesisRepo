@@ -23,27 +23,19 @@ void UTHNCameraManagerSubsystem::Deinitialize()
 void UTHNCameraManagerSubsystem::UpdateCamera(FVector2D LookInput)
 {
 	//TODO: Cache base view when switching to puzzle
-	//TODO: Clamp view distance if needed
 	AActor* CurrentViewTarget = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewTarget();
 	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(CurrentViewTarget->GetComponentByClass(UCameraComponent::StaticClass()));
 	
+	CachedAccumulatedLookInput = AccumulatedLookIinput;
+	AccumulatedLookIinput += FVector2D(LookInput.X, -LookInput.Y);
 	
-	FRotator Rot = FRotator(-LookInput.Y, LookInput.X, 0);
-	
-	FVector CamForward = CurrentCamera->GetForwardVector();
-	FVector NewForward = CurrentCamera->GetForwardVector();
-	
-	float AngleFromCenter = GetAngleBetweenVectors(CachedViewTargetForward, NewForward);
-	//UE_LOG(LogTemp, Warning, TEXT("Rotator: %s"), *CurrentCamera->GetRelativeRotation().ToString());
-	
-	if (AngleFromCenter <= 55)
-	{
-		CurrentCamera->AddRelativeRotation(Rot);
-	}
-	
-	//FVector ViewTargetLocation = CurrentViewTarget->GetActorLocation();
-	//DrawDebugLine(GetWorld(), ViewTargetLocation, (ViewTargetLocation + CachedViewTargetForward) * 100, FColor::Red, false, 1);
-	//DrawDebugLine(GetWorld(), ViewTargetLocation, (ViewTargetLocation + CamForward * 100), FColor::Green, false, 1);
+	FVector2D OutPolar;
+	FMath::CartesianToPolar(AccumulatedLookIinput, OutPolar);
+	OutPolar.X = FMath::Clamp(OutPolar.X, -80, 80);
+	FMath::PolarToCartesian(OutPolar, AccumulatedLookIinput);
+
+	FRotator Rot = FRotator(AccumulatedLookIinput.Y - CachedAccumulatedLookInput.Y, AccumulatedLookIinput.X - CachedAccumulatedLookInput.X, 0);
+	CurrentCamera->AddRelativeRotation(Rot);
 }
 
 void UTHNCameraManagerSubsystem::LookAtTargetWithRadius(ATHNPlayerController* PlayerController, AActor* TargetActor,
@@ -53,6 +45,7 @@ void UTHNCameraManagerSubsystem::LookAtTargetWithRadius(ATHNPlayerController* Pl
 	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(TargetActor->GetComponentByClass(UCameraComponent::StaticClass()));
 	CachedViewTargetForward = CurrentCamera->GetForwardVector();
 	CachedViewTarget = TargetActor;
+	AccumulatedLookIinput = FVector2D(0.0f, 0.0f);
 }
 
 void UTHNCameraManagerSubsystem::ReturnToDefaultCamera(ATHNPlayerController* PlayerController)
@@ -60,7 +53,6 @@ void UTHNCameraManagerSubsystem::ReturnToDefaultCamera(ATHNPlayerController* Pla
 	PlayerController->SetViewTargetWithBlend(Cast<ATHNPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)), 1, VTBlend_Cubic);
 	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(CachedViewTarget->GetComponentByClass(UCameraComponent::StaticClass()));
 	FQuat AngleBetween = FQuat::FindBetweenVectors(CurrentCamera->GetForwardVector(), CachedViewTargetForward);
-	CurrentCamera->SetRelativeRotation(AngleBetween * CurrentCamera->GetRelativeRotation().Quaternion());
 }
 
 void UTHNCameraManagerSubsystem::RegisterPlayerCamera()

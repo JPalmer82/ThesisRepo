@@ -41,4 +41,7 @@ private:
 	
 	UPROPERTY()
 	AActor* CachedViewTarget = nullptr;
+	
+	FVector2D AccumulatedLookIinput = FVector2D(0.0f, 0.0f);
+	FVector2D CachedAccumulatedLookInput = FVector2D(0.0f, 0.0f);
 };
