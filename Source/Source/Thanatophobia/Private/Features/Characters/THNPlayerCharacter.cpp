@@ -369,6 +369,11 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 		PopOutCylinder();
 	}
 
+	for (bool& i : BulletChambers)
+	{
+		i = false;
+	}
+
 	//FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(CameraComponent->GetComponentLocation(), ReloadLookPosition->GetComponentLocation());
 	//UE_LOG(LogTemp, Warning, TEXT("LookAtRotation equals : %s"), *(LookAtRotation.ToString()))
 	//CameraComponent->SetWorldRotation(LookAtRotation);
