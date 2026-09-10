@@ -14,6 +14,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Animation/THNAnimInstance.h"
 #include "Core/THNCameraManagerSubsystem.h"
+#include "Core/THNGameInstance.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "Features/NPCs/THNPossessableCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -68,6 +69,16 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 	
 	//TODO: Remove this after implementing crouching with animation
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	
+	if (UTHNGameInstance* THNGameInstance = Cast<UTHNGameInstance>(GetGameInstance()))
+	{
+		GameInstance = THNGameInstance;
+		GameInstance->OnGameStateChangedDelegate.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to get GameInstance!"))
+	}
 }
 
 void ATHNPlayerCharacter::SwitchToMappingContext(UInputMappingContext* NewInputMappingContext)
@@ -97,6 +108,11 @@ void ATHNPlayerCharacter::StopAllMontages()
 {
 	WorldSpaceAnimInstance->StopAllMontages(.2f);
 	BaseMeshAnimInstance->StopAllMontages(.2f);
+}
+
+void ATHNPlayerCharacter::OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState)
+{
+	UE_LOG(LogTemp, Warning, TEXT("THN: New State: %s\n Old State: %s"), *UEnum::GetValueAsString(NewGameState), *UEnum::GetValueAsString(PreviousGameState));
 }
 
 // Called when the game starts or when spawned
@@ -386,12 +402,13 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 {
 	if (IsInteracting && CurrentInteractActor != nullptr)
 	{
-		Cast<ITHNInteractableInterface>(CurrentInteractActor)->OnInteractEnd(this);
-		IsInteracting = false;
-		return;
+		if (GameInstance->TrySwitchGameState(EGameState::Default))
+		{
+			Cast<ITHNInteractableInterface>(CurrentInteractActor)->OnInteractEnd(this);
+			IsInteracting = false;
+			return;	
+		}
 	}
-	
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Interacting"));
 
 	FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
 	FVector LineTraceEndPoint = LineTraceStartPoint + CameraComponent->GetForwardVector() * LineTraceDistance;
@@ -409,9 +426,12 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 		
 		if (Cast<ITHNInteractableInterface>(Hit.GetActor()))
 		{
-			Cast<ITHNInteractableInterface>(Hit.GetActor())->OnInteract(this);
-			CurrentInteractActor = Hit.GetActor();
-			IsInteracting = true;
+			if (GameInstance->TrySwitchGameState(EGameState::Puzzle))
+			{
+				Cast<ITHNInteractableInterface>(Hit.GetActor())->OnInteract(this);
+				CurrentInteractActor = Hit.GetActor();
+				IsInteracting = true;
+			}
 		}
 	}
 }

@@ -6,9 +6,18 @@
 #include "Engine/GameInstance.h"
 #include "THNGameInstance.generated.h"
 
-/**
- * 
- */
+
+//Change to struct/class
+UENUM()
+enum class EGameState
+{
+	Default,
+	Puzzle,
+	Paused
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnGameStateChangedDelegate, EGameState, PreviousGameState, EGameState, NextGameState);
+
 UCLASS()
 class UTHNGameInstance : public UGameInstance
 {
@@ -20,4 +29,13 @@ public:
 	
 	// Called when the game is shutting down
 	virtual void Shutdown() override;
+	
+	FOnGameStateChangedDelegate OnGameStateChangedDelegate;
+	EGameState GetCurrentGameState() const { return CurrentGameState; }
+	bool TrySwitchGameState(const EGameState& NewGameState);
+	
+private:
+	EGameState CurrentGameState = EGameState::Default;
+	
+	void SwitchGameState(EGameState NewGameState);
 };

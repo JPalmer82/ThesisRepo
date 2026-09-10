@@ -9,6 +9,8 @@
 #include "Perception/AISense_Sight.h"
 #include "THNPlayerCharacter.generated.h"
 
+enum class EGameState;
+class UTHNGameInstance;
 class UInputAction;
 class UCameraComponent;
 class UEnhancedInputLocalPlayerSubsystem;
@@ -45,7 +47,10 @@ public:
 
 	void StopAllMontages();
 private:
-
+	UFUNCTION()
+	void OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState);
+	UTHNGameInstance* GameInstance;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Rendering")
 	USkeletalMeshComponent* WorldSpaceSkeletalMeshComponent;
 
