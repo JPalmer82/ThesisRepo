@@ -37,6 +37,7 @@ public:
 	void LookAtTargetWithRadius(ATHNPlayerController* PlayerController, AActor* TargetActor, float Radius, FPuzzleInfo PuzzleInfo);
 	
 	void ReturnToDefaultCamera(ATHNPlayerController* PlayerController);
+	UCameraComponent* GetCurrentCamera() const;
 	
 	UFUNCTION()
 	void RegisterPlayerCamera(UCameraComponent* PlayerCamera);

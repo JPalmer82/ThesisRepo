@@ -22,18 +22,30 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	Super::BeginPlay();
 	
 	CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
+	SetActorTickEnabled(false);
 }
 
 // Called every frame
 void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	
+	if (UCameraComponent* CurrentCam = CameraSubsystem->GetCurrentCamera())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Current camera: %s"), *CurrentCam->GetName());
+		FHitResult OutHit;
+		GetWorld()->LineTraceSingleByChannel(OutHit, CurrentCam->GetComponentLocation(), CurrentCam->GetComponentLocation() + CurrentCam->GetForwardVector() * 1000, ECC_Visibility);
+		DrawDebugLine(GetWorld(), CurrentCam->GetComponentLocation(), CurrentCam->GetComponentLocation() + CurrentCam->GetForwardVector() * 1000, FColor::Red, false);
+		UE_LOG(LogTemp, Warning, TEXT("Current Location: %s"), *CurrentCam->GetComponentLocation().ToString());
+	}
 }
 
 void ATHNDataPoisoningPuzzle::OnInteract(AActor* InitiatorActor)
 {
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45, GetComponentByClass<UTHNPuzzleInfoComponent>()->PuzzleInfo);
+	SetActorTickEnabled(true);
 }
 
 void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
@@ -41,5 +53,6 @@ void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
 	UE_LOG(LogTemp, Warning, TEXT("Finished looking at target"));
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraSubsystem->ReturnToDefaultCamera(PlayerController);
+	SetActorTickEnabled(false);
 }
 

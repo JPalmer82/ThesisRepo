@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Actor.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "THNDataPoisoningPuzzle.generated.h"

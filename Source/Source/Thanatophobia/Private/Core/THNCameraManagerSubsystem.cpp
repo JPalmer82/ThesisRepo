@@ -76,11 +76,17 @@ void UTHNCameraManagerSubsystem::UpdateDefaultGameCamera(FVector2D LookInput)
 	//TODO: Separate camera from control rotation
 }
 
+UCameraComponent* UTHNCameraManagerSubsystem::GetCurrentCamera() const
+{
+	AActor* CurrentViewTarget = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewTarget();
+	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(CurrentViewTarget->GetComponentByClass(UCameraComponent::StaticClass()));
+	return CurrentCamera;
+}
+
 void UTHNCameraManagerSubsystem::UpdatePuzzleInteractionCamera(FVector2D LookInput)
 {
 	//Get camera attached to current puzzle
-	AActor* CurrentViewTarget = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewTarget();
-	UCameraComponent* CurrentCamera = Cast<UCameraComponent>(CurrentViewTarget->GetComponentByClass(UCameraComponent::StaticClass()));
+	UCameraComponent* CurrentCamera = GetCurrentCamera();
 	
 	//Cache the 2D Look vector
 	CachedAccumulatedLookInput = AccumulatedLookInput;
