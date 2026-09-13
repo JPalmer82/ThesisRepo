@@ -83,6 +83,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	UInputMappingContext* ReloadInputMappingContext;
+	
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputMappingContext* PuzzleInputMappingContext;
 
 	//Base Context Actions
 	UPROPERTY(EditAnywhere, Category = "Controls")
@@ -140,6 +143,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	UInputAction* RotateVerticalInputAction;
+	
+	//Office Puzzle
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* ClickInputAction;
 
 	UPROPERTY(EditAnywhere, Category="Reload")
 	UStaticMeshComponent* RevolverReloadPosition;
@@ -216,6 +223,9 @@ private:
 	void HandlePuzzleRotateHorizontalEndInput(const FInputActionValue& InputActionValue);
 	void HandlePuzzleRotateVerticalStartInput(const FInputActionValue& InputActionValue);
 	void HandlePuzzleRotateVerticalEndInput(const FInputActionValue& InputActionValue);
+	
+	//Office Puzzle
+	void HandleClickInput(const FInputActionValue& InputActionValue);
 	
 protected:
 	// Called when the game starts or when spawned

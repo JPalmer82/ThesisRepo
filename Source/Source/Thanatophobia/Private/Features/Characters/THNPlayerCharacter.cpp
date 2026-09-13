@@ -113,6 +113,14 @@ void ATHNPlayerCharacter::StopAllMontages()
 void ATHNPlayerCharacter::OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("THN: New State: %s\n Old State: %s"), *UEnum::GetValueAsString(NewGameState), *UEnum::GetValueAsString(PreviousGameState));
+	if (NewGameState == EGameState::Puzzle)
+	{
+		SwitchToMappingContext(PuzzleInputMappingContext);
+	}
+	else if (NewGameState == EGameState::Default)
+	{
+		SwitchToMappingContext(MovementInputMappingContext);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -182,6 +190,9 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(RotateVerticalInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandlePuzzleRotateVerticalStartInput);
 		EnhancedInputComponent->BindAction(RotateVerticalInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandlePuzzleRotateVerticalStartInput);
 		EnhancedInputComponent->BindAction(RotateVerticalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput);
+		
+		//Office Puzzle
+		EnhancedInputComponent->BindAction(ClickInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleClickInput);
 	}
 }
 
@@ -200,8 +211,11 @@ void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionVa
 	//TODO: Add IsCameraControllable bool in the Camera Service to check here
 	FVector2D LookInput = InputActionValue.Get<FVector2D>();
 	
-	AddControllerYawInput(LookInput.X);
-	AddControllerPitchInput(LookInput.Y);
+	if (GameInstance->GetCurrentGameState() == EGameState::Default)
+	{
+		AddControllerYawInput(LookInput.X);
+		AddControllerPitchInput(LookInput.Y);	
+	}
 	
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	CameraSubsystem->UpdateCamera(LookInput);
@@ -559,4 +573,9 @@ void ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput(const FInputActionV
 	IsRotatingPuzzle = false;
 	RotateInputVector = FVector2D(RotateInputVector.X, 0);
 	UE_LOG(LogTemp, Warning, TEXT("Vertical: %f, %f"), RotateInputVector.X, RotateInputVector.Y);
+}
+
+void ATHNPlayerCharacter::HandleClickInput(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Click"));
 }

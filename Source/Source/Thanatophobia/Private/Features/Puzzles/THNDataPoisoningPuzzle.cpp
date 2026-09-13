@@ -14,6 +14,7 @@ ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//TODO: Add necessary ui components to constructor instead of blueprint
 }
 
 // Called when the game starts or when spawned
@@ -33,11 +34,9 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 	
 	if (UCameraComponent* CurrentCam = CameraSubsystem->GetCurrentCamera())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Current camera: %s"), *CurrentCam->GetName());
 		FHitResult OutHit;
 		GetWorld()->LineTraceSingleByChannel(OutHit, CurrentCam->GetComponentLocation(), CurrentCam->GetComponentLocation() + CurrentCam->GetForwardVector() * 1000, ECC_Visibility);
-		DrawDebugLine(GetWorld(), CurrentCam->GetComponentLocation(), CurrentCam->GetComponentLocation() + CurrentCam->GetForwardVector() * 1000, FColor::Red, false);
-		UE_LOG(LogTemp, Warning, TEXT("Current Location: %s"), *CurrentCam->GetComponentLocation().ToString());
+		DrawDebugSphere(GetWorld(), OutHit.ImpactPoint, 5, 32, FColor::Red);
 	}
 }
 
