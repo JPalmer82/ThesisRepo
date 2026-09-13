@@ -56,8 +56,26 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 	if (UCameraComponent* CurrentCam = CameraSubsystem->GetCurrentCamera())
 	{
 		FHitResult OutHit;
-		GetWorld()->LineTraceSingleByChannel(OutHit, CurrentCam->GetComponentLocation(), CurrentCam->GetComponentLocation() + CurrentCam->GetForwardVector() * 1000, ECC_Visibility);
-		DrawDebugSphere(GetWorld(), OutHit.ImpactPoint, 5, 32, FColor::Red);
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.bTraceComplex = true;
+		CollisionParams.bReturnFaceIndex = true;
+		
+		//TODO: Add custom trace channel
+		GetWorld()->LineTraceSingleByChannel(
+			OutHit, 
+			CurrentCam->GetComponentLocation(), 
+			CurrentCam->GetComponentLocation() + CurrentCam->GetForwardVector() * 1000, 
+			ECC_Visibility,
+			CollisionParams);
+		
+		FVector2D HitUV;
+		UGameplayStatics::FindCollisionUV(OutHit, 0, HitUV);
+		
+		FVector NewInteractLocation = FVector(
+			WidgetInteractionComponent->GetRelativeLocation().X,
+			FMath::Lerp(RelativeScreenSize.X, -RelativeScreenSize.X, HitUV.X),
+			FMath::Lerp(RelativeScreenSize.Y, -RelativeScreenSize.Y, HitUV.Y));
+		WidgetInteractionComponent->SetRelativeLocation(NewInteractLocation);
 	}
 }
 

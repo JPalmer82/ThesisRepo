@@ -59,6 +59,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWidgetInteractionComponent* WidgetInteractionComponent;
 	
+	//Puzzle Settings
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Puzzle Settings")
+	FVector2D RelativeScreenSize = FVector2D(620, 523);
+	
 private:
 	class UTHNCameraManagerSubsystem* CameraSubsystem;
 };

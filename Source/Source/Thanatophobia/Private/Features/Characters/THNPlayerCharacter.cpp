@@ -577,5 +577,5 @@ void ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput(const FInputActionV
 
 void ATHNPlayerCharacter::HandleClickInput(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Click"));
+	//UE_LOG(LogTemp, Warning, TEXT("Click"));
 }
