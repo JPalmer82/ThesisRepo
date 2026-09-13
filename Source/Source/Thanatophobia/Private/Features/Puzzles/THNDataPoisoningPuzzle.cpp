@@ -4,6 +4,11 @@
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 
 #include "THNPuzzleInfoComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Components/WidgetComponent.h"
+#include "Components/WidgetInteractionComponent.h"
 #include "Core/THNCameraManagerSubsystem.h"
 #include "Features/Characters/THNPlayerController.h"
 #include "Kismet/GameplayStatics.h"
@@ -14,7 +19,23 @@ ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//TODO: Add necessary ui components to constructor instead of blueprint
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	SceneComponent->SetupAttachment(RootComponent);
+	
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SceneComponent);
+	
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh->SetupAttachment(SceneComponent);
+	InteractionCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionCollider"));
+	InteractionCollider->SetupAttachment(StaticMesh);
+	
+	UISceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("UISceneCapture"));
+	UISceneCapture->SetupAttachment(SceneComponent);
+	Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+	Widget->SetupAttachment(UISceneCapture);
+	WidgetInteractionComponent = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("WidgetInteractionComponent"));
+	WidgetInteractionComponent->SetupAttachment(Widget);
 }
 
 // Called when the game starts or when spawned

@@ -3,12 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/Actor.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "THNDataPoisoningPuzzle.generated.h"
 
+class UTHNPuzzleInfoComponent;
+class USceneComponent;
+class UCameraComponent;
+class UStaticMeshComponent;
+class UWidgetInteractionComponent;
 class UTHNPlayerCameraService;
+class UBoxComponent;
+class UWidgetComponent;
+class USceneCaptureComponent2D;
 
 UCLASS()
 class ATHNDataPoisoningPuzzle : public AActor, public ITHNInteractableInterface
@@ -29,6 +36,28 @@ public:
 
 	virtual void OnInteract(AActor* InitiatorActor) override;
 	virtual void OnInteractEnd(AActor* InitiatorActor) override;
+	
+	//Components
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* SceneComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCameraComponent* Camera;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* StaticMesh;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* InteractionCollider;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneCaptureComponent2D* UISceneCapture;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UWidgetComponent* Widget;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UWidgetInteractionComponent* WidgetInteractionComponent;
 	
 private:
 	class UTHNCameraManagerSubsystem* CameraSubsystem;
