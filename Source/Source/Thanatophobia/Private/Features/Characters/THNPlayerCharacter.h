@@ -147,7 +147,8 @@ private:
 	//Office Puzzle
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	UInputAction* ClickInputAction;
-
+	
+	//Revolver
 	UPROPERTY(EditAnywhere, Category="Reload")
 	UStaticMeshComponent* RevolverReloadPosition;
 	

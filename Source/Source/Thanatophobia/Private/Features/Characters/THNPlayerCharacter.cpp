@@ -17,9 +17,11 @@
 #include "Core/THNGameInstance.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "Features/NPCs/THNPossessableCharacter.h"
+#include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Features/Puzzles/THNNeuronPuzzleManager.h"
+#include "Kismet/GameplayStatics.h"
 #include "Source/Thanatophobia/Thanatophobia.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
@@ -69,16 +71,6 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 	
 	//TODO: Remove this after implementing crouching with animation
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
-	
-	if (UTHNGameInstance* THNGameInstance = Cast<UTHNGameInstance>(GetGameInstance()))
-	{
-		GameInstance = THNGameInstance;
-		GameInstance->OnGameStateChangedDelegate.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to get GameInstance!"))
-	}
 }
 
 void ATHNPlayerCharacter::SwitchToMappingContext(UInputMappingContext* NewInputMappingContext)
@@ -128,6 +120,16 @@ void ATHNPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (UTHNGameInstance* THNGameInstance = Cast<UTHNGameInstance>(GetGameInstance()))
+	{
+		GameInstance = THNGameInstance;
+		GameInstance->OnGameStateChangedDelegate.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to get GameInstance!"))
+	}
+	
 	WorldSpaceAnimInstance = Cast<UTHNAnimInstance>(WorldSpaceSkeletalMeshComponent->GetAnimInstance());
 	BaseMeshAnimInstance = Cast<UTHNAnimInstance>(GetMesh()->GetAnimInstance());
 	
@@ -192,7 +194,7 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(RotateVerticalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput);
 		
 		//Office Puzzle
-		EnhancedInputComponent->BindAction(ClickInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleClickInput);
+		EnhancedInputComponent->BindAction(ClickInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleClickInput);
 	}
 }
 
@@ -577,5 +579,8 @@ void ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput(const FInputActionV
 
 void ATHNPlayerCharacter::HandleClickInput(const FInputActionValue& InputActionValue)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Click"));
+	//TODO: Store a reference to the puzzles in the game instance to retrieve easier
+	TArray<AActor*> DataPoisoningPuzzles;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATHNDataPoisoningPuzzle::StaticClass(), DataPoisoningPuzzles);
+	Cast<ATHNDataPoisoningPuzzle>(DataPoisoningPuzzles[0])->OnClickDelegate.Broadcast(CurrentInteractActor);
 }

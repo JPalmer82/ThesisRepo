@@ -36,6 +36,8 @@ ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
 	Widget->SetupAttachment(UISceneCapture);
 	WidgetInteractionComponent = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("WidgetInteractionComponent"));
 	WidgetInteractionComponent->SetupAttachment(Widget);
+	
+	OnClickDelegate.AddUniqueDynamic(this, &ATHNDataPoisoningPuzzle::OnClick);
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +47,10 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	
 	CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	SetActorTickEnabled(false);
+	
+	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PlayerController->EnableInput(PlayerController);
+	PlayerController->bEnableClickEvents = true;
 }
 
 // Called every frame
@@ -84,6 +90,7 @@ void ATHNDataPoisoningPuzzle::OnInteract(AActor* InitiatorActor)
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45, GetComponentByClass<UTHNPuzzleInfoComponent>()->PuzzleInfo);
 	SetActorTickEnabled(true);
+	UISceneCapture->SetVisibility(true);
 }
 
 void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
@@ -92,5 +99,13 @@ void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraSubsystem->ReturnToDefaultCamera(PlayerController);
 	SetActorTickEnabled(false);
+	UISceneCapture->SetVisibility(false);
+}
+
+void ATHNDataPoisoningPuzzle::OnClick(AActor* InteractActor)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Current actor: %s"), *InteractActor->GetName());
+	WidgetInteractionComponent->PressPointerKey(EKeys::LeftMouseButton);
+	WidgetInteractionComponent->ReleasePointerKey(EKeys::LeftMouseButton);
 }
 

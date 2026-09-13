@@ -17,6 +17,9 @@ class UBoxComponent;
 class UWidgetComponent;
 class USceneCaptureComponent2D;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClickStartDelegate, AActor*, InteractActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickEndDelegate);
+
 UCLASS()
 class ATHNDataPoisoningPuzzle : public AActor, public ITHNInteractableInterface
 {
@@ -37,6 +40,7 @@ public:
 	virtual void OnInteract(AActor* InitiatorActor) override;
 	virtual void OnInteractEnd(AActor* InitiatorActor) override;
 	
+	FOnClickStartDelegate OnClickDelegate;
 	//Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* SceneComponent;
@@ -65,4 +69,7 @@ public:
 	
 private:
 	class UTHNCameraManagerSubsystem* CameraSubsystem;
+	
+	UFUNCTION()
+	void OnClick(AActor* InteractActor);
 };
