@@ -6,6 +6,9 @@
 
 #include "Features/NPCs/THNDroneCharacter.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Features/UI/THN_PauseMenuWidget.h"
+
 #include "Features/AI/THNAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Camera/CameraComponent.h"
@@ -172,9 +175,11 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
 		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
 
-		EnhancedInputComponent->BindAction(StartReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadStartInput);
+		//Pause Context
+		EnhancedInputComponent->BindAction(PauseInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::TogglePause);
 
 		//Reload Context
+		EnhancedInputComponent->BindAction(StartReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadStartInput);
 		EnhancedInputComponent->BindAction(StopReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadEndInput);
 		EnhancedInputComponent->BindAction(LoadBulletInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleLoadBulletInput);
 		EnhancedInputComponent->BindAction(CycleCylinderLeftInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleCycleCylinderLeftInput);
@@ -448,6 +453,60 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 				CurrentInteractActor = Hit.GetActor();
 				IsInteracting = true;
 			}
+		}
+	}
+}
+
+void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
+{
+	if (!PauseMenuWidgetClass)
+		return;
+
+	//Check if game is paused
+	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	UE_LOG(LogTemp, Warning, TEXT("Player controller is %s"), *PlayerController->GetName())
+
+	if (!bIsPaused)
+	{
+		//makes the pause menu widget if it does not already exist
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		if (!PauseMenuWidget)
+		{
+			PauseMenuWidget = CreateWidget<UTHN_PauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
+		}
+
+		if (PauseMenuWidget && !PauseMenuWidget->IsInViewport())
+		{
+			PauseMenuWidget->AddToViewport();
+		}
+
+		//Allows player to select pause menu buttons
+		FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(PauseMenuWidget->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+		if (PlayerController)
+		{
+			PlayerController->SetInputMode(InputMode);
+			PlayerController->bShowMouseCursor = true;
+		}
+	}
+	else
+	{
+		if (PauseMenuWidget)
+		{
+			//Unpauses game
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+			//resets input
+			FInputModeGameOnly InputMode;
+			PlayerController->SetInputMode(InputMode);
+			PlayerController->bShowMouseCursor = false;
+
+			//removes pause menu widget from screen
+			PauseMenuWidget->RemoveFromParent();
 		}
 	}
 }

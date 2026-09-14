@@ -18,6 +18,7 @@ class UInputMappingContext;
 class USpringArmComponent;
 class UTHNAnimInstance;
 struct FInputActionValue;
+class UTHN_PauseMenuWidget;
 
 UCLASS()
 class THANATOPHOBIA_API ATHNPlayerCharacter : public ACharacter
@@ -115,6 +116,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	UInputAction* InteractInputAction;
 
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* PauseInputAction;
+
 	//Reload Actions
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	UInputAction* StopReloadInputAction;
@@ -195,6 +199,16 @@ private:
 
 	bool BulletChambers[6] = { true, true, true, true, true, true };
 
+	/*****************************************************/
+	/*                    Pause Menu                     */
+	/*****************************************************/
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UTHN_PauseMenuWidget> PauseMenuWidgetClass;
+
+	UTHN_PauseMenuWidget* PauseMenuWidget;
+
 private:
 	//Base Context
 	void HandleMoveInput(const FInputActionValue& InputActionValue);
@@ -209,6 +223,8 @@ private:
 	void HandleProbeInputEnd(const FInputActionValue& InputActionValue);
 	void HandleReloadStartInput(const FInputActionValue& InputActionValue);
 	void HandleInteractInput(const FInputActionValue& InputActionValue);
+
+	void TogglePause(const FInputActionValue& InputActionValue);
 
 	//Reload Context
 	void HandleReloadEndInput(const FInputActionValue& InputActionValue);
