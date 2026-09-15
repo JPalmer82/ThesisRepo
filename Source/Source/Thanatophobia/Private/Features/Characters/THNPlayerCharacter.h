@@ -207,6 +207,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UTHN_PauseMenuWidget> PauseMenuWidgetClass;
 
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
 	UTHN_PauseMenuWidget* PauseMenuWidget;
 
 private:

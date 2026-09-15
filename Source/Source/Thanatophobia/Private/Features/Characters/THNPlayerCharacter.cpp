@@ -472,12 +472,12 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 	{
 		//makes the pause menu widget if it does not already exist
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
-		if (!PauseMenuWidget)
+		if (!IsValid(PauseMenuWidget))
 		{
 			PauseMenuWidget = CreateWidget<UTHN_PauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
 		}
-
-		if (PauseMenuWidget && !PauseMenuWidget->IsInViewport())
+		
+		if (IsValid(PauseMenuWidget) && !PauseMenuWidget->IsInViewport())
 		{
 			PauseMenuWidget->AddToViewport();
 		}
@@ -495,7 +495,7 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 	}
 	else
 	{
-		if (PauseMenuWidget)
+		if (IsValid(PauseMenuWidget))
 		{
 			//Unpauses game
 			UGameplayStatics::SetGamePaused(GetWorld(), false);
