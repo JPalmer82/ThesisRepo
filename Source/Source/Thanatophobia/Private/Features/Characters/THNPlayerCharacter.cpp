@@ -302,10 +302,10 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 
 				ATHNDroneCharacter* Drone = Cast<ATHNDroneCharacter>(Hit.GetActor());
 
-				if (Drone)
+				if (IsValid(Drone))
 				{
 					ATHNPossessableCharacter* DroneParent = Cast<ATHNPossessableCharacter>(Drone->GetAttachParentActor());
-					if (DroneParent)
+					if (IsValid(DroneParent))
 					{
 						UTHNAnimInstance* HitNPCAnimInstance = DroneParent->GetNPCAnimInstance();
 						UTHNAnimInstance* HitProbeAnimInstance = DroneParent->GetProbeAnimInstance();
@@ -314,28 +314,28 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 						DroneParent->GetMovementComponent()->StopActiveMovement();
 					}
 					Hit.GetActor()->Destroy();
-				}
-			}
-		}
-
-		bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
-		if (bIsHit)
-		{
-			AActor* HitActor = Hit.GetActor();
+					bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
+					if (bIsHit)
+					{
+						AActor* PatientHitActor = Hit.GetActor();
 			
-			if (IsValid(HitActor))
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
-				//->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
+						if (IsValid(PatientHitActor))
+						{
+							//UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
+							//->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
 
-				ATHNPossessableCharacter* Possessed = Cast<ATHNPossessableCharacter>(Hit.GetActor());
-				if (Possessed)
-				{
-					ATHNAIController* HitController = Possessed->GetController<ATHNAIController>();
-					HitController->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
+							ATHNPossessableCharacter* Possessed = Cast<ATHNPossessableCharacter>(Hit.GetActor());
+							if (IsValid(Possessed))
+							{
+								ATHNAIController* HitController = Possessed->GetController<ATHNAIController>();
+								HitController->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
+							}
+						}
+					}
 				}
 			}
 		}
+
 		
 		//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
 

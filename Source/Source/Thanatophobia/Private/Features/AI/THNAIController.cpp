@@ -15,7 +15,7 @@ ATHNAIController::ATHNAIController()
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>("Sight Config");
 
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	SightConfig->DetectionByAffiliation.bDetectFriendlies = false;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	SightConfig->SightRadius = 1000.0f;
@@ -23,7 +23,7 @@ ATHNAIController::ATHNAIController()
 
 	SightConfig->SetMaxAge(5.0f);
 
-	SightConfig->PeripheralVisionAngleDegrees = 60.0f;
+	SightConfig->PeripheralVisionAngleDegrees = 90.0f;
 
 	AIPerceptionComponent->ConfigureSense(*SightConfig);
 	AIPerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
@@ -48,22 +48,23 @@ void ATHNAIController::TargetPerceptionUpdated(AActor* Target, FAIStimulus Stimu
 	if (!BB)
 		return;
 
-	UE_LOG(LogTemp, Warning, TEXT("Perception Updated: Actor %s | Sensed: %s"), *GetNameSafe(Target), Stimulus.WasSuccessfullySensed() ? TEXT("TRUE") : TEXT("FALSE"));
-
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		SetCurrentTarget(Target);
-		BB->SetValueAsBool(HasSeenPlayerKeyName, true);
+		if (!GetCurrentTarget())
+		{
+			SetCurrentTarget(Target);
+			BB->SetValueAsBool(HasSeenPlayerKeyName, true);
+		}
 	}
 	else
 	{
 		if (GetCurrentTarget() == Target)
 		{
 			// Save location where vision was lost
-			BB->SetValueAsVector(LastSeenLocationName, Stimulus.StimulusLocation);
+			BB->SetValueAsVector(LastSeenLocationName, Target->GetActorLocation());
+			SetCurrentTarget(nullptr);
 
 			// Clear Target and set bHasSeenPlayer to false
-			SetCurrentTarget(nullptr);
 			BB->SetValueAsBool(HasSeenPlayerKeyName, false);
 		}
 	}
@@ -96,9 +97,12 @@ UObject* ATHNAIController::GetCurrentTarget() const
 
 void ATHNAIController::TargetForgotten(AActor* ForgottenTarget)
 {
+	UBlackboardComponent* BB = GetBlackboardComponent();
+
 	if (GetCurrentTarget() == ForgottenTarget)
 	{
 		SetCurrentTarget(nullptr);
+		BB->SetValueAsBool(HasSeenPlayerKeyName, false);
 	}
 }
 
