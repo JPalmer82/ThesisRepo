@@ -58,7 +58,6 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	
 	if (UCameraComponent* CurrentCam = CameraSubsystem->GetCurrentCamera())
 	{
 		FHitResult OutHit;
@@ -79,8 +78,8 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 		
 		FVector NewInteractLocation = FVector(
 			WidgetInteractionComponent->GetRelativeLocation().X,
-			FMath::Lerp(RelativeScreenSize.X, -RelativeScreenSize.X, HitUV.X),
-			FMath::Lerp(RelativeScreenSize.Y, -RelativeScreenSize.Y, HitUV.Y));
+			FMath::Lerp(RelativeScreenSize.X, -RelativeScreenSize.X, 1 - HitUV.X),
+			FMath::Lerp(RelativeScreenSize.Y, -RelativeScreenSize.Y, 1 - HitUV.Y));
 		WidgetInteractionComponent->SetRelativeLocation(NewInteractLocation);
 	}
 }
