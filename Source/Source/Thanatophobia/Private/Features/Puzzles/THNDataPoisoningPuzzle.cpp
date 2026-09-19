@@ -10,7 +10,9 @@
 #include "Components/WidgetComponent.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "Core/THNCameraManagerSubsystem.h"
+#include "Core/THNPuzzleManagerSubsystem.h"
 #include "Features/Characters/THNPlayerController.h"
+#include "Features/UI/THNDataPoisoningWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -38,6 +40,7 @@ ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
 	WidgetInteractionComponent->SetupAttachment(Widget);
 	
 	OnClickDelegate.AddUniqueDynamic(this, &ATHNDataPoisoningPuzzle::OnClick);
+	
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +54,11 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	PlayerController->EnableInput(PlayerController);
 	PlayerController->bEnableClickEvents = true;
+	
+	DataPoisoningWidget = Cast<UTHNDataPoisoningWidget>(Widget->GetWidget());
+	
+	UTHNPuzzleManagerSubsystem* PuzzleManagerSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UTHNPuzzleManagerSubsystem>();
+	PuzzleManagerSubsystem->RegisterDataPoisoningPuzzle(this);
 }
 
 // Called every frame
@@ -78,8 +86,8 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 		
 		FVector NewInteractLocation = FVector(
 			WidgetInteractionComponent->GetRelativeLocation().X,
-			FMath::Lerp(RelativeScreenSize.X, -RelativeScreenSize.X, 1 - HitUV.X),
-			FMath::Lerp(RelativeScreenSize.Y, -RelativeScreenSize.Y, 1 - HitUV.Y));
+			FMath::Lerp(Settings.RelativeScreenSize.X, -Settings.RelativeScreenSize.X, 1 - HitUV.X),
+			FMath::Lerp(Settings.RelativeScreenSize.Y, -Settings.RelativeScreenSize.Y, 1 - HitUV.Y));
 		WidgetInteractionComponent->SetRelativeLocation(NewInteractLocation);
 	}
 }

@@ -1,0 +1,30 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "THNPuzzleManagerSubsystem.generated.h"
+
+class ATHNDataPoisoningPuzzle;
+
+/**
+ * 
+ */
+UCLASS()
+class UTHNPuzzleManagerSubsystem : public UGameInstanceSubsystem
+{
+	GENERATED_BODY()
+
+	
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
+	
+	void RegisterDataPoisoningPuzzle(const TSoftObjectPtr<ATHNDataPoisoningPuzzle> Puzzle) { DataPoisoningPuzzle = Puzzle; }
+	TSoftObjectPtr<ATHNDataPoisoningPuzzle> GetDataPoisoningPuzzle() const { return DataPoisoningPuzzle; }
+	
+private:
+	UPROPERTY()
+	TSoftObjectPtr<ATHNDataPoisoningPuzzle> DataPoisoningPuzzle;
+};

@@ -20,6 +20,17 @@ class USceneCaptureComponent2D;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClickStartDelegate, AActor*, InteractActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickEndDelegate);
 
+USTRUCT(Blueprintable)
+struct FDataPoisoningPuzzleSettings
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere)
+	int NumWordsPerPages = 28;
+	int NumPages = 3;
+	FVector2D RelativeScreenSize = FVector2D(620, 523);
+};
+
 UCLASS()
 class ATHNDataPoisoningPuzzle : public AActor, public ITHNInteractableInterface
 {
@@ -63,12 +74,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWidgetInteractionComponent* WidgetInteractionComponent;
 	
-	//Puzzle Settings
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Puzzle Settings")
-	FVector2D RelativeScreenSize = FVector2D(620, 523);
+	FDataPoisoningPuzzleSettings Settings;
 	
 private:
 	class UTHNCameraManagerSubsystem* CameraSubsystem;
+	
+	class UTHNDataPoisoningWidget* DataPoisoningWidget;
+	
+	UPROPERTY(EditAnywhere)
+	int NumEntriesPerPage = 28;
 	
 	UFUNCTION()
 	void OnClick(AActor* InteractActor);

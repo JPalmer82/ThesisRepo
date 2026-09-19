@@ -5,12 +5,17 @@
 
 #include "THNDataPoisoningWord.h"
 #include "Components/TileView.h"
+#include "Core/THNPuzzleManagerSubsystem.h"
+#include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 
 void UTHNDataPoisoningWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	for (int i = 0; i < 50; i++)
+	PuzzleManager = GetGameInstance()->GetSubsystem<UTHNPuzzleManagerSubsystem>();
+	DataPoisoningPuzzle = PuzzleManager->GetDataPoisoningPuzzle();
+	
+	for (int i = 0; i < DataPoisoningPuzzle->Settings.NumWordsPerPages; i++)
 	{
 		FName WordName = FName(FString("Word_").Append(FString::FromInt(i)));
 		UTHNDataPoisoningWord* NewWord = WidgetTree->ConstructWidget<UTHNDataPoisoningWord>(UTHNDataPoisoningWord::StaticClass(), WordName);
