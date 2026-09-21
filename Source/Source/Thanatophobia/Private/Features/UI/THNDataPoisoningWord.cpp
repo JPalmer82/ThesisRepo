@@ -10,6 +10,16 @@ void UTHNDataPoisoningWord::UpdateText(const ANSICHAR* text) const
 	WordTextBlock->SetText(FText::FromString(BaseText));
 }
 
+void UTHNDataPoisoningWord::NativeOnListItemObjectSet(UObject* ListItemObject)
+{
+	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+	
+	WordIndex = Cast<UTHNDataPoisoningWord>(ListItemObject)->WordIndex;
+	BaseText = Cast<UTHNDataPoisoningWord>(ListItemObject)->BaseText;
+	WordTextBlock->SetText(FText::FromString(BaseText));
+	UE_LOG(LogTemp, Warning, TEXT("THN: Index: %i"), WordIndex);
+}
+
 void UTHNDataPoisoningWord::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -18,6 +28,7 @@ void UTHNDataPoisoningWord::NativeConstruct()
 	
 	//WordTextBlock = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), "WordText");
 	WordTextBlock->SetText(FText::FromString(BaseText));
+	
 }
 
 void UTHNDataPoisoningWord::OnButtonClicked()

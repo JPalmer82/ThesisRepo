@@ -27,9 +27,12 @@ public:
 	TObjectPtr<UTextBlock> WordTextBlock;
 	
 	FString BaseText = "buh";
+	int WordIndex = -1;
 	
+
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	
 private:
 	UFUNCTION()

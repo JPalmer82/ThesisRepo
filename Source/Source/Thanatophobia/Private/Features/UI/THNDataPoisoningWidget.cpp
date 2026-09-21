@@ -19,7 +19,15 @@ void UTHNDataPoisoningWidget::NativeConstruct()
 	{
 		FName WordName = FName(FString("Word_").Append(FString::FromInt(i)));
 		UTHNDataPoisoningWord* NewWord = WidgetTree->ConstructWidget<UTHNDataPoisoningWord>(UTHNDataPoisoningWord::StaticClass(), WordName);
+		NewWord->WordIndex = i;
+		
+		FString NewText = FString(TEXT("Buh {0}"));
+		NewText = FString::Format(*NewText, {i});
+		NewWord->BaseText = NewText;
+		
 		Words.Add(NewWord);
 		WordTileView->AddItem(Words[i]);
 	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("THN: Widget Native Construct"));
 }
