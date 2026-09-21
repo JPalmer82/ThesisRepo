@@ -9,6 +9,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 
+#include "Features/Characters/THNPlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
 ATHNAIController::ATHNAIController()
 {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
@@ -44,6 +47,7 @@ void ATHNAIController::BeginPlay()
 void ATHNAIController::TargetPerceptionUpdated(AActor* Target, FAIStimulus Stimulus)
 {
 	UBlackboardComponent* BB = GetBlackboardComponent();
+	ATHNPlayerCharacter* Player = Cast<ATHNPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	if (!BB)
 		return;
@@ -52,8 +56,11 @@ void ATHNAIController::TargetPerceptionUpdated(AActor* Target, FAIStimulus Stimu
 	{
 		if (!GetCurrentTarget())
 		{
-			SetCurrentTarget(Target);
-			BB->SetValueAsBool(HasSeenPlayerKeyName, true);
+			if (Target == Player)
+			{
+				SetCurrentTarget(Target);
+				BB->SetValueAsBool(HasSeenPlayerKeyName, true);
+			}
 		}
 	}
 	else
