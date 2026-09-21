@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "THN_MainMenuPlayerController.generated.h"
+#include "THNMainMenuPlayerController.generated.h"
 
-class UTHN_MainMenuWidget;
+class UTHNMainMenuWidget;
 /**
  * 
  */
 UCLASS()
-class ATHN_MainMenuPlayerController : public APlayerController
+class ATHNMainMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UTHN_MainMenuWidget> MainMenuClass;
+	TSubclassOf<UTHNMainMenuWidget> MainMenuClass;
 
-	TObjectPtr<UTHN_MainMenuWidget> MainMenu;
+	TObjectPtr<UTHNMainMenuWidget> MainMenu;
 
 protected:
 	virtual void BeginPlay() override;

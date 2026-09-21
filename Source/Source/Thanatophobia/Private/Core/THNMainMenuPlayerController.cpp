@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Core/THN_MainMenuPlayerController.h"
-#include "Features/UI/THN_MainMenuWidget.h"
+#include "Core/THNMainMenuPlayerController.h"
+#include "Features/UI/THNMainMenuWidget.h"
 
-void ATHN_MainMenuPlayerController::BeginPlay()
+void ATHNMainMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	SetInputMode(FInputModeUIOnly());
 	SetShowMouseCursor(true);
 
-	MainMenu = CreateWidget<UTHN_MainMenuWidget>(GetWorld(), MainMenuClass);
+	MainMenu = CreateWidget<UTHNMainMenuWidget>(GetWorld(), MainMenuClass);
 	checkf(MainMenu, TEXT("THN - Failed To Create MainMenu!!!"))
 	MainMenu->AddToViewport();
 }

@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Features/UI/THN_MainMenuWidget.h"
-#include "Features/UI/THN_MainMenuSlotWidget.h"
+#include "Features/UI/THNMainMenuWidget.h"
+#include "Features/UI/THNMainMenuSlotWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
-void UTHN_MainMenuWidget::NativeConstruct()
+void UTHNMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	NewGameSlot->OnFocused.AddUObject(this, &UTHN_MainMenuWidget::OnSlotFocused);
-	NewGameSlot->OnPressed.AddUObject(this, &UTHN_MainMenuWidget::OnSlotPressed);
+	NewGameSlot->OnFocused.AddUObject(this, &UTHNMainMenuWidget::OnSlotFocused);
+	NewGameSlot->OnPressed.AddUObject(this, &UTHNMainMenuWidget::OnSlotPressed);
 	NewGameSlot->SetFocus();
 
 	/*LoadGameSlot->OnFocused.AddUObject(this, &UTHN_MainMenuWidget::OnSlotFocused);
@@ -20,11 +20,11 @@ void UTHN_MainMenuWidget::NativeConstruct()
 	/*SettingsSlot->OnFocused.AddUObject(this, &UTHN_MainMenuWidget::OnSlotFocused);
 	SettingsSlot->OnPressed.AddUObject(this, &UTHN_MainMenuWidget::OnSlotPressed);*/ //For adjusting game settings later if we can
 
-	QuitSlot->OnFocused.AddUObject(this, &UTHN_MainMenuWidget::OnSlotFocused);
-	QuitSlot->OnPressed.AddUObject(this, &UTHN_MainMenuWidget::OnSlotPressed);
+	QuitSlot->OnFocused.AddUObject(this, &UTHNMainMenuWidget::OnSlotFocused);
+	QuitSlot->OnPressed.AddUObject(this, &UTHNMainMenuWidget::OnSlotPressed);
 }
 
-void UTHN_MainMenuWidget::OnSlotFocused(UTHN_MainMenuSlotWidget* MainMenuSlot, bool bIsFocused)
+void UTHNMainMenuWidget::OnSlotFocused(UTHNMainMenuSlotWidget* MainMenuSlot, bool bIsFocused)
 {
 	if (bIsFocused)
 	{
@@ -45,7 +45,7 @@ void UTHN_MainMenuWidget::OnSlotFocused(UTHN_MainMenuSlotWidget* MainMenuSlot, b
 	}
 }
 
-void UTHN_MainMenuWidget::OnSlotPressed(UTHN_MainMenuSlotWidget* MainMenuSlot)
+void UTHNMainMenuWidget::OnSlotPressed(UTHNMainMenuSlotWidget* MainMenuSlot)
 {
 	UWorld* World = GetWorld();
 

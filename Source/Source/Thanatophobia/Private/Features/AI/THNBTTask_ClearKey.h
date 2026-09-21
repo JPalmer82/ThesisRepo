@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "THN_BTTask_ClearKey.generated.h"
+#include "THNBTTask_ClearKey.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UTHN_BTTask_ClearKey : public UBTTask_BlackboardBase
+class UTHNBTTask_ClearKey : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 	

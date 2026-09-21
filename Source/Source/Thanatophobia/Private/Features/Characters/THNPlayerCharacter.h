@@ -18,7 +18,7 @@ class UInputMappingContext;
 class USpringArmComponent;
 class UTHNAnimInstance;
 struct FInputActionValue;
-class UTHN_PauseMenuWidget;
+class UTHNPauseMenuWidget;
 
 UCLASS()
 class THANATOPHOBIA_API ATHNPlayerCharacter : public ACharacter
@@ -205,10 +205,10 @@ private:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UTHN_PauseMenuWidget> PauseMenuWidgetClass;
+	TSubclassOf<UTHNPauseMenuWidget> PauseMenuWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
-	UTHN_PauseMenuWidget* PauseMenuWidget;
+	UTHNPauseMenuWidget* PauseMenuWidget;
 
 private:
 	//Base Context

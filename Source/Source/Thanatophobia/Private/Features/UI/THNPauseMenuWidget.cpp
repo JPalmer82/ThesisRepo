@@ -1,23 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Features/UI/THN_PauseMenuWidget.h"
-#include "Features/UI/THN_MainMenuSlotWidget.h"
+#include "Features/UI/THNPauseMenuWidget.h"
+#include "Features/UI/THNMainMenuSlotWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-void UTHN_PauseMenuWidget::NativeConstruct()
+void UTHNPauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ResumeSlot->OnFocused.AddUObject(this, &UTHN_PauseMenuWidget::OnSlotFocused);
-	ResumeSlot->OnPressed.AddUObject(this, &UTHN_PauseMenuWidget::OnSlotPressed);
+	ResumeSlot->OnFocused.AddUObject(this, &UTHNPauseMenuWidget::OnSlotFocused);
+	ResumeSlot->OnPressed.AddUObject(this, &UTHNPauseMenuWidget::OnSlotPressed);
 	ResumeSlot->SetFocus();
 
-	MainMenuSlot->OnFocused.AddUObject(this, &UTHN_PauseMenuWidget::OnSlotFocused);
-	MainMenuSlot->OnPressed.AddUObject(this, &UTHN_PauseMenuWidget::OnSlotPressed);
+	MainMenuSlot->OnFocused.AddUObject(this, &UTHNPauseMenuWidget::OnSlotFocused);
+	MainMenuSlot->OnPressed.AddUObject(this, &UTHNPauseMenuWidget::OnSlotPressed);
 }
 
-void UTHN_PauseMenuWidget::OnSlotFocused(UTHN_MainMenuSlotWidget* MenuSlot, bool bIsFocused)
+void UTHNPauseMenuWidget::OnSlotFocused(UTHNMainMenuSlotWidget* MenuSlot, bool bIsFocused)
 {
 	if (bIsFocused)
 	{
@@ -38,7 +38,7 @@ void UTHN_PauseMenuWidget::OnSlotFocused(UTHN_MainMenuSlotWidget* MenuSlot, bool
 	}
 }
 
-void UTHN_PauseMenuWidget::OnSlotPressed(UTHN_MainMenuSlotWidget* MenuSlot)
+void UTHNPauseMenuWidget::OnSlotPressed(UTHNMainMenuSlotWidget* MenuSlot)
 {
 	UWorld* World = GetWorld();
 	APlayerController* NewGamePlayerController = UGameplayStatics::GetPlayerController(World, 0);

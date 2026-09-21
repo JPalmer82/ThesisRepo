@@ -7,7 +7,7 @@
 #include "Features/NPCs/THNDroneCharacter.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Features/UI/THN_PauseMenuWidget.h"
+#include "Features/UI/THNPauseMenuWidget.h"
 
 #include "Features/AI/THNAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -474,7 +474,7 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		if (!IsValid(PauseMenuWidget))
 		{
-			PauseMenuWidget = CreateWidget<UTHN_PauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
+			PauseMenuWidget = CreateWidget<UTHNPauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
 		}
 		
 		if (IsValid(PauseMenuWidget) && !PauseMenuWidget->IsInViewport())

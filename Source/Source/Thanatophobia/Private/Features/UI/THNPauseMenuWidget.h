@@ -5,32 +5,32 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "THN_PauseMenuWidget.generated.h"
+#include "THNPauseMenuWidget.generated.h"
 
-class UTHN_MainMenuSlotWidget;
+class UTHNMainMenuSlotWidget;
 /**
  * 
  */
 UCLASS()
-class UTHN_PauseMenuWidget : public UUserWidget
+class UTHNPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UTHN_MainMenuSlotWidget> ResumeSlot;
+	TObjectPtr<UTHNMainMenuSlotWidget> ResumeSlot;
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UTHN_MainMenuSlotWidget> MainMenuSlot;
+	TObjectPtr<UTHNMainMenuSlotWidget> MainMenuSlot;
 
-	TObjectPtr<UTHN_MainMenuSlotWidget> FocusedMenuSlot;
+	TObjectPtr<UTHNMainMenuSlotWidget> FocusedMenuSlot;
 
 protected:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
-	void OnSlotFocused(UTHN_MainMenuSlotWidget* MenuSlot, bool bIsFocused);
+	void OnSlotFocused(UTHNMainMenuSlotWidget* MenuSlot, bool bIsFocused);
 
 	UFUNCTION()
-	void OnSlotPressed(UTHN_MainMenuSlotWidget* MenuSlot);
+	void OnSlotPressed(UTHNMainMenuSlotWidget* MenuSlot);
 };

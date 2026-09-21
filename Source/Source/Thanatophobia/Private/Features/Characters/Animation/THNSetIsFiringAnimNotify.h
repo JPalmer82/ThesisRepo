@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "HexSetIsFiringAnimNotify.generated.h"
+#include "THNSetIsFiringAnimNotify.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UHexSetIsFiringAnimNotify : public UAnimNotify
+class UTHNSetIsFiringAnimNotify : public UAnimNotify
 {
 	GENERATED_BODY()
 

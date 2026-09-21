@@ -5,38 +5,38 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "THN_MainMenuWidget.generated.h"
+#include "THNMainMenuWidget.generated.h"
 
-class UTHN_MainMenuSlotWidget;
+class UTHNMainMenuSlotWidget;
 /**
  * 
  */
 UCLASS()
-class UTHN_MainMenuWidget : public UUserWidget
+class UTHNMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UTHN_MainMenuSlotWidget> NewGameSlot;
+	TObjectPtr<UTHNMainMenuSlotWidget> NewGameSlot;
 
 	/*UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UTHN_MainMenuSlotWidget> LoadGameSlot;*/
+	TObjectPtr<UTHNMainMenuSlotWidget> LoadGameSlot;*/
 
 	/*UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UTHN_MainMenuSlotWidget> SettingsSlot;*/
+	TObjectPtr<UTHNMainMenuSlotWidget> SettingsSlot;*/
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UTHN_MainMenuSlotWidget> QuitSlot;
+	TObjectPtr<UTHNMainMenuSlotWidget> QuitSlot;
 
-	TObjectPtr<UTHN_MainMenuSlotWidget> FocusedMainMenuSlot;
+	TObjectPtr<UTHNMainMenuSlotWidget> FocusedMainMenuSlot;
 
 protected:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
-	void OnSlotFocused(UTHN_MainMenuSlotWidget* MainMenuSlot, bool bIsFocused);
+	void OnSlotFocused(UTHNMainMenuSlotWidget* MainMenuSlot, bool bIsFocused);
 
 	UFUNCTION()
-	void OnSlotPressed(UTHN_MainMenuSlotWidget* MainMenuSlot);
+	void OnSlotPressed(UTHNMainMenuSlotWidget* MainMenuSlot);
 };

@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "THN_MainMenuSlotWidget.generated.h"
+#include "THNMainMenuSlotWidget.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMainMenuSlotFocusedEvent, UTHN_MainMenuSlotWidget* MainMenuSlot, bool bIsFocused);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnMainMenuSlotPressedEvent, UTHN_MainMenuSlotWidget* MainMenuSlot);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMainMenuSlotFocusedEvent, UTHNMainMenuSlotWidget* MainMenuSlot, bool bIsFocused);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMainMenuSlotPressedEvent, UTHNMainMenuSlotWidget* MainMenuSlot);
 
 class UBorder;
 class UButton;
@@ -17,7 +17,7 @@ class UTextBlock;
  * 
  */
 UCLASS()
-class UTHN_MainMenuSlotWidget : public UUserWidget
+class UTHNMainMenuSlotWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
@@ -55,7 +55,7 @@ protected:
 	void OnButtonPressedUpdated();
 
 public:
-	UTHN_MainMenuSlotWidget(const FObjectInitializer& ObjectInitializer);
+	UTHNMainMenuSlotWidget(const FObjectInitializer& ObjectInitializer);
 
 	void SetHighlightState(bool bIsHighlighted);
 };
