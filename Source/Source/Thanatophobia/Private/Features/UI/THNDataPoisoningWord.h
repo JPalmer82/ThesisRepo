@@ -9,6 +9,7 @@
 #include "Components/TextBlock.h"
 #include "THNDataPoisoningWord.generated.h"
 
+struct FDataPoisoningWord;
 /**
  * 
  */
@@ -28,7 +29,7 @@ public:
 	
 	FString BaseText = "buh";
 	int WordIndex = -1;
-	
+	FString Sentiment;
 
 protected:
 	virtual void NativeConstruct() override;
@@ -37,4 +38,5 @@ protected:
 private:
 	UFUNCTION()
 	void OnButtonClicked();
+	
 };

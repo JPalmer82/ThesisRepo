@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
+#include "Utility/FSentimentTable.h"
 #include "THNDataPoisoningPuzzle.generated.h"
 
+struct FDataPoisoningWord;
 class UTHNPuzzleInfoComponent;
 class USceneComponent;
 class UCameraComponent;
@@ -77,6 +79,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Puzzle Settings")
 	FDataPoisoningPuzzleSettings Settings;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UDataTable> SentimentTable;
+	
+	UPROPERTY()
+	TArray<FDataPoisoningWord> Words;
+	
 private:
 	class UTHNCameraManagerSubsystem* CameraSubsystem;
 	
@@ -84,6 +92,7 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	int NumEntriesPerPage = 28;
+	
 	
 	UFUNCTION()
 	void OnClick(AActor* InteractActor);

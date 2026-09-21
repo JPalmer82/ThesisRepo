@@ -59,6 +59,14 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	
 	UTHNPuzzleManagerSubsystem* PuzzleManagerSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UTHNPuzzleManagerSubsystem>();
 	PuzzleManagerSubsystem->RegisterDataPoisoningPuzzle(this);
+	
+	TArray<FName> Rows = SentimentTable->GetRowNames();
+	for (int i = 0; i < NumEntriesPerPage; i++)
+	{
+		FSentimentTable* Table = SentimentTable->FindRow<FSentimentTable>(Rows[i], "");
+		Words.Add(FDataPoisoningWord(Table->Word, Table->Sentiment));
+		UE_LOG(LogTemp, Warning, TEXT("THN: %s: %s"), *Words[i].Word, *Words[i].Sentiment);
+	}
 }
 
 // Called every frame

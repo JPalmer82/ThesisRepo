@@ -23,11 +23,10 @@ void UTHNDataPoisoningWidget::NativeConstruct()
 		
 		FString NewText = FString(TEXT("Buh {0}"));
 		NewText = FString::Format(*NewText, {i});
-		NewWord->BaseText = NewText;
+		NewWord->BaseText = DataPoisoningPuzzle->Words[i].Word;
+		NewWord->Sentiment = DataPoisoningPuzzle->Words[i].Sentiment;
 		
 		Words.Add(NewWord);
 		WordTileView->AddItem(Words[i]);
 	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("THN: Widget Native Construct"));
 }

@@ -8,9 +8,15 @@
 
 class ATHNDataPoisoningPuzzle;
 
-/**
- * 
- */
+USTRUCT(Blueprintable)
+struct FDataPoisoningWord
+{
+	GENERATED_BODY()
+	
+	FString Word = "NULL";
+	FString Sentiment = "NULL";
+};
+
 UCLASS()
 class UTHNPuzzleManagerSubsystem : public UGameInstanceSubsystem
 {
