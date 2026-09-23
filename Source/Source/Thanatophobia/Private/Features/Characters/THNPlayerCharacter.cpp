@@ -46,16 +46,16 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 	CameraComponent->bUsePawnControlRotation = true;
 	CameraComponent->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("CameraSocket"));
 
-	ReloadLookPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReloadCameraLookPosition"));
+	ReloadLookPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReloadCameraLookPosition")); //No longer needed
 	ReloadLookPosition->SetupAttachment(GetRootComponent());
 	
-	RevolverReloadPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RevolverReloadPosition"));
+	RevolverReloadPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RevolverReloadPosition")); //No longer needed
 	RevolverReloadPosition->SetupAttachment(GetRootComponent());
 
-	RevolverBasePosition = CreateDefaultSubobject<USceneComponent>(TEXT("RevolverBasePosition"));
+	RevolverBasePosition = CreateDefaultSubobject<USceneComponent>(TEXT("RevolverBasePosition")); //No longer needed
 	RevolverBasePosition->SetupAttachment(CameraComponent);
 
-	RevolverComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver"));
+	RevolverComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver")); //No longer needed
 	RevolverComponent->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("GunHoldPosition"));
 
 	ProbePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProbePoint"));
