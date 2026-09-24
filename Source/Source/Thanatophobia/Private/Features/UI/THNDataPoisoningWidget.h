@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "THNWordTileView.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
+#include "Components/WidgetSwitcher.h"
 #include "THNDataPoisoningWidget.generated.h"
 
 class ATHNDataPoisoningPuzzle;
@@ -19,8 +22,18 @@ class UTHNDataPoisoningWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UTHNWordTileView> WordTileViewBase;
+	
+	//UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
+	UPROPERTY()
+	TArray<TObjectPtr<UTHNWordTileView>> WordTileViews;
+	
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
-	UTileView* WordTileView;
+	TObjectPtr<UWidgetSwitcher> PageSwitcher;
+	
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
+	TObjectPtr<UButton> SelectWordsButton;
 	
 	//bool Initialize(int WordsPerPage, int NumPages);
 	//virtual void NativeOnInitialized() override;
@@ -37,4 +50,7 @@ private:
 	
 	UPROPERTY()
 	TSoftObjectPtr<ATHNDataPoisoningPuzzle> DataPoisoningPuzzle;
+	
+	UFUNCTION()
+	void SelectWordsButtonClicked();
 };

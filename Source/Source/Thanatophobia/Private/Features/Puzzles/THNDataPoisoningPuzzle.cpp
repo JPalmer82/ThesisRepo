@@ -61,11 +61,12 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	PuzzleManagerSubsystem->RegisterDataPoisoningPuzzle(this);
 	
 	TArray<FName> Rows = SentimentTable->GetRowNames();
-	for (int i = 0; i < NumEntriesPerPage; i++)
+	int RandOffset = FMath::RandRange(0, Rows.Num() - 1);
+	
+	for (int i = 0; i < Settings.NumWordsPerPages * Settings.NumPages; i++)
 	{
-		FSentimentTable* Table = SentimentTable->FindRow<FSentimentTable>(Rows[i], "");
+		FSentimentTable* Table = SentimentTable->FindRow<FSentimentTable>(Rows[(i + RandOffset) % Rows.Num() - 1], "");
 		Words.Add(FDataPoisoningWord(Table->Word, Table->Sentiment));
-		UE_LOG(LogTemp, Warning, TEXT("THN: %s: %s"), *Words[i].Word, *Words[i].Sentiment);
 	}
 }
 

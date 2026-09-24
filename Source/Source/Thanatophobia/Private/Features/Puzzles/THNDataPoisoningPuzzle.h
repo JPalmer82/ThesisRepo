@@ -90,10 +90,6 @@ private:
 	
 	class UTHNDataPoisoningWidget* DataPoisoningWidget;
 	
-	UPROPERTY(EditAnywhere)
-	int NumEntriesPerPage = 28;
-	
-	
 	UFUNCTION()
 	void OnClick(AActor* InteractActor);
 };
