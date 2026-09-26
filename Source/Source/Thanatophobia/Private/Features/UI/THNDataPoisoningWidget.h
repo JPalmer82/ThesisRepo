@@ -16,6 +16,7 @@ class UTileView;
 /**
  * 
  */
+
 UCLASS()
 class UTHNDataPoisoningWidget : public UUserWidget
 {
@@ -40,7 +41,8 @@ public:
 	
 protected:
 	virtual void NativeConstruct() override;
-	
+	void ResetPuzzle();
+
 private:
 	UPROPERTY()
 	TArray<UTHNDataPoisoningWord*> Words;
@@ -50,7 +52,7 @@ private:
 	
 	UPROPERTY()
 	TSoftObjectPtr<ATHNDataPoisoningPuzzle> DataPoisoningPuzzle;
-	
+
 	UFUNCTION()
 	void SelectWordsButtonClicked();
 };

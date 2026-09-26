@@ -14,6 +14,7 @@
 #include "Features/Characters/THNPlayerController.h"
 #include "Features/UI/THNDataPoisoningWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Utility/FSentimentTable.h"
 
 // Sets default values
 ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
@@ -65,9 +66,13 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	
 	for (int i = 0; i < Settings.NumWordsPerPages * Settings.NumPages; i++)
 	{
-		FSentimentTable* Table = SentimentTable->FindRow<FSentimentTable>(Rows[(i + RandOffset) % Rows.Num() - 1], "");
+		FSentimentTable* Table = SentimentTable->FindRow<FSentimentTable>(Rows[(i + RandOffset) % (Rows.Num() - 1)], "");
 		Words.Add(FDataPoisoningWord(Table->Word, Table->Sentiment));
+		if (Table->Sentiment == "Negative") 
+			TotalNumNegativeWords += 1;
 	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("THN: Negative Words: %d"), TotalNumNegativeWords);
 }
 
 // Called every frame
@@ -118,10 +123,72 @@ void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
 	UISceneCapture->SetVisibility(false);
 }
 
+void ATHNDataPoisoningPuzzle::SelectWord(UTHNDataPoisoningWord* Word)
+{
+	if (SelectedWords.Contains(Word))
+	{
+		SelectedWords.Remove(Word);
+		if (Word->Sentiment == "Negative")
+		{
+			NumNegativeWordsSelected--;
+		}
+		else if (Word->Sentiment == "Positive")
+		{
+			NumPositiveWordsSelected--;
+		}
+	}
+	else
+	{
+		SelectedWords.Add(Word);
+		if (Word->Sentiment == "Negative")
+		{
+			NumNegativeWordsSelected++;
+		}
+		else if (Word->Sentiment == "Positive")
+		{
+			NumPositiveWordsSelected++;
+		}
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("THN: Negative Words Selected: %d"), NumNegativeWordsSelected);
+}
+
+void ATHNDataPoisoningPuzzle::RefreshWordList()
+{
+	TArray<FName> Rows = SentimentTable->GetRowNames();
+	int RandOffset = FMath::RandRange(0, Rows.Num() - 1);
+	
+	TotalNumNegativeWords = 0;
+	
+	for (int i = 0; i < Settings.NumWordsPerPages * Settings.NumPages; i++)
+	{
+		FSentimentTable* Table = SentimentTable->FindRow<FSentimentTable>(Rows[(i + RandOffset) % (Rows.Num() - 1)], "");
+		Words[i] = FDataPoisoningWord(Table->Word, Table->Sentiment);
+		if (Table->Sentiment == "Negative")
+			TotalNumNegativeWords += 1;
+	}
+	
+	NumNegativeWordsSelected = 0;
+	NumPositiveWordsSelected = 0;
+}
+
 void ATHNDataPoisoningPuzzle::OnClick(AActor* InteractActor)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Current actor: %s"), *InteractActor->GetName());
 	WidgetInteractionComponent->PressPointerKey(EKeys::LeftMouseButton);
 	WidgetInteractionComponent->ReleasePointerKey(EKeys::LeftMouseButton);
+}
+
+bool ATHNDataPoisoningPuzzle::CheckPuzzleCompletion()
+{
+	float PercentCompletion = (float)(NumNegativeWordsSelected - NumPositiveWordsSelected) / (float)TotalNumNegativeWords;
+	UE_LOG(LogTemp, Warning, TEXT("%f"), PercentCompletion);
+	return PercentCompletion > NegativePercentageNeededToWin ? true : false;
+}
+
+void ATHNDataPoisoningPuzzle::HandlePuzzleSucceeded()
+{
+	GEngine->AddOnScreenDebugMessage(0, 3, FColor::Red, TEXT("PUZZLE COMPLETE"));
+	
 }
 

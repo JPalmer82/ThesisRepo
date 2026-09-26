@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Features/UI/THNDataPoisoningWord.h"
 #include "GameFramework/Actor.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
-#include "Utility/FSentimentTable.h"
 #include "THNDataPoisoningPuzzle.generated.h"
 
+class UTHNDataPoisoningWidget;
 struct FDataPoisoningWord;
 class UTHNPuzzleInfoComponent;
 class USceneComponent;
@@ -53,7 +54,26 @@ public:
 	virtual void OnInteract(AActor* InitiatorActor) override;
 	virtual void OnInteractEnd(AActor* InitiatorActor) override;
 	
+	void SelectWord(UTHNDataPoisoningWord* Word);
+	void RefreshWordList();
+	bool CheckPuzzleCompletion();
+	void HandlePuzzleSucceeded();
+	
+	int GetNumNegativeWords() const { return TotalNumNegativeWords; }
+	
+	UPROPERTY()
+	TArray<UTHNDataPoisoningWord*> SelectedWords;
+	
 	FOnClickStartDelegate OnClickDelegate;
+	
+	UTHNDataPoisoningWidget* GetDataPoisoningWidget() const { return DataPoisoningWidget; }
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Puzzle Settings")
+	FDataPoisoningPuzzleSettings Settings;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Puzzle Settings")
+	float NegativePercentageNeededToWin = .8f;
+	
 	//Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* SceneComponent;
@@ -76,8 +96,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWidgetInteractionComponent* WidgetInteractionComponent;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Puzzle Settings")
-	FDataPoisoningPuzzleSettings Settings;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UDataTable> SentimentTable;
@@ -86,9 +104,15 @@ public:
 	TArray<FDataPoisoningWord> Words;
 	
 private:
+	UPROPERTY()
 	class UTHNCameraManagerSubsystem* CameraSubsystem;
 	
+	UPROPERTY()
 	class UTHNDataPoisoningWidget* DataPoisoningWidget;
+	
+	int TotalNumNegativeWords = 0;
+	int NumNegativeWordsSelected = 0;
+	int NumPositiveWordsSelected = 0;
 	
 	UFUNCTION()
 	void OnClick(AActor* InteractActor);

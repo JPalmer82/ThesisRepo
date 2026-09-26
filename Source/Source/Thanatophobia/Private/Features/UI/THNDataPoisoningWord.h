@@ -7,9 +7,10 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Core/THNPuzzleManagerSubsystem.h"
 #include "THNDataPoisoningWord.generated.h"
 
-struct FDataPoisoningWord;
+class ATHNDataPoisoningPuzzle;
 /**
  * 
  */
@@ -19,13 +20,17 @@ class UTHNDataPoisoningWord : public UUserWidget, public IUserObjectListEntry
 	GENERATED_BODY()
 	
 public:
-	void UpdateText(const ANSICHAR* text) const;
+	UFUNCTION()
+	void UpdateWord();
 	
 	UPROPERTY(EditAnywhere, meta=(BindWidget), BlueprintReadWrite, Category="UI")
 	TObjectPtr<UButton> WordButton;
 	
 	UPROPERTY(EditAnywhere, meta=(BindWidget), BlueprintReadWrite, Category="UI")
 	TObjectPtr<UTextBlock> WordTextBlock;
+	
+	UPROPERTY()
+	FDataPoisoningWord Word;
 	
 	FString BaseText = "buh";
 	int WordIndex = -1;
@@ -39,4 +44,10 @@ private:
 	UFUNCTION()
 	void OnButtonClicked();
 	
+	UPROPERTY()
+	TSoftObjectPtr<ATHNDataPoisoningPuzzle> DataPoisoningPuzzle;
+	
+	bool IsClicked = false;
+	
+	FButtonStyle BaseButtonStyle;
 };

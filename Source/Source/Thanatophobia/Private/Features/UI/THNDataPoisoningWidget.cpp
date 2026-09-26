@@ -5,6 +5,7 @@
 
 #include "THNDataPoisoningWord.h"
 #include "Components/TileView.h"
+#include "Components/WidgetComponent.h"
 #include "Core/THNPuzzleManagerSubsystem.h"
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 
@@ -34,19 +35,51 @@ void UTHNDataPoisoningWidget::NativeConstruct()
 			NewWord->Sentiment = DataPoisoningPuzzle->Words[(DataPoisoningPuzzle->Settings.NumWordsPerPages * i) + j].Sentiment;
 		
 			Words.Add(NewWord);
-		
 			WordTileViews[i]->WordTileView->AddItem(Words.Last());
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Words.Last()->BaseText);
-			//WordTileView->AddItem(Words[i]);
 		}
 	}
+}
+
+void UTHNDataPoisoningWidget::ResetPuzzle()
+{
+	//Generate a new set of words to pull from
+	DataPoisoningPuzzle->RefreshWordList();
+		
+	for (int i = 0; i < DataPoisoningPuzzle->Settings.NumPages; i++)
+	{
+		TArray<UTHNDataPoisoningWord*> NewWords;
+			
+		for (int j = 0; j < DataPoisoningPuzzle->Settings.NumWordsPerPages; j++)
+		{
+			//Update local word array with newly created word array from puzzle
+			int ConvertedIndex = DataPoisoningPuzzle->Settings.NumWordsPerPages * i + j;
+			Words[ConvertedIndex]->BaseText = DataPoisoningPuzzle->Words[ConvertedIndex].Word;
+			Words[ConvertedIndex]->Sentiment = DataPoisoningPuzzle->Words[ConvertedIndex].Sentiment;
+				
+			//Update the text on the word widgets
+			TArray<UUserWidget*> Widgets = WordTileViews[i]->WordTileView->GetDisplayedEntryWidgets();
+			UTHNDataPoisoningWord* Word = Cast<UTHNDataPoisoningWord>(Widgets[j]);
+			Word->BaseText = Words[ConvertedIndex]->BaseText;
+			Word->Sentiment = Words[ConvertedIndex]->Sentiment;
+			Word->UpdateWord();
+		}
+	}
+		
+	PageSwitcher->SetActiveWidgetIndex(0);
 }
 
 void UTHNDataPoisoningWidget::SelectWordsButtonClicked()
 {
 	if (PageSwitcher->GetActiveWidgetIndex() + 1 >= PageSwitcher->GetNumWidgets())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("THN: End of pages"));
+		if (DataPoisoningPuzzle->CheckPuzzleCompletion())
+		{
+			DataPoisoningPuzzle->HandlePuzzleSucceeded();
+		}
+		else
+		{
+			ResetPuzzle();
+		}
 	}
 	else
 	{
