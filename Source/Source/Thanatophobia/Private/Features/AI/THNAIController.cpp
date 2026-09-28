@@ -5,6 +5,7 @@
 
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -16,6 +17,7 @@ ATHNAIController::ATHNAIController()
 {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>("Sight Config");
+	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>("Hearing Config");
 
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = false;
@@ -28,7 +30,11 @@ ATHNAIController::ATHNAIController()
 
 	SightConfig->PeripheralVisionAngleDegrees = 90.0f;
 
+	HearingConfig->HearingRange = 2000.0f;
+	HearingConfig->SetMaxAge(5.0f);
+
 	AIPerceptionComponent->ConfigureSense(*SightConfig);
+	AIPerceptionComponent->ConfigureSense(*HearingConfig);
 	AIPerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ATHNAIController::TargetPerceptionUpdated);
 	AIPerceptionComponent->OnTargetPerceptionForgotten.AddDynamic(this, &ATHNAIController::TargetForgotten);

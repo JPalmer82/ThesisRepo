@@ -68,7 +68,7 @@ private:
 	UPROPERTY()
 	UTHNAnimInstance* BaseMeshAnimInstance;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	UAIPerceptionStimuliSourceComponent* StimuliSource;
 	
 	/*****************************************************/

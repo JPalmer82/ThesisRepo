@@ -41,7 +41,7 @@ private:
 	UPROPERTY()
 	UTHNAnimInstance* ProbeNPCAnimInstance;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	class UAIPerceptionStimuliSourceComponent* PerceptionStimulusComponent;
 
 	void SetPerceptionStimuliEnabled(bool bStimuliEnabled);

@@ -42,6 +42,9 @@ private:
 	UPROPERTY(VisibleDefaultsOnly)
 	class UAISenseConfig_Sight* SightConfig;
 
+	UPROPERTY(VisibleDefaultsOnly)
+	class UAISenseConfig_Hearing* HearingConfig;
+
 	UFUNCTION()
 	void TargetPerceptionUpdated(AActor* Target, FAIStimulus Stimulus);
 

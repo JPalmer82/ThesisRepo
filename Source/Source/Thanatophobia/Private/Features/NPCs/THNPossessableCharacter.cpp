@@ -6,6 +6,7 @@
 
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 
 // Sets default values
 ATHNPossessableCharacter::ATHNPossessableCharacter()
@@ -29,6 +30,7 @@ ATHNPossessableCharacter::ATHNPossessableCharacter()
 
 	PerceptionStimulusComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>("PerceptionStimulusComponent");
 	PerceptionStimulusComponent->RegisterForSense(UAISense_Sight::StaticClass());
+	PerceptionStimulusComponent->RegisterForSense(UAISense_Hearing::StaticClass());
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +43,6 @@ void ATHNPossessableCharacter::BeginPlay()
 	NPCAnimInstance->IsDead = false;
 	ProbeNPCAnimInstance->IsDead = false;
 
-	PerceptionStimulusComponent->RegisterForSense(UAISense_Sight::StaticClass());
 	PerceptionStimulusComponent->RegisterWithPerceptionSystem();
 }
 

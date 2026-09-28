@@ -28,6 +28,7 @@
 #include "Source/Thanatophobia/Thanatophobia.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 
 // Sets default values
 ATHNPlayerCharacter::ATHNPlayerCharacter()
@@ -66,6 +67,7 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 
 	StimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimuliSource"));
 	StimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
+	StimuliSource->RegisterForSense(UAISense_Hearing::StaticClass());
 	StimuliSource->RegisterWithPerceptionSystem();
 
 	bIsProbeEquipped = false;
