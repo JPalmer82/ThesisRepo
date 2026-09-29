@@ -6,6 +6,8 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
+#include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -32,6 +34,9 @@ ATHNAIController::ATHNAIController()
 
 	HearingConfig->HearingRange = 2000.0f;
 	HearingConfig->SetMaxAge(5.0f);
+	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
+	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	AIPerceptionComponent->ConfigureSense(*SightConfig);
 	AIPerceptionComponent->ConfigureSense(*HearingConfig);
@@ -58,27 +63,42 @@ void ATHNAIController::TargetPerceptionUpdated(AActor* Target, FAIStimulus Stimu
 	if (!BB)
 		return;
 
-	if (Stimulus.WasSuccessfullySensed())
+	if (Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 	{
-		if (!GetCurrentTarget())
+		if (Stimulus.WasSuccessfullySensed())
 		{
-			if (Target == Player)
+			if (!GetCurrentTarget())
 			{
-				SetCurrentTarget(Target);
-				BB->SetValueAsBool(HasSeenPlayerKeyName, true);
+				if (Target == Player)
+				{
+					SetCurrentTarget(Target);
+					BB->SetValueAsBool(HasSeenPlayerName, true);
+				}
+			}
+		}
+		else
+		{
+			if (GetCurrentTarget() == Target)
+			{
+				// Save location where vision was lost
+				BB->SetValueAsVector(LastSeenLocationName, Target->GetActorLocation());
+				SetCurrentTarget(nullptr);
+
+				// Clear Target and set bHasSeenPlayer to false
+				BB->SetValueAsBool(HasSeenPlayerName, false);
 			}
 		}
 	}
-	else
+	else if (Stimulus.Type == UAISense::GetSenseID<UAISense_Hearing>())
 	{
-		if (GetCurrentTarget() == Target)
+		if (Stimulus.WasSuccessfullySensed())
 		{
-			// Save location where vision was lost
-			BB->SetValueAsVector(LastSeenLocationName, Target->GetActorLocation());
-			SetCurrentTarget(nullptr);
-
-			// Clear Target and set bHasSeenPlayer to false
-			BB->SetValueAsBool(HasSeenPlayerKeyName, false);
+			BB->SetValueAsVector(HeardLocationName, Stimulus.StimulusLocation);
+			BB->SetValueAsBool(HasHeardSoundName, true);
+		}
+		else
+		{
+			BB->SetValueAsBool(HasHeardSoundName, false);
 		}
 	}
 }
@@ -115,7 +135,7 @@ void ATHNAIController::TargetForgotten(AActor* ForgottenTarget)
 	if (GetCurrentTarget() == ForgottenTarget)
 	{
 		SetCurrentTarget(nullptr);
-		BB->SetValueAsBool(HasSeenPlayerKeyName, false);
+		BB->SetValueAsBool(HasSeenPlayerName, false);
 	}
 }
 

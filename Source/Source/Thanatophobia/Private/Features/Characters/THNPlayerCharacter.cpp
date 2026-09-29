@@ -338,7 +338,7 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 			}
 		}
 
-		
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 2000.0f);
 		//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
 
 	}

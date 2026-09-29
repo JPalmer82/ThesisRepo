@@ -19,7 +19,7 @@ public:
 
 	ATHNAIController();
 
-	class UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+	FORCEINLINE class UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 
 	virtual void BeginPlay() override;
 
@@ -34,16 +34,26 @@ private:
 	FName LastSeenLocationName = "LastSeenLocation";
 
 	UPROPERTY(EditDefaultsOnly)
-	FName HasSeenPlayerKeyName = "bHasSeenPlayer";
+	FName HasSeenPlayerName = "bHasSeenPlayer";
+
+	UPROPERTY(EditDefaultsOnly)
+	FName HeardLocationName = "HeardSoundLocation";
+
+	UPROPERTY(EditDefaultsOnly)
+	FName HasHeardSoundName = "bHasHeardSound";
 
 	UPROPERTY(VisibleDefaultsOnly)
 	class UAIPerceptionComponent* AIPerceptionComponent;
 
-	UPROPERTY(VisibleDefaultsOnly)
+protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UAISenseConfig_Sight* SightConfig;
 
-	UPROPERTY(VisibleDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UAISenseConfig_Hearing* HearingConfig;
+
+private:
 
 	UFUNCTION()
 	void TargetPerceptionUpdated(AActor* Target, FAIStimulus Stimulus);
