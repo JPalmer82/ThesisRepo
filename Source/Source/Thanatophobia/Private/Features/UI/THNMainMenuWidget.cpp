@@ -63,7 +63,7 @@ void UTHNMainMenuWidget::OnSlotPressed(UTHNMainMenuSlotWidget* MainMenuSlot)
 			}
 		}
 		//Change the FName to whatever level will be the actual game level later
-		UGameplayStatics::OpenLevel(GetWorld(), FName("ProgrammingZoo"));
+		UGameplayStatics::OpenLevel(GetWorld(), FName("MainLevel"));
 	}
 	else if (MainMenuSlot == QuitSlot)
 	{
