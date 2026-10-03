@@ -45,7 +45,9 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->bUsePawnControlRotation = true;
-	CameraComponent->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("CameraSocket"));
+	CameraComponent->SetupAttachment(GetRootComponent());
+	FAttachmentTransformRules AttachRule = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, false);
+	CameraComponent->AttachToComponent(WorldSpaceSkeletalMeshComponent, AttachRule, TEXT("CameraSocket"));
 
 	ReloadLookPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReloadCameraLookPosition")); //No longer needed
 	ReloadLookPosition->SetupAttachment(GetRootComponent());
@@ -167,15 +169,15 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(SprintInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleSprintInputEnd);
 		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleInteractInput);
 		
-		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleAimStartInput);
-		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleAimEndInput);
-		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleAimEndInput);
-		
-		EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleShootInput);
-
-		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleProbeInputStart);
-		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
-		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
+		// EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleAimStartInput);
+		// EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleAimEndInput);
+		// EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleAimEndInput);
+		//
+		// EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleShootInput);
+		//
+		// EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleProbeInputStart);
+		// EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
+		// EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
 
 		//Pause Context
 		EnhancedInputComponent->BindAction(PauseInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::TogglePause);
