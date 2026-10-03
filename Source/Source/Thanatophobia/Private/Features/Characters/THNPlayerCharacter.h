@@ -9,6 +9,8 @@
 #include "Perception/AISense_Sight.h"
 #include "THNPlayerCharacter.generated.h"
 
+class ATHNRevolver;
+class UTHNRevolverComponent;
 enum class EGameState;
 class UTHNGameInstance;
 class UInputAction;
@@ -42,19 +44,19 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void RotateCylinderCounterClockwise();
-
+	
 	UTHNAnimInstance* GetWorldSpaceAnimInstance() const {return WorldSpaceAnimInstance;}
 	UTHNAnimInstance* GetBaseAnimInstance() const {return BaseMeshAnimInstance;}
 
 	void StopAllMontages();
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Rendering")
+	USkeletalMeshComponent* WorldSpaceSkeletalMeshComponent;
 private:
 	UFUNCTION()
 	void OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState);
 	UTHNGameInstance* GameInstance;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Rendering")
-	USkeletalMeshComponent* WorldSpaceSkeletalMeshComponent;
-
 	UPROPERTY(EditDefaultsOnly, Category="Movement")
 	float MaxSprintSpeed = 800;
 	float MaxWalkSpeed = 600;
@@ -171,13 +173,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Probe")
 	UStaticMeshComponent* RestProbePosition;
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* RevolverComponent;
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AActor> RevolverBaseClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UChildActorComponent> Revolver;
+	
 
 	UPROPERTY(EditAnywhere, Category="Revolver")
 	USceneComponent* RevolverBasePosition;
-
-
+	
 	UPROPERTY(EditAnywhere, Category = "Probe")
 	bool bIsProbeEquipped;
 

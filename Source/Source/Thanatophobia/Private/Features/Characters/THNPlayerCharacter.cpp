@@ -20,6 +20,7 @@
 #include "Core/THNGameInstance.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "Features/NPCs/THNPossessableCharacter.h"
+#include "Features/Props/THNRevolver.h"
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -45,9 +46,7 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->bUsePawnControlRotation = true;
-	CameraComponent->SetupAttachment(GetRootComponent());
-	FAttachmentTransformRules AttachRule = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, false);
-	CameraComponent->AttachToComponent(WorldSpaceSkeletalMeshComponent, AttachRule, TEXT("CameraSocket"));
+	CameraComponent->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("CameraSocket"));
 
 	ReloadLookPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReloadCameraLookPosition")); //No longer needed
 	ReloadLookPosition->SetupAttachment(GetRootComponent());
@@ -57,9 +56,10 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 
 	RevolverBasePosition = CreateDefaultSubobject<USceneComponent>(TEXT("RevolverBasePosition")); //No longer needed
 	RevolverBasePosition->SetupAttachment(CameraComponent);
-
-	RevolverComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver")); //No longer needed
-	RevolverComponent->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("GunHoldPosition"));
+	
+	Revolver = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver"));
+	Revolver->SetupAttachment(WorldSpaceSkeletalMeshComponent);
+	Revolver->SetChildActorClass(RevolverBaseClass);
 
 	ProbePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProbePoint"));
 	ProbePoint->SetupAttachment(CameraComponent);
@@ -183,11 +183,11 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(PauseInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::TogglePause);
 
 		//Reload Context
-		EnhancedInputComponent->BindAction(StartReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadStartInput);
-		EnhancedInputComponent->BindAction(StopReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadEndInput);
-		EnhancedInputComponent->BindAction(LoadBulletInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleLoadBulletInput);
-		EnhancedInputComponent->BindAction(CycleCylinderLeftInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleCycleCylinderLeftInput);
-		EnhancedInputComponent->BindAction(CycleCylinderRightInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleCycleCylinderRightInput);
+		// EnhancedInputComponent->BindAction(StartReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadStartInput);
+		// EnhancedInputComponent->BindAction(StopReloadInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleReloadEndInput);
+		// EnhancedInputComponent->BindAction(LoadBulletInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleLoadBulletInput);
+		// EnhancedInputComponent->BindAction(CycleCylinderLeftInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleCycleCylinderLeftInput);
+		// EnhancedInputComponent->BindAction(CycleCylinderRightInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleCycleCylinderRightInput);
 
 		//Incubator Puzzle
 		EnhancedInputComponent->BindAction(ChangeColorRedInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleChangeColorRedInput);
