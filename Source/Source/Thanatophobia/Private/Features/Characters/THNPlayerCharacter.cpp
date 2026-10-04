@@ -58,7 +58,7 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 	RevolverBasePosition->SetupAttachment(CameraComponent);
 	
 	Revolver = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver"));
-	Revolver->SetupAttachment(WorldSpaceSkeletalMeshComponent);
+	Revolver->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("HandSocket_R"));
 	Revolver->SetChildActorClass(RevolverBaseClass);
 
 	ProbePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProbePoint"));
