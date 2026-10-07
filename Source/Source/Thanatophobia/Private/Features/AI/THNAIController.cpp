@@ -49,6 +49,12 @@ void ATHNAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void ATHNAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
 	if (BehaviorTree)
 	{
 		RunBehaviorTree(BehaviorTree);

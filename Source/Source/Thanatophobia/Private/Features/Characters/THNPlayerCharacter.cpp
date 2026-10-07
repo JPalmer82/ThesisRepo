@@ -304,7 +304,7 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 
 			if (IsValid(HitActor))
 			{
-				//UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
 				//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
 
 				ATHNDroneCharacter* Drone = Cast<ATHNDroneCharacter>(Hit.GetActor());
@@ -328,7 +328,7 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 			
 						if (IsValid(PatientHitActor))
 						{
-							//UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
+							UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
 							//->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
 
 							ATHNPossessableCharacter* Possessed = Cast<ATHNPossessableCharacter>(Hit.GetActor());
