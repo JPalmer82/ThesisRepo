@@ -172,6 +172,7 @@ void ATHNDataPoisoningPuzzle::RefreshWordList()
 	
 	NumNegativeWordsSelected = 0;
 	NumPositiveWordsSelected = 0;
+	SelectedWords.Empty();
 }
 
 void ATHNDataPoisoningPuzzle::OnClick(AActor* InteractActor)

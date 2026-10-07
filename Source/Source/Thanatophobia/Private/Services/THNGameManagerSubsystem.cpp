@@ -23,9 +23,12 @@ void UTHNGameManagerSubsystem::RegisterIncubatorPuzzle(AActor* InIncubatorPuzzle
 
 void UTHNGameManagerSubsystem::OnIncubatorPuzzleComplete()
 {
-	CurrentGameFlags.IncubatorPuzzleComplete = true;
-	OnGameFlagsChanged.Broadcast();
-	UE_LOG(LogTemp, Warning, TEXT("OnDataPoisoningPuzzleComplete"));
+	if (!CurrentGameFlags.IncubatorPuzzleComplete)
+	{
+		CurrentGameFlags.IncubatorPuzzleComplete = true;
+		OnGameFlagsChanged.Broadcast();
+		UE_LOG(LogTemp, Warning, TEXT("OnDataPoisoningPuzzleComplete"));
+	}
 }
 
 void UTHNGameManagerSubsystem::RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InOfficePuzzle)
@@ -45,7 +48,10 @@ void UTHNGameManagerSubsystem::SwitchGameState(EGameState NewGameState)
 
 void UTHNGameManagerSubsystem::OnDataPoisoningPuzzleComplete()
 {
-	CurrentGameFlags.OfficePuzzleComplete = true;
-	OnGameFlagsChanged.Broadcast();
-	UE_LOG(LogTemp, Warning, TEXT("OnDataPoisoningPuzzleComplete"));
+	if (!CurrentGameFlags.OfficePuzzleComplete)
+	{
+		CurrentGameFlags.OfficePuzzleComplete = true;
+		OnGameFlagsChanged.Broadcast();
+		UE_LOG(LogTemp, Warning, TEXT("OnDataPoisoningPuzzleComplete"));
+	}
 }
