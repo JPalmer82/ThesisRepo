@@ -22,6 +22,7 @@ class USceneCaptureComponent2D;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClickStartDelegate, AActor*, InteractActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickEndDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDataPoisoningPuzzleCompleteDelegate);
 
 USTRUCT(Blueprintable)
 struct FDataPoisoningPuzzleSettings
@@ -60,6 +61,8 @@ public:
 	void HandlePuzzleSucceeded();
 	
 	int GetNumNegativeWords() const { return TotalNumNegativeWords; }
+	
+	FOnDataPoisoningPuzzleCompleteDelegate OnDataPoisoningPuzzleComplete;
 	
 	UPROPERTY()
 	TArray<UTHNDataPoisoningWord*> SelectedWords;

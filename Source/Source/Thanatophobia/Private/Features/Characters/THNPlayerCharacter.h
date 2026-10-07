@@ -9,6 +9,7 @@
 #include "Perception/AISense_Sight.h"
 #include "THNPlayerCharacter.generated.h"
 
+class UTHNGameManagerSubsystem;
 enum class EGameState;
 class UTHNGameInstance;
 class UInputAction;
@@ -50,7 +51,12 @@ public:
 private:
 	UFUNCTION()
 	void OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState);
+	
+	UPROPERTY()
 	UTHNGameInstance* GameInstance;
+	
+	UPROPERTY()
+	UTHNGameManagerSubsystem* GameManagerSubsystem;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Rendering")
 	USkeletalMeshComponent* WorldSpaceSkeletalMeshComponent;

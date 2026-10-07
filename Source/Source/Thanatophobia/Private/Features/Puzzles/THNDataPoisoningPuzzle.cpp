@@ -14,6 +14,7 @@
 #include "Features/Characters/THNPlayerController.h"
 #include "Features/UI/THNDataPoisoningWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Services/THNGameManagerSubsystem.h"
 #include "Utility/FSentimentTable.h"
 
 // Sets default values
@@ -49,6 +50,7 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->RegisterOfficePuzzle(this);
 	CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	SetActorTickEnabled(false);
 	
@@ -189,6 +191,6 @@ bool ATHNDataPoisoningPuzzle::CheckPuzzleCompletion()
 void ATHNDataPoisoningPuzzle::HandlePuzzleSucceeded()
 {
 	GEngine->AddOnScreenDebugMessage(0, 3, FColor::Red, TEXT("PUZZLE COMPLETE"));
-	
+	OnDataPoisoningPuzzleComplete.Broadcast();
 }
 

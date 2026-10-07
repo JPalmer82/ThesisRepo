@@ -29,6 +29,7 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
+#include "Services/THNGameManagerSubsystem.h"
 
 // Sets default values
 ATHNPlayerCharacter::ATHNPlayerCharacter()
@@ -128,7 +129,11 @@ void ATHNPlayerCharacter::BeginPlay()
 	if (UTHNGameInstance* THNGameInstance = Cast<UTHNGameInstance>(GetGameInstance()))
 	{
 		GameInstance = THNGameInstance;
-		GameInstance->OnGameStateChangedDelegate.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+		if (UTHNGameManagerSubsystem* GameManager = GameInstance->GetSubsystem<UTHNGameManagerSubsystem>())
+		{
+			GameManagerSubsystem = GameManager;
+			GameManagerSubsystem->OnGameStateChanged.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+		}
 	}
 	else
 	{
@@ -220,7 +225,7 @@ void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionVa
 	//TODO: Add IsCameraControllable bool in the Camera Service to check here
 	FVector2D LookInput = InputActionValue.Get<FVector2D>();
 	
-	if (GameInstance->GetCurrentGameState() == EGameState::Default)
+	if (GameManagerSubsystem->GetCurrentGameState() == EGameState::Default)
 	{
 		AddControllerYawInput(LookInput.X);
 		AddControllerPitchInput(LookInput.Y);	
@@ -425,8 +430,9 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 {
 	if (IsInteracting && CurrentInteractActor != nullptr)
 	{
-		if (GameInstance->TrySwitchGameState(EGameState::Default))
+		if (UTHNGameManagerSubsystem* GameManager = GameInstance->GetSubsystem<UTHNGameManagerSubsystem>())
 		{
+			GameManager->TrySwitchGameState(EGameState::Default);
 			Cast<ITHNInteractableInterface>(CurrentInteractActor)->OnInteractEnd(this);
 			IsInteracting = false;
 			return;	
@@ -449,8 +455,9 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 		
 		if (Cast<ITHNInteractableInterface>(Hit.GetActor()))
 		{
-			if (GameInstance->TrySwitchGameState(EGameState::Puzzle))
+			if (UTHNGameManagerSubsystem* GameManager = GameInstance->GetSubsystem<UTHNGameManagerSubsystem>())
 			{
+				GameManager->TrySwitchGameState(EGameState::Puzzle);
 				Cast<ITHNInteractableInterface>(Hit.GetActor())->OnInteract(this);
 				CurrentInteractActor = Hit.GetActor();
 				IsInteracting = true;
