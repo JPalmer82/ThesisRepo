@@ -5,6 +5,12 @@
 
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 
+void UTHNGameManagerSubsystem::SwitchGameState(EGameState NewGameState)
+{
+	CurrentGameState = NewGameState;
+	OnGameStateChanged.Broadcast(CurrentGameState, NewGameState);
+}
+
 bool UTHNGameManagerSubsystem::TrySwitchGameState(const EGameState& NewGameState)
 {
 	//Add checks here if needed and return result
@@ -21,16 +27,6 @@ void UTHNGameManagerSubsystem::RegisterIncubatorPuzzle(AActor* InIncubatorPuzzle
 	}
 }
 
-void UTHNGameManagerSubsystem::OnIncubatorPuzzleComplete()
-{
-	if (!CurrentGameFlags.IncubatorPuzzleComplete)
-	{
-		CurrentGameFlags.IncubatorPuzzleComplete = true;
-		OnGameFlagsChanged.Broadcast();
-		UE_LOG(LogTemp, Warning, TEXT("OnDataPoisoningPuzzleComplete"));
-	}
-}
-
 void UTHNGameManagerSubsystem::RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InOfficePuzzle)
 {
 	if (OfficePuzzle == nullptr)
@@ -40,10 +36,14 @@ void UTHNGameManagerSubsystem::RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InO
 	}
 }
 
-void UTHNGameManagerSubsystem::SwitchGameState(EGameState NewGameState)
+void UTHNGameManagerSubsystem::OnIncubatorPuzzleComplete()
 {
-	CurrentGameState = NewGameState;
-	OnGameStateChanged.Broadcast(CurrentGameState, NewGameState);
+	if (!CurrentGameFlags.IncubatorPuzzleComplete)
+	{
+		CurrentGameFlags.IncubatorPuzzleComplete = true;
+		OnGameFlagsChanged.Broadcast();
+		UE_LOG(LogTemp, Warning, TEXT("OnDataPoisoningPuzzleComplete"));
+	}
 }
 
 void UTHNGameManagerSubsystem::OnDataPoisoningPuzzleComplete()

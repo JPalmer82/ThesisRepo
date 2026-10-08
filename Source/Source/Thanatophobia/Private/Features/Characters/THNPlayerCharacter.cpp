@@ -333,6 +333,10 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 							//->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
 
 							ATHNPossessableCharacter* Possessed = Cast<ATHNPossessableCharacter>(Hit.GetActor());
+							
+							//Move this code to the Drone
+							//Hold a reference to the Drone's owner on the Drone
+							//Set anim value on the Drone
 							if (IsValid(Possessed))
 							{
 								ATHNAIController* HitController = Possessed->GetController<ATHNAIController>();

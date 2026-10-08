@@ -7,7 +7,7 @@
 #include "THNGameManagerSubsystem.generated.h"
 
 class ATHNDataPoisoningPuzzle;
-//Change to struct/class
+
 UENUM()
 enum class EGameState
 {
@@ -23,8 +23,10 @@ struct FGameFlags
 	
 	UPROPERTY(BlueprintReadOnly)
 	bool IncubatorPuzzleComplete = false;
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool OfficePuzzleComplete = false;
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool ExperimentationPuzzleComplete = false;
 };
