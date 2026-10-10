@@ -10,7 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTHNInteractBoxDelegate, AActor*, InitiatorActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTHNInteractEndBoxDelegate, AActor*, InitiatorActor);
 
-UCLASS()
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UTHNInteractionBoxComponent : public UBoxComponent, public ITHNInteractableInterface
 {
 	GENERATED_BODY()
