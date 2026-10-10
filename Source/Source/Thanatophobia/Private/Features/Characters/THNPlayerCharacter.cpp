@@ -438,38 +438,34 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 
 void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActionValue)
 {
-	if (IsInteracting && CurrentInteractActor != nullptr)
+	if (UTHNGameManagerSubsystem* GameManager = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>())
 	{
-		if (UTHNGameManagerSubsystem* GameManager = GameInstance->GetSubsystem<UTHNGameManagerSubsystem>())
+		if (GameManager->GetCurrentGameState() == EGameState::Puzzle && CurrentInteractComponent != nullptr)
 		{
-			GameManager->TrySwitchGameState(EGameState::Default);
-			Cast<ITHNInteractableInterface>(CurrentInteractActor)->OnInteractEnd(this);
+			Cast<ITHNInteractableInterface>(CurrentInteractComponent)->OnInteractEnd(this);
 			IsInteracting = false;
+			CurrentInteractComponent = nullptr;
 			return;	
 		}
-	}
 
-	FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
-	FVector LineTraceEndPoint = LineTraceStartPoint + CameraComponent->GetForwardVector() * LineTraceDistance;
+		FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
+		FVector LineTraceEndPoint = LineTraceStartPoint + CameraComponent->GetForwardVector() * LineTraceDistance;
 
-	FHitResult Hit;
-	FCollisionQueryParams TraceParams;
-	TraceParams.AddIgnoredActor(this);
-
-	bool bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
-	//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
+		FHitResult Hit;
+		FCollisionQueryParams TraceParams;
+		TraceParams.AddIgnoredActor(this);
 	
-	if (bIsHit && Hit.GetActor())
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetActor()->GetName());
-		
-		if (Cast<ITHNInteractableInterface>(Hit.GetActor()))
+		bool bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Interactable, TraceParams);
+		//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
+	
+		if (bIsHit && Hit.GetActor())
 		{
-			if (UTHNGameManagerSubsystem* GameManager = GameInstance->GetSubsystem<UTHNGameManagerSubsystem>())
+			UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetComponent()->GetName());
+		
+			if (Cast<ITHNInteractableInterface>(Hit.GetComponent()))
 			{
-				GameManager->TrySwitchGameState(EGameState::Puzzle);
-				Cast<ITHNInteractableInterface>(Hit.GetActor())->OnInteract(this);
-				CurrentInteractActor = Hit.GetActor();
+				Cast<ITHNInteractableInterface>(Hit.GetComponent())->OnInteract(this);
+				CurrentInteractComponent = Hit.GetComponent();
 				IsInteracting = true;
 			}
 		}
@@ -660,5 +656,5 @@ void ATHNPlayerCharacter::HandleClickInput(const FInputActionValue& InputActionV
 	//TODO: Store a reference to the puzzles in the game instance to retrieve easier
 	TArray<AActor*> DataPoisoningPuzzles;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATHNDataPoisoningPuzzle::StaticClass(), DataPoisoningPuzzles);
-	Cast<ATHNDataPoisoningPuzzle>(DataPoisoningPuzzles[0])->OnClickDelegate.Broadcast(CurrentInteractActor);
+	Cast<ATHNDataPoisoningPuzzle>(DataPoisoningPuzzles[0])->OnClickDelegate.Broadcast();
 }

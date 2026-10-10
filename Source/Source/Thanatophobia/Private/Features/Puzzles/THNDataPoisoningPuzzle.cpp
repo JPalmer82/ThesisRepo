@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Services/THNGameManagerSubsystem.h"
 #include "Utility/FSentimentTable.h"
+#include "Utility/THNInteractionBoxComponent.h"
 
 // Sets default values
 ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
@@ -31,8 +32,12 @@ ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
 	
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->SetupAttachment(SceneComponent);
-	InteractionCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionCollider"));
+	
+	InteractionCollider = CreateDefaultSubobject<UTHNInteractionBoxComponent>(TEXT("InteractionCollider"));
 	InteractionCollider->SetupAttachment(StaticMesh);
+	InteractionCollider->OnBoxInteract.AddUniqueDynamic(this, &ATHNDataPoisoningPuzzle::OnInteract);
+	InteractionCollider->OnBoxInteractEnd.AddUniqueDynamic(this, &ATHNDataPoisoningPuzzle::OnInteractEnd);
+	
 	
 	UISceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("UISceneCapture"));
 	UISceneCapture->SetupAttachment(SceneComponent);
@@ -110,19 +115,27 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 
 void ATHNDataPoisoningPuzzle::OnInteract(AActor* InitiatorActor)
 {
-	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45, GetComponentByClass<UTHNPuzzleInfoComponent>()->PuzzleInfo);
-	SetActorTickEnabled(true);
-	UISceneCapture->SetVisibility(true);
+	if (UTHNGameManagerSubsystem* GameManager = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>())
+	{
+		GameManager->TrySwitchGameState(EGameState::Puzzle);
+		ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		CameraSubsystem->LookAtTargetWithRadius(PlayerController, this, 45, GetComponentByClass<UTHNPuzzleInfoComponent>()->PuzzleInfo);
+		SetActorTickEnabled(true);
+		UISceneCapture->SetVisibility(true);
+	}
 }
 
 void ATHNDataPoisoningPuzzle::OnInteractEnd(AActor* InitiatorActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Finished looking at target"));
-	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	CameraSubsystem->ReturnToDefaultCamera(PlayerController);
-	SetActorTickEnabled(false);
-	UISceneCapture->SetVisibility(false);
+	if (UTHNGameManagerSubsystem* GameManager = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>())
+	{
+		GameManager->TrySwitchGameState(EGameState::Default);
+		UE_LOG(LogTemp, Warning, TEXT("Finished looking at target"));
+		ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		CameraSubsystem->ReturnToDefaultCamera(PlayerController);
+		SetActorTickEnabled(false);
+		UISceneCapture->SetVisibility(false);
+	}
 }
 
 void ATHNDataPoisoningPuzzle::SelectWord(UTHNDataPoisoningWord* Word)
@@ -175,7 +188,7 @@ void ATHNDataPoisoningPuzzle::RefreshWordList()
 	SelectedWords.Empty();
 }
 
-void ATHNDataPoisoningPuzzle::OnClick(AActor* InteractActor)
+void ATHNDataPoisoningPuzzle::OnClick()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Current actor: %s"), *InteractActor->GetName());
 	WidgetInteractionComponent->PressPointerKey(EKeys::LeftMouseButton);

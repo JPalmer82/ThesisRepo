@@ -256,7 +256,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadWrite)
-	AActor* CurrentInteractActor;
+	UPrimitiveComponent* CurrentInteractComponent;
 	bool IsInteracting = false;
 
 public:	

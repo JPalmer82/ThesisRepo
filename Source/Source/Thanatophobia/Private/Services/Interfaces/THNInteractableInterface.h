@@ -23,5 +23,5 @@ class ITHNInteractableInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void OnInteract(AActor* InitiatorActor) = 0;
-	virtual void OnInteractEnd(AActor* InitiatorActor) = 0;
+	virtual void OnInteractEnd(AActor* InitiatorActor) {}
 };
