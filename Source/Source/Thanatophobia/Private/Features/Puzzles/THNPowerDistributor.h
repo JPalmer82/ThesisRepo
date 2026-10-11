@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "THNPowerDistributor.generated.h"
 
+class UTHNPowerManagerSubsystem;
+class ATHNPowerCell;
 class UTHNInteractionBoxComponent;
 class UBoxComponent;
 
@@ -30,6 +32,21 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 	
+	UPROPERTY()
+	TObjectPtr<UTHNPowerManagerSubsystem> PowerManagerSubsystem;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<ATHNPowerCell>> HeldPowerCells;
+	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
-	TObjectPtr<UTHNInteractionBoxComponent> InteractionBoxComponent;
+	TArray<TObjectPtr<UTHNInteractionBoxComponent>> InteractionBoxes;
+	
+	UFUNCTION()
+	void OnOfficeInteract(AActor* InitiatorActor);
+	
+	UFUNCTION()
+	void OnExperimentationInteract(AActor* InitiatorActor);
+	
+	UFUNCTION()
+	void OnRnDInteract(AActor* InitiatorActor);
 };
