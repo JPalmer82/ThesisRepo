@@ -5,9 +5,14 @@
 
 UTHNPowerManagerSubsystem::UTHNPowerManagerSubsystem()
 {
+	
 	for (int i = 0; i < EPoweredRooms::RoomCount; i++)
 	{
 		RoomStates.Add(false);
+		if (i == EPoweredRooms::ResearchAndDevelopment)
+		{
+			RoomStates[i] = true;
+		}
 	}
 }
 
@@ -17,7 +22,6 @@ void UTHNPowerManagerSubsystem::RegisterPowerManager(TObjectPtr<ATHNPowerDistrib
 		return;
 	
 	PowerDistributor = PowerDistributorToRegister;
-	TryAddPowerCell();
 }
 
 void UTHNPowerManagerSubsystem::HandlePowerSlotUpdated(TObjectPtr<ATHNPowerDistributor> Activator, EPoweredRooms RoomToHandle)

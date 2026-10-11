@@ -16,6 +16,9 @@ class ATHNPoweredDoor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATHNPoweredDoor();
+	
+	UPROPERTY(EditAnywhere, Category=DoorSettings)
+	bool ShouldStartOpen = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,7 +31,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = true))
 	TObjectPtr<UStaticMeshComponent> Mesh;
 	
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true, ToolTip="The room that this door will open when powered"))
+	UPROPERTY(EditAnywhere, Category=DoorSettings, meta=(AllowPrivateAccess=true, ToolTip="The room that this door will open when powered"))
 	TEnumAsByte<EPoweredRooms> ConnectedRoom;
 	
 	UFUNCTION()

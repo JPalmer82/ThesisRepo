@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "THNPowerCell.generated.h"
 
+class UTHNPowerManagerSubsystem;
+class UTHNInteractionBoxComponent;
+
 UCLASS()
 class ATHNPowerCell : public AActor
 {
@@ -19,8 +22,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+	UPROPERTY()
+	TObjectPtr<USceneComponent> Root;
+	
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStaticMeshComponent> StaticMesh;
 
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UTHNInteractionBoxComponent> InteractionBox;
+	
+	UFUNCTION()
+	void OnInteract(AActor* InitiatorActor);
+	
+	UPROPERTY()
+	TObjectPtr<UTHNPowerManagerSubsystem> PowerManagerSubsystem;
 };

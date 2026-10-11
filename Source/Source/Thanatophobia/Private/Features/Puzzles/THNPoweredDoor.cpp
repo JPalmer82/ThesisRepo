@@ -23,6 +23,9 @@ void ATHNPoweredDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (ShouldStartOpen)
+		OpenDoor();
+	
 	if (UTHNPowerManagerSubsystem* PowerManager = GetGameInstance()->GetSubsystem<UTHNPowerManagerSubsystem>())
 	{
 		switch(ConnectedRoom)
