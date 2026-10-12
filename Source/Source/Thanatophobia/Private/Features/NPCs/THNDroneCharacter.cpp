@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Features/AI/THNAIController.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
+
+#include "Features/NPCs/THNPossessableActorComponent.h"
 #include "Features/NPCs/THNDroneCharacter.h"
 
 // Sets default values
@@ -32,3 +36,14 @@ void ATHNDroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 }
 
+void ATHNDroneCharacter::DeactivateParent()
+{
+	ATHNAIController* HitController = PossessedOwner->GetController<ATHNAIController>();
+	if (IsValid(HitController))
+	{
+		HitController->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
+
+	}
+
+	PossessedOwner->GetComponentByClass<UTHNPossessableActorComponent>()->ClearPossessionPositions();
+}

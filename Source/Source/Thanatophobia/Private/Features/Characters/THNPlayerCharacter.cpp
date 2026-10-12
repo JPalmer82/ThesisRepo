@@ -147,6 +147,32 @@ void ATHNPlayerCharacter::BeginPlay()
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 	CameraSubsystem->OnPlayerInitialized.Execute(CamComponent);
+
+	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!IsValid(PauseMenuWidget))
+	{
+		PauseMenuWidget = CreateWidget<UTHNPauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
+	}
+
+	if (IsValid(PauseMenuWidget) && !PauseMenuWidget->IsInViewport())
+	{
+		PauseMenuWidget->AddToViewport();
+	}
+
+	if (IsValid(PauseMenuWidget))
+	{
+		//Unpauses game
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+		//resets input
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->bShowMouseCursor = false;
+
+		//removes pause menu widget from screen
+		PauseMenuWidget->RemoveFromParent();
+	}
 }
 
 // Called every frame
@@ -321,34 +347,14 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 						HitProbeAnimInstance->IsDead = true;
 						DroneParent->GetMovementComponent()->StopActiveMovement();
 					}
-					Hit.GetActor()->Destroy();
-					bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
-					if (bIsHit)
-					{
-						AActor* PatientHitActor = Hit.GetActor();
-			
-						if (IsValid(PatientHitActor))
-						{
-							//UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
-							//->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
-
-							ATHNPossessableCharacter* Possessed = Cast<ATHNPossessableCharacter>(Hit.GetActor());
-							
-							//Move this code to the Drone
-							//Hold a reference to the Drone's owner on the Drone
-							//Set anim value on the Drone
-							if (IsValid(Possessed))
-							{
-								ATHNAIController* HitController = Possessed->GetController<ATHNAIController>();
-								HitController->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
-								UTHNPossessableActorComponent* PSC = Possessed->GetComponentByClass<UTHNPossessableActorComponent>();
-								if (IsValid(PSC))
-								{
-									PSC->ClearPossessionPositions();
-								}
-							}
-						}
-					}
+					Drone->DeactivateParent();
+					//bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
+					//if (bIsHit)
+					//{
+					//		Move this code to the Drone
+					//		Hold a reference to the Drone's owner on the Drone
+					//		Set anim value on the Drone
+					//}
 				}
 			}
 		}
@@ -492,6 +498,7 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 			PauseMenuWidget = CreateWidget<UTHNPauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
 		}
 		
+		//Adds Pause Menu Widget to viewport
 		if (IsValid(PauseMenuWidget) && !PauseMenuWidget->IsInViewport())
 		{
 			PauseMenuWidget->AddToViewport();

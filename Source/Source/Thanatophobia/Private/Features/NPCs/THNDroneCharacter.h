@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Features/NPCs/THNPossessableCharacter.h"
 #include "THNDroneCharacter.generated.h"
 
 UCLASS()
@@ -26,4 +27,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner")
+	ATHNPossessableCharacter* PossessedOwner;
+
+	UFUNCTION()
+	void DeactivateParent();
 };

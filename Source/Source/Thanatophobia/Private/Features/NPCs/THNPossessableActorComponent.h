@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Features/NPCs/THNDroneCharacter.h"
 #include "THNPossessableActorComponent.generated.h"
 
 class UTHNAnimInstance;
@@ -58,7 +59,7 @@ private:
 
 	///<summary> Gets all sockets matching PossessionSocketName and caches them </summary>
 	void InitializePossessionSockets();
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> DebugDroneBlueprint;
 
