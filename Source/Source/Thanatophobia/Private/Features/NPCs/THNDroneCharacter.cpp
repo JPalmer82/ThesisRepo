@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Features/NPCs/THNDroneCharacter.h"
 #include "Features/AI/THNAIController.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 
 #include "Features/NPCs/THNPossessableActorComponent.h"
-#include "Features/NPCs/THNDroneCharacter.h"
 
 // Sets default values
 ATHNDroneCharacter::ATHNDroneCharacter()
