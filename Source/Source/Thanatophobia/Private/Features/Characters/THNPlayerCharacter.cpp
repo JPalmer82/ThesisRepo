@@ -172,9 +172,9 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleAimStartInput);
 		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleAimEndInput);
 		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleAimEndInput);
-		//
-		// EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleShootInput);
-		//
+		
+		EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleShootInput);
+		
 		// EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleProbeInputStart);
 		// EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
 		// EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
