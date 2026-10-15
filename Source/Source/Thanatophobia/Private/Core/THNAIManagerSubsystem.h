@@ -22,9 +22,16 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
+protected:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Character")
 	ATHNPlayerCharacter* PlayerCharacter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Enemies")
 	TArray<TObjectPtr<ATHNPossessableCharacter>> AIEnemies;
+
+private:
+
+	UFUNCTION()
+	void ActivateClosestEnemy();
 };
