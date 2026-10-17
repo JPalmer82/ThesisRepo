@@ -69,6 +69,9 @@ private:
 
 	UPROPERTY()
 	UTHNAnimInstance* BaseMeshAnimInstance;
+	
+	UPROPERTY()
+	TObjectPtr<UAnimInstance> RevolverAnimInstance;
 
 	UPROPERTY(EditDefaultsOnly)
 	UAIPerceptionStimuliSourceComponent* StimuliSource;
@@ -191,6 +194,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* ProbeMontage;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* RevolverReloadMontage;
 
 	/*****************************************************/
 	/*                      Shooting                     */
