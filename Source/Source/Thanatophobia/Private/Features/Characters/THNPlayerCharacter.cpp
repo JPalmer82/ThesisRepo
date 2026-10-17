@@ -533,7 +533,7 @@ void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputAc
 		
 		BaseMeshAnimInstance->Montage_JumpToSection("Load", ReloadMontage);
 		WorldSpaceAnimInstance->Montage_JumpToSection("Load", ReloadMontage);
-		RevolverAnimInstance->Montage_JumpToSection("Load", RevolverReloadMontage);
+		//RevolverAnimInstance->Montage_JumpToSection("Load", RevolverReloadMontage);
 	}
 	else
 	{
@@ -577,7 +577,7 @@ void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue&
 	
 	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
 	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
-	RevolverAnimInstance->Montage_JumpToSection("Cycle_R", RevolverReloadMontage);
+	//RevolverAnimInstance->Montage_JumpToSection("Cycle_R", RevolverReloadMontage);
 }
 
 void ATHNPlayerCharacter::HandleChangeColorRedInput(const FInputActionValue& InputActionValue)
