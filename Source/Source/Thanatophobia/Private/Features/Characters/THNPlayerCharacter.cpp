@@ -21,6 +21,7 @@
 #include "Core/THNGameInstance.h"
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "Features/NPCs/THNPossessableCharacter.h"
+#include "Features/Props/THNRevolver.h"
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -57,9 +58,10 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 
 	RevolverBasePosition = CreateDefaultSubobject<USceneComponent>(TEXT("RevolverBasePosition")); //No longer needed
 	RevolverBasePosition->SetupAttachment(CameraComponent);
-
-	RevolverComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver")); //No longer needed
-	RevolverComponent->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("GunHoldPosition"));
+	
+	Revolver = CreateDefaultSubobject<UChildActorComponent>(TEXT("Revolver"));
+	Revolver->SetupAttachment(WorldSpaceSkeletalMeshComponent, TEXT("HandSocket_R"));
+	Revolver->SetChildActorClass(RevolverBaseClass);
 
 	ProbePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProbePoint"));
 	ProbePoint->SetupAttachment(CameraComponent);
@@ -143,6 +145,7 @@ void ATHNPlayerCharacter::BeginPlay()
 	
 	WorldSpaceAnimInstance = Cast<UTHNAnimInstance>(WorldSpaceSkeletalMeshComponent->GetAnimInstance());
 	BaseMeshAnimInstance = Cast<UTHNAnimInstance>(GetMesh()->GetAnimInstance());
+	RevolverAnimInstance = Cast<ATHNRevolver>(Revolver->GetChildActor())->SkeletalMeshComponent->GetAnimInstance();
 	
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
@@ -204,7 +207,7 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(AimInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleAimEndInput);
 		
 		EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleShootInput);
-
+		
 		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleProbeInputStart);
 		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Completed, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
 		EnhancedInputComponent->BindAction(EquipTerminalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandleProbeInputEnd);
@@ -391,8 +394,8 @@ void ATHNPlayerCharacter::HandleProbeInputStart(const FInputActionValue& InputAc
 		FAttachmentTransformRules AttachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 		Probe->AttachToComponent(ProbePoint, AttachRules);
 
-		BaseMeshAnimInstance->Montage_Play(ProbeMontage);
-		WorldSpaceAnimInstance->Montage_Play(ProbeMontage);
+		//BaseMeshAnimInstance->Montage_Play(ProbeMontage);
+		//WorldSpaceAnimInstance->Montage_Play(ProbeMontage);
 	}
 }
 
@@ -405,41 +408,25 @@ void ATHNPlayerCharacter::HandleProbeInputEnd(const FInputActionValue& InputActi
 		FAttachmentTransformRules AttachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 		Probe->AttachToComponent(RestProbePosition, AttachRules);
 
-		BaseMeshAnimInstance->Montage_Stop(.3, ProbeMontage);
-		WorldSpaceAnimInstance->Montage_Stop(.3, ProbeMontage);
+		//BaseMeshAnimInstance->Montage_Stop(.3, ProbeMontage);
+		//WorldSpaceAnimInstance->Montage_Stop(.3, ProbeMontage);
 	}
 }
 
 void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputActionValue)
 {
-	//You need to disable pawn control rotation here in order to move the camera for the reload
-	//This will also be changed once we use animations for the reload
-	CameraComponent->bUsePawnControlRotation = false;
-	FRotator InitialCameraPosition = CameraComponent->GetRelativeRotation();
-	CachedReloadPosition = InitialCameraPosition;
 	SwitchToMappingContext(ReloadInputMappingContext);
-	//UE_LOG(LogTemp, Warning, TEXT("Switching to reload"))
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Switching to reload"));
+
 	BaseMeshAnimInstance->IsReloading = true;
 	WorldSpaceAnimInstance->IsReloading = true;
 	BaseMeshAnimInstance->Montage_Play(ReloadMontage);
 	WorldSpaceAnimInstance->Montage_Play(ReloadMontage);
-	if (BaseMeshAnimInstance->IsReloading)
-	{
-		PopOutCylinder();
-	}
+	RevolverAnimInstance->Montage_Play(RevolverReloadMontage);
 
 	for (bool& i : BulletChambers)
 	{
 		i = false;
 	}
-
-	//FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(CameraComponent->GetComponentLocation(), ReloadLookPosition->GetComponentLocation());
-	//UE_LOG(LogTemp, Warning, TEXT("LookAtRotation equals : %s"), *(LookAtRotation.ToString()))
-	//CameraComponent->SetWorldRotation(LookAtRotation);
-
-	//FAttachmentTransformRules AttachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-	//RevolverComponent->AttachToComponent(RevolverReloadPosition, AttachRules);
 }
 
 void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActionValue)
@@ -536,26 +523,15 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 void ATHNPlayerCharacter::HandleReloadEndInput(const FInputActionValue& InputActionValue)
 {
 	SwitchToMappingContext(MovementInputMappingContext);
-	//UE_LOG(LogTemp, Warning, TEXT("Switching to base"))
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Switching to base"));
-	CameraComponent->SetWorldRotation(CachedReloadPosition);
-	
-	//Need to reset the pawn control rotation after reload finishes
-	CameraComponent->bUsePawnControlRotation = true;
+
 	BaseMeshAnimInstance->IsReloading = false;
 	WorldSpaceAnimInstance->IsReloading = false;
 
 	BaseMeshAnimInstance->Montage_Play(ReloadMontage);
 	WorldSpaceAnimInstance->Montage_Play(ReloadMontage);
-	BaseMeshAnimInstance->Montage_JumpToSection("ReloadEnd", ReloadMontage);
-	WorldSpaceAnimInstance->Montage_JumpToSection("ReloadEnd", ReloadMontage);
-
-	if (!BaseMeshAnimInstance->IsReloading)
-	{
-		PopOutCylinder();
-	}
-	//FAttachmentTransformRules AttachRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-	//RevolverComponent->AttachToComponent(RevolverBasePosition, AttachRules);
+	BaseMeshAnimInstance->Montage_JumpToSection("Close", ReloadMontage);
+	WorldSpaceAnimInstance->Montage_JumpToSection("Close", ReloadMontage);
+	RevolverAnimInstance->Montage_JumpToSection("Close", RevolverReloadMontage);
 }
 
 void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputActionValue)
@@ -574,6 +550,10 @@ void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputAc
 			CurrentBulletIndex = 0;
 		}
 		UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
+		
+		BaseMeshAnimInstance->Montage_JumpToSection("Load", ReloadMontage);
+		WorldSpaceAnimInstance->Montage_JumpToSection("Load", ReloadMontage);
+		//RevolverAnimInstance->Montage_JumpToSection("Load", RevolverReloadMontage);
 	}
 	else
 	{
@@ -594,7 +574,11 @@ void ATHNPlayerCharacter::HandleCycleCylinderLeftInput(const FInputActionValue& 
 		CurrentBulletIndex = 0;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
-	RotateCylinderCounterClockwise();
+	//RotateCylinderCounterClockwise();
+	
+	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_L", ReloadMontage);
+	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_L", ReloadMontage);
+	RevolverAnimInstance->Montage_JumpToSection("Cycle_L", RevolverReloadMontage);
 }
 
 void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue& InputActionValue)
@@ -609,7 +593,11 @@ void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue&
 		CurrentBulletIndex = 5;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
-	RotateCylinderClockwise();
+	//RotateCylinderClockwise();
+	
+	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
+	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
+	RevolverAnimInstance->Montage_JumpToSection("Cycle_R", RevolverReloadMontage);
 }
 
 void ATHNPlayerCharacter::HandleChangeColorRedInput(const FInputActionValue& InputActionValue)
