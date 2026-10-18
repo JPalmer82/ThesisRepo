@@ -577,7 +577,7 @@ void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue&
 	
 	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
 	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
-	//RevolverAnimInstance->Montage_JumpToSection("Cycle_R", RevolverReloadMontage);
+	RevolverAnimInstance->Montage_JumpToSection("Cycle_R", RevolverReloadMontage);
 }
 
 void ATHNPlayerCharacter::HandleChangeColorRedInput(const FInputActionValue& InputActionValue)
