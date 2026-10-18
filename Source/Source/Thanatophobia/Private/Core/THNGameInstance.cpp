@@ -12,16 +12,3 @@ void UTHNGameInstance::Shutdown()
 {
 	Super::Shutdown();
 }
-
-bool UTHNGameInstance::TrySwitchGameState(const EGameState& NewGameState)
-{
-	//Add checks here if needed and return result
-	SwitchGameState(NewGameState);
-	return true;
-}
-
-void UTHNGameInstance::SwitchGameState(EGameState NewGameState)
-{
-	OnGameStateChangedDelegate.Broadcast(CurrentGameState, NewGameState);
-	CurrentGameState = NewGameState;
-}

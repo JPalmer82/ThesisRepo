@@ -2,6 +2,7 @@
 #include "THNPossessableCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Features/AI/THNAIController.h"
+#include "Features/NPCs/THNDroneCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Features/Characters/Animation/THNAnimInstance.h"
 
@@ -23,7 +24,7 @@ void UTHNPossessableActorComponent::AttachDroneToSocket()
 
 	for (TObjectPtr<USkeletalMeshSocket> Socket : ActivePossessionSockets)
 	{
-		AActor* NewDrone = GetWorld()->SpawnActor(DebugDroneBlueprint);
+		ATHNDroneCharacter* NewDrone = Cast<ATHNDroneCharacter>(GetWorld()->SpawnActor(DebugDroneBlueprint));
 		bDoesDroneExist = true;
 		ATHNPossessableCharacter* ThisEnemy = Cast<ATHNPossessableCharacter>(GetOwner());
 		ATHNAIController* EnemyAI = ThisEnemy->GetController<ATHNAIController>();
@@ -45,6 +46,7 @@ void UTHNPossessableActorComponent::AttachDroneToSocket()
 		NewDrone->AttachToComponent(GetOwner()->GetComponentByClass<USkeletalMeshComponent>(), AttachmentRules, SocketName);
 		
 		DebugDrones.Add(NewDrone);
+		NewDrone->PossessedOwner = ThisEnemy;
 	}
 }
 

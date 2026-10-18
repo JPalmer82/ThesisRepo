@@ -5,3 +5,4 @@
 #include "CoreMinimal.h"
 
 #define ECC_Drone ECC_GameTraceChannel1
+#define ECC_Interactable ECC_GameTraceChannel2

@@ -8,6 +8,7 @@
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "THNDataPoisoningPuzzle.generated.h"
 
+class UTHNInteractionBoxComponent;
 class UTHNDataPoisoningWidget;
 struct FDataPoisoningWord;
 class UTHNPuzzleInfoComponent;
@@ -20,8 +21,9 @@ class UBoxComponent;
 class UWidgetComponent;
 class USceneCaptureComponent2D;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClickStartDelegate, AActor*, InteractActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickStartDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickEndDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDataPoisoningPuzzleCompleteDelegate);
 
 USTRUCT(Blueprintable)
 struct FDataPoisoningPuzzleSettings
@@ -35,7 +37,7 @@ struct FDataPoisoningPuzzleSettings
 };
 
 UCLASS()
-class ATHNDataPoisoningPuzzle : public AActor, public ITHNInteractableInterface
+class ATHNDataPoisoningPuzzle : public AActor
 {
 	GENERATED_BODY()
 	
@@ -51,8 +53,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void OnInteract(AActor* InitiatorActor) override;
-	virtual void OnInteractEnd(AActor* InitiatorActor) override;
+	UFUNCTION()
+	void OnInteract(AActor* InitiatorActor);
+	UFUNCTION()
+	void OnInteractEnd(AActor* InitiatorActor);
 	
 	void SelectWord(UTHNDataPoisoningWord* Word);
 	void RefreshWordList();
@@ -60,6 +64,8 @@ public:
 	void HandlePuzzleSucceeded();
 	
 	int GetNumNegativeWords() const { return TotalNumNegativeWords; }
+	
+	FOnDataPoisoningPuzzleCompleteDelegate OnDataPoisoningPuzzleComplete;
 	
 	UPROPERTY()
 	TArray<UTHNDataPoisoningWord*> SelectedWords;
@@ -85,7 +91,7 @@ public:
 	UStaticMeshComponent* StaticMesh;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UBoxComponent* InteractionCollider;
+	UTHNInteractionBoxComponent* InteractionCollider;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneCaptureComponent2D* UISceneCapture;
@@ -115,5 +121,5 @@ private:
 	int NumPositiveWordsSelected = 0;
 	
 	UFUNCTION()
-	void OnClick(AActor* InteractActor);
+	void OnClick();
 };

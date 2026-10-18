@@ -7,10 +7,11 @@
 #include "GameFramework/Pawn.h"
 #include "THNIncubator.generated.h"
 
+class UTHNInteractionBoxComponent;
 class UInputMappingContext;
 
 UCLASS()
-class ATHNIncubator : public APawn, public ITHNInteractableInterface
+class ATHNIncubator : public APawn
 {
 	GENERATED_BODY()
 
@@ -28,8 +29,12 @@ public:
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void OnInteract(AActor* InitiatorActor) override;
-	virtual void OnInteractEnd(AActor* InitiatorActor) override;
+	
+	UFUNCTION()
+	void OnInteract(AActor* InitiatorActor);
+	
+	UFUNCTION()
+	void OnInteractEnd(AActor* InitiatorActor);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeToIncubatorCamera(AActor* PlayerCharacter);
@@ -44,4 +49,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UInputMappingContext* DefaultMappingContext;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UTHNInteractionBoxComponent> InteractionBox;
+	
+	UPROPERTY()
+	TObjectPtr<USceneComponent> Root;
 };

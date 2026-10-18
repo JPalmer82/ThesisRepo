@@ -8,7 +8,7 @@ public class Thanatophobia : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "ThanatophobiaTools", "UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "ThanatophobiaTools", "UMG", "NavigationSystem" });
 
 		//PrivateDependencyModuleNames.AddRange(new string[] {  });
 

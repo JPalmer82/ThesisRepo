@@ -12,6 +12,7 @@ void UTHNDataPoisoningWord::UpdateWord()
 {
 	WordTextBlock->SetText(FText::FromString(BaseText));
 	WordButton->SetStyle(BaseButtonStyle);
+	IsClicked = false;
 }
 
 void UTHNDataPoisoningWord::NativeOnListItemObjectSet(UObject* ListItemObject)

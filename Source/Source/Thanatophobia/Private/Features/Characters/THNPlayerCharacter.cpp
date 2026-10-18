@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 #include "Features/NPCs/THNDroneCharacter.h"
+#include "Features/NPCs/THNPossessableActorComponent.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Features/UI/THNPauseMenuWidget.h"
@@ -30,6 +31,7 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
+#include "Services/THNGameManagerSubsystem.h"
 
 // Sets default values
 ATHNPlayerCharacter::ATHNPlayerCharacter()
@@ -130,7 +132,11 @@ void ATHNPlayerCharacter::BeginPlay()
 	if (UTHNGameInstance* THNGameInstance = Cast<UTHNGameInstance>(GetGameInstance()))
 	{
 		GameInstance = THNGameInstance;
-		GameInstance->OnGameStateChangedDelegate.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+		if (UTHNGameManagerSubsystem* GameManager = GameInstance->GetSubsystem<UTHNGameManagerSubsystem>())
+		{
+			GameManagerSubsystem = GameManager;
+			GameManagerSubsystem->OnGameStateChanged.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+		}
 	}
 	else
 	{
@@ -144,6 +150,32 @@ void ATHNPlayerCharacter::BeginPlay()
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 	CameraSubsystem->OnPlayerInitialized.Execute(CamComponent);
+
+	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!IsValid(PauseMenuWidget))
+	{
+		PauseMenuWidget = CreateWidget<UTHNPauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
+	}
+
+	if (IsValid(PauseMenuWidget) && !PauseMenuWidget->IsInViewport())
+	{
+		PauseMenuWidget->AddToViewport();
+	}
+
+	if (IsValid(PauseMenuWidget))
+	{
+		//Unpauses game
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+		//resets input
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->bShowMouseCursor = false;
+
+		//removes pause menu widget from screen
+		PauseMenuWidget->RemoveFromParent();
+	}
 }
 
 // Called every frame
@@ -223,7 +255,7 @@ void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionVa
 	//TODO: Add IsCameraControllable bool in the Camera Service to check here
 	FVector2D LookInput = InputActionValue.Get<FVector2D>();
 	
-	if (GameInstance->GetCurrentGameState() == EGameState::Default)
+	if (GameManagerSubsystem->GetCurrentGameState() == EGameState::Default)
 	{
 		AddControllerYawInput(LookInput.X);
 		AddControllerPitchInput(LookInput.Y);	
@@ -318,25 +350,14 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 						HitProbeAnimInstance->IsDead = true;
 						DroneParent->GetMovementComponent()->StopActiveMovement();
 					}
-					Hit.GetActor()->Destroy();
-					bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
-					if (bIsHit)
-					{
-						AActor* PatientHitActor = Hit.GetActor();
-			
-						if (IsValid(PatientHitActor))
-						{
-							//UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
-							//->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Hit: %s"), *Hit.GetActor()->GetName()));
-
-							ATHNPossessableCharacter* Possessed = Cast<ATHNPossessableCharacter>(Hit.GetActor());
-							if (IsValid(Possessed))
-							{
-								ATHNAIController* HitController = Possessed->GetController<ATHNAIController>();
-								HitController->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
-							}
-						}
-					}
+					Drone->DeactivateParent();
+					//bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
+					//if (bIsHit)
+					//{
+					//		Move this code to the Drone
+					//		Hold a reference to the Drone's owner on the Drone
+					//		Set anim value on the Drone
+					//}
 				}
 			}
 		}
@@ -410,36 +431,34 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 
 void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActionValue)
 {
-	if (IsInteracting && CurrentInteractActor != nullptr)
+	if (UTHNGameManagerSubsystem* GameManager = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>())
 	{
-		if (GameInstance->TrySwitchGameState(EGameState::Default))
+		if (GameManager->GetCurrentGameState() == EGameState::Puzzle && CurrentInteractComponent != nullptr)
 		{
-			Cast<ITHNInteractableInterface>(CurrentInteractActor)->OnInteractEnd(this);
+			Cast<ITHNInteractableInterface>(CurrentInteractComponent)->OnInteractEnd(this);
 			IsInteracting = false;
+			CurrentInteractComponent = nullptr;
 			return;	
 		}
-	}
 
-	FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
-	FVector LineTraceEndPoint = LineTraceStartPoint + CameraComponent->GetForwardVector() * LineTraceDistance;
+		FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
+		FVector LineTraceEndPoint = LineTraceStartPoint + CameraComponent->GetForwardVector() * LineTraceDistance;
 
-	FHitResult Hit;
-	FCollisionQueryParams TraceParams;
-	TraceParams.AddIgnoredActor(this);
-
-	bool bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
-	//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
+		FHitResult Hit;
+		FCollisionQueryParams TraceParams;
+		TraceParams.AddIgnoredActor(this);
 	
-	if (bIsHit && Hit.GetActor())
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetActor()->GetName());
-		
-		if (Cast<ITHNInteractableInterface>(Hit.GetActor()))
+		bool bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Interactable, TraceParams);
+		//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
+	
+		if (bIsHit && Hit.GetActor())
 		{
-			if (GameInstance->TrySwitchGameState(EGameState::Puzzle))
+			UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *Hit.GetComponent()->GetName());
+		
+			if (Cast<ITHNInteractableInterface>(Hit.GetComponent()))
 			{
-				Cast<ITHNInteractableInterface>(Hit.GetActor())->OnInteract(this);
-				CurrentInteractActor = Hit.GetActor();
+				Cast<ITHNInteractableInterface>(Hit.GetComponent())->OnInteract(this);
+				CurrentInteractComponent = Hit.GetComponent();
 				IsInteracting = true;
 			}
 		}
@@ -466,6 +485,7 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 			PauseMenuWidget = CreateWidget<UTHNPauseMenuWidget>(PlayerController, PauseMenuWidgetClass);
 		}
 		
+		//Adds Pause Menu Widget to viewport
 		if (IsValid(PauseMenuWidget) && !PauseMenuWidget->IsInViewport())
 		{
 			PauseMenuWidget->AddToViewport();
@@ -631,5 +651,5 @@ void ATHNPlayerCharacter::HandleClickInput(const FInputActionValue& InputActionV
 	//TODO: Store a reference to the puzzles in the game instance to retrieve easier
 	TArray<AActor*> DataPoisoningPuzzles;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATHNDataPoisoningPuzzle::StaticClass(), DataPoisoningPuzzles);
-	Cast<ATHNDataPoisoningPuzzle>(DataPoisoningPuzzles[0])->OnClickDelegate.Broadcast(CurrentInteractActor);
+	Cast<ATHNDataPoisoningPuzzle>(DataPoisoningPuzzles[0])->OnClickDelegate.Broadcast();
 }

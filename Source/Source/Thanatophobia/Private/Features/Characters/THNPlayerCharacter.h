@@ -11,6 +11,7 @@
 
 class ATHNRevolver;
 class UTHNRevolverComponent;
+class UTHNGameManagerSubsystem;
 enum class EGameState;
 class UTHNGameInstance;
 class UInputAction;
@@ -55,8 +56,13 @@ public:
 private:
 	UFUNCTION()
 	void OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState);
+	
+	UPROPERTY()
 	UTHNGameInstance* GameInstance;
 	
+	UPROPERTY()
+	UTHNGameManagerSubsystem* GameManagerSubsystem;
+
 	UPROPERTY(EditDefaultsOnly, Category="Movement")
 	float MaxSprintSpeed = 800;
 	float MaxWalkSpeed = 600;
@@ -261,7 +267,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadWrite)
-	AActor* CurrentInteractActor;
+	UPrimitiveComponent* CurrentInteractComponent;
 	bool IsInteracting = false;
 
 public:	
