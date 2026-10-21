@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "THNGameManagerSubsystem.generated.h"
 
+class ATHNPlayerCharacter;
 class ATHNDataPoisoningPuzzle;
 
 UENUM()
@@ -60,6 +61,8 @@ public:
 	void OnIncubatorPuzzleComplete();
 	
 	void RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InOfficePuzzle);
+	
+	void RegisterPlayerCharacter(TObjectPtr<ATHNPlayerCharacter> Player);
 	
 	//Add later when this puzzle is made
 	//void RegisterExperimentationPuzzle(ATHNExperimentationPuzzle* ExperimentationPuzzle);

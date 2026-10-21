@@ -23,6 +23,8 @@ class UTHNAnimInstance;
 struct FInputActionValue;
 class UTHNPauseMenuWidget;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRevolverFiredDelegate, TArray<bool>&, BulletState);
+
 UCLASS()
 class THANATOPHOBIA_API ATHNPlayerCharacter : public ACharacter
 {
@@ -59,6 +61,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	bool IsCycling = false;
+	
+	UPROPERTY(EditAnywhere)
+	FOnRevolverFiredDelegate OnRevolverFired;
 	
 private:
 	UFUNCTION()
@@ -221,7 +226,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Shooting")
 	int CurrentBulletIndex = 0;
 	
-	bool BulletChambers[6] = { true, true, true, true, true, true };
+	TArray<bool> BulletChambers = { true, true, true, true, true, true };
 
 	/*****************************************************/
 	/*                    Pause Menu                     */

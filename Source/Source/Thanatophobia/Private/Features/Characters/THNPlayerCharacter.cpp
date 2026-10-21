@@ -147,7 +147,7 @@ void ATHNPlayerCharacter::BeginPlay()
 	
 	WorldSpaceAnimInstance = Cast<UTHNAnimInstance>(WorldSpaceSkeletalMeshComponent->GetAnimInstance());
 	BaseMeshAnimInstance = Cast<UTHNAnimInstance>(GetMesh()->GetAnimInstance());
-	RevolverAnimInstance = Cast<ATHNRevolver>(Revolver->GetChildActor())->SkeletalMeshComponent->GetAnimInstance();
+	RevolverAnimInstance = Cast<ATHNRevolver>(Revolver->GetChildActor())->RevolverMesh->GetAnimInstance();
 	
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
@@ -373,7 +373,6 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 
 		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 2000.0f);
 		//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
-
 	}
 	else
 	{
@@ -381,15 +380,16 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 	}
 
 	BulletChambers[CurrentBulletIndex] = false;
-	CurrentBulletIndex++;
-	if (CurrentBulletIndex < 0)
-	{
-		CurrentBulletIndex = 5;
-	}
-	else if (CurrentBulletIndex > 5)
-	{
-		CurrentBulletIndex = 0;
-	}	
+	CurrentBulletIndex = (CurrentBulletIndex + 1) % 6;
+	OnRevolverFired.Broadcast(BulletChambers);
+	// if (CurrentBulletIndex < 0)
+	// {
+	// 	CurrentBulletIndex = 5;
+	// }
+	// else if (CurrentBulletIndex > 5)
+	// {
+	// 	CurrentBulletIndex = 0;
+	// }	
 	UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
 }
 
@@ -438,6 +438,8 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 	{
 		i = false;
 	}
+	
+	OnRevolverFired.Broadcast(BulletChambers);
 }
 
 void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActionValue)
@@ -573,6 +575,8 @@ void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputAc
 		UE_LOG(LogTemp, Warning, TEXT("Bullet Already In the Chamber!"))
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Bullet Already In the Chamber!"));
 	}
+	
+	OnRevolverFired.Broadcast(BulletChambers);
 }
 
 void ATHNPlayerCharacter::HandleCycleCylinderLeftInput(const FInputActionValue& InputActionValue)

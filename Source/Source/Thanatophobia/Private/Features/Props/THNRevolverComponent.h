@@ -13,5 +13,4 @@ UCLASS()
 class UTHNRevolverComponent : public UChildActorComponent
 {
 	GENERATED_BODY()
-	
 };

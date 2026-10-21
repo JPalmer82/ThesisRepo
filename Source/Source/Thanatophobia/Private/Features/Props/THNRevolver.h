@@ -11,14 +11,19 @@ class ATHNRevolver : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
 	ATHNRevolver();
-
+	
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	TArray<TObjectPtr<UStaticMeshComponent>> BulletMeshes;
+	
+public:	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
+	TObjectPtr<USkeletalMeshComponent> RevolverMesh;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	UFUNCTION()
+	void OnRevolverFired(TArray<bool>& BulletState);
 };
