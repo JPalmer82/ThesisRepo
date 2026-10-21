@@ -4,6 +4,8 @@
 #include "Features/NPCs/THNPossessableCharacter.h"
 #include "Features/Characters/Animation/THNAnimInstance.h"
 
+#include "Core/THNAIManagerSubsystem.h"
+
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
@@ -44,6 +46,13 @@ void ATHNPossessableCharacter::BeginPlay()
 	ProbeNPCAnimInstance->IsDead = false;
 
 	PerceptionStimulusComponent->RegisterWithPerceptionSystem();
+
+	UTHNAIManagerSubsystem* AIManager = GetGameInstance()->GetSubsystem<UTHNAIManagerSubsystem>();
+	if (IsValid(AIManager))
+	{
+		AIManager->AIEnemies.Add(this);
+		UE_LOG(LogTemp, Warning, TEXT("Added %s to the AI Manager List"), *this->GetName())
+	}
 }
 
 // Called every frame

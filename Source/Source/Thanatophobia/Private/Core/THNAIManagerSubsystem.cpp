@@ -19,26 +19,27 @@ void UTHNAIManagerSubsystem::Deinitialize()
 
 void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 {
-	float ClosestDist = 0;
+	float ClosestDist = MAX_FLT;
 	ATHNPossessableCharacter* ClosestEnemy = nullptr;
 
 	for (ATHNPossessableCharacter* Enemy : AIEnemies)
 	{
-		float PathLength = 0;
-		UNavigationPath* ResultPath = UNavigationSystemV1::FindPathToLocationSynchronously(Enemy, Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation());
-		if (IsValid(ResultPath))
+		UNavigationPath* ResultPath = UNavigationSystemV1::FindPathToLocationSynchronously(GetWorld(), Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation());
+		if (IsValid(ResultPath) && ResultPath->IsValid() && ResultPath->PathPoints.Num() > 0)
 		{
-			PathLength = ResultPath->GetPathLength();
+			float PathLength = ResultPath->GetPathLength();
+			UE_LOG(LogTemp, Error, TEXT("%s was %.2f away from player"), *Enemy->GetName(), PathLength)
+			if (PathLength < ClosestDist)
+			{
+				ClosestDist = PathLength;
+				ClosestEnemy = Enemy;
+				UE_LOG(LogTemp, Error, TEXT(">> New closest enemy found: %s with distance %.2f"), *Enemy->GetName(), PathLength)
+			}
 		}
 
-		if (ClosestDist <= PathLength)
-		{
-			ClosestDist = PathLength;
-			ClosestEnemy = Enemy;
-		}
 	}
 
-	if (IsValid(ClosestEnemy))
+	if (IsValid(ClosestEnemy) && ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->bDoesDroneExist == false)
 	{
 		ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->RandomizePossessionPosition();
 	}

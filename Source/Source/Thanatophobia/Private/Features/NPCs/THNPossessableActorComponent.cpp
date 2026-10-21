@@ -73,6 +73,16 @@ void UTHNPossessableActorComponent::RandomizePossessionPosition()
 void UTHNPossessableActorComponent::ClearPossessionPositions()
 {
 	ActivePossessionSockets.Empty();
+
+	ATHNPossessableCharacter* ThisEnemy = Cast<ATHNPossessableCharacter>(GetOwner());
+	ATHNAIController* EnemyAI = ThisEnemy->GetController<ATHNAIController>();
+	if (EnemyAI)
+	{
+		if (EnemyAI->GetBlackboardComponent())
+		{
+			EnemyAI->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
+		}
+	}
 	
 	for (AActor* Drone : DebugDrones)
 	{

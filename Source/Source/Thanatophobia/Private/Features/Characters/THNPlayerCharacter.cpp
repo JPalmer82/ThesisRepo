@@ -10,6 +10,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Features/UI/THNPauseMenuWidget.h"
 
+#include "Core/THNAIManagerSubsystem.h"
+
 #include "Features/AI/THNAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Camera/CameraComponent.h"
@@ -175,6 +177,13 @@ void ATHNPlayerCharacter::BeginPlay()
 
 		//removes pause menu widget from screen
 		PauseMenuWidget->RemoveFromParent();
+	}
+
+	UTHNAIManagerSubsystem* AIManager = GetGameInstance()->GetSubsystem<UTHNAIManagerSubsystem>();
+	if (IsValid(AIManager))
+	{
+		AIManager->PlayerCharacter = this;
+		UE_LOG(LogTemp, Warning, TEXT("Added %s to the AI Manager"), *this->GetName())
 	}
 }
 
