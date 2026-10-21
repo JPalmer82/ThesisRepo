@@ -60,6 +60,7 @@ void ATHNDataPoisoningPuzzle::BeginPlay()
 	SetActorTickEnabled(false);
 	
 	ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	//TODO: crash here
 	PlayerController->EnableInput(PlayerController);
 	PlayerController->bEnableClickEvents = true;
 	
