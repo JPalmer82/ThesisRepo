@@ -53,6 +53,9 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Rendering")
 	USkeletalMeshComponent* WorldSpaceSkeletalMeshComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int DeltaFlip = 1;
 private:
 	UFUNCTION()
 	void OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState);

@@ -424,6 +424,7 @@ void ATHNPlayerCharacter::HandleProbeInputEnd(const FInputActionValue& InputActi
 
 void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputActionValue)
 {
+	DeltaFlip = -1;
 	SwitchToMappingContext(ReloadInputMappingContext);
 
 	BaseMeshAnimInstance->IsReloading = true;
@@ -431,6 +432,7 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 	BaseMeshAnimInstance->Montage_Play(ReloadMontage);
 	WorldSpaceAnimInstance->Montage_Play(ReloadMontage);
 	RevolverAnimInstance->Montage_Play(RevolverReloadMontage);
+	
 
 	for (bool& i : BulletChambers)
 	{
@@ -531,10 +533,12 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 
 void ATHNPlayerCharacter::HandleReloadEndInput(const FInputActionValue& InputActionValue)
 {
+	DeltaFlip = -1;
 	SwitchToMappingContext(MovementInputMappingContext);
 
 	BaseMeshAnimInstance->IsReloading = false;
 	WorldSpaceAnimInstance->IsReloading = false;
+	
 
 	BaseMeshAnimInstance->Montage_Play(ReloadMontage);
 	WorldSpaceAnimInstance->Montage_Play(ReloadMontage);
@@ -585,6 +589,8 @@ void ATHNPlayerCharacter::HandleCycleCylinderLeftInput(const FInputActionValue& 
 	UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
 	//RotateCylinderCounterClockwise();
 	
+	DeltaFlip = -1;
+	
 	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_L", ReloadMontage);
 	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_L", ReloadMontage);
 	RevolverAnimInstance->Montage_JumpToSection("Cycle_L", RevolverReloadMontage);
@@ -603,6 +609,8 @@ void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue&
 	}
 	UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
 	//RotateCylinderClockwise();
+	
+	DeltaFlip = 1;
 	
 	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
 	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);
