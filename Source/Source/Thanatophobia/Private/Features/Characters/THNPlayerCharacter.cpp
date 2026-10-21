@@ -581,6 +581,9 @@ void ATHNPlayerCharacter::HandleCycleCylinderLeftInput(const FInputActionValue& 
 	//It's too easy to over and underscroll
 	//UE_LOG(LogTemp, Warning, TEXT("Cycling cylinder left"))
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Cycling cylinder left"));
+	if (IsCycling)
+		return;
+	
 	CurrentBulletIndex++;
 	if (CurrentBulletIndex == 6)
 	{
@@ -590,6 +593,7 @@ void ATHNPlayerCharacter::HandleCycleCylinderLeftInput(const FInputActionValue& 
 	//RotateCylinderCounterClockwise();
 	
 	DeltaFlip = -1;
+	IsCycling = true;
 	
 	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_L", ReloadMontage);
 	WorldSpaceAnimInstance->Montage_JumpToSection("Cycle_L", ReloadMontage);
@@ -602,6 +606,9 @@ void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue&
 	//It's too easy to over and underscroll
 	//UE_LOG(LogTemp, Warning, TEXT("Cycling cylinder right"))
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Cycling cylinder right"));
+	if (IsCycling)
+		return;
+	
 	CurrentBulletIndex--;
 	if (CurrentBulletIndex == -1)
 	{
@@ -610,6 +617,7 @@ void ATHNPlayerCharacter::HandleCycleCylinderRightInput(const FInputActionValue&
 	UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
 	//RotateCylinderClockwise();
 	
+	IsCycling = true;
 	DeltaFlip = 1;
 	
 	BaseMeshAnimInstance->Montage_JumpToSection("Cycle_R", ReloadMontage);

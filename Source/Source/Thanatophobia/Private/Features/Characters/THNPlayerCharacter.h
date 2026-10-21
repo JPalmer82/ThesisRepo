@@ -56,6 +56,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int DeltaFlip = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	bool IsCycling = false;
+	
 private:
 	UFUNCTION()
 	void OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState);
@@ -216,7 +220,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Shooting")
 	int CurrentBulletIndex = 0;
-
+	
 	bool BulletChambers[6] = { true, true, true, true, true, true };
 
 	/*****************************************************/
