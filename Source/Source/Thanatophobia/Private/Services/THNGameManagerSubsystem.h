@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "THNGameManagerSubsystem.generated.h"
 
+class ATHNExperimentationPuzzle;
 class ATHNPlayerCharacter;
 class ATHNDataPoisoningPuzzle;
 
@@ -65,7 +66,7 @@ public:
 	void RegisterPlayerCharacter(TObjectPtr<ATHNPlayerCharacter> Player);
 	
 	//Add later when this puzzle is made
-	//void RegisterExperimentationPuzzle(ATHNExperimentationPuzzle* ExperimentationPuzzle);
+	void RegisterExperimentationPuzzle(ATHNExperimentationPuzzle* InExperimentationPuzzle);
 	
 private:
 	EGameState CurrentGameState = EGameState::Default;
@@ -83,4 +84,7 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<ATHNDataPoisoningPuzzle> OfficePuzzle;
+	
+	UPROPERTY()
+	TObjectPtr<ATHNExperimentationPuzzle> ExperimentationPuzzle;
 };

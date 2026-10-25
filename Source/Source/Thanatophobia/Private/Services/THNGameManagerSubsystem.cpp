@@ -36,6 +36,14 @@ void UTHNGameManagerSubsystem::RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InO
 	}
 }
 
+void UTHNGameManagerSubsystem::RegisterExperimentationPuzzle(ATHNExperimentationPuzzle* InExperimentationPuzzle)
+{
+	if (ExperimentationPuzzle == nullptr)
+	{
+		ExperimentationPuzzle = InExperimentationPuzzle;
+	}
+}
+
 void UTHNGameManagerSubsystem::OnIncubatorPuzzleComplete()
 {
 	if (!CurrentGameFlags.IncubatorPuzzleComplete)
