@@ -83,6 +83,8 @@ void UTHNPossessableActorComponent::ClearPossessionPositions()
 			EnemyAI->GetBlackboardComponent()->SetValueAsBool("bIsPossessed", false);
 		}
 	}
+
+	bDoesDroneExist = false;
 	
 	for (AActor* Drone : DebugDrones)
 	{

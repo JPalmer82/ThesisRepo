@@ -20,7 +20,6 @@ void UTHNAIManagerSubsystem::Deinitialize()
 void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 {
 	float ClosestDist = MAX_FLT;
-	ATHNPossessableCharacter* ClosestEnemy = nullptr;
 
 	for (ATHNPossessableCharacter* Enemy : AIEnemies)
 	{
@@ -34,7 +33,7 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 				ClosestDist = PathLength;
 				ClosestEnemy = Enemy;
 			}
-			UE_LOG(LogTemp, Error, TEXT("%s had line of sight and was %.2f away from player"), *Enemy->GetName(), PathLength)
+			UE_LOG(LogTemp, Warning, TEXT("%s had line of sight and was %.2f away from player"), *Enemy->GetName(), PathLength)
 			continue;
 		}
 		else
@@ -64,13 +63,27 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 		}
 
 	}
-	if (IsValid(ClosestEnemy))
-	{
-		UE_LOG(LogTemp, Warning, TEXT(">> New closest enemy found: %s with distance %.2f"), *ClosestEnemy->GetName(), ClosestDist)
-	}
+
 
 	if (IsValid(ClosestEnemy) && ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->bDoesDroneExist == false)
 	{
+		UE_LOG(LogTemp, Error, TEXT("%s was valid"), *ClosestEnemy->GetName())
 		ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->RandomizePossessionPosition();
+
+		if (IsValid(LastActivated))
+		{
+			DeactivatePreviousEnemy();
+		}
+
+		LastActivated = ClosestEnemy;
+	}
+}
+
+void UTHNAIManagerSubsystem::DeactivatePreviousEnemy()
+{
+	if (IsValid(LastActivated))
+	{
+		LastActivated->GetComponentByClass<UTHNPossessableActorComponent>()->ClearPossessionPositions();
+		LastActivated = nullptr;
 	}
 }

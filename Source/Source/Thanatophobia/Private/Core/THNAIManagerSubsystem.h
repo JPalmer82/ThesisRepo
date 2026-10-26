@@ -25,9 +25,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Character")
 	ATHNPlayerCharacter* PlayerCharacter;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Last Activated Enemy")
+	ATHNPossessableCharacter* ClosestEnemy = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Last Activated Enemy")
+	ATHNPossessableCharacter* LastActivated = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Enemies")
 	TArray<TObjectPtr<ATHNPossessableCharacter>> AIEnemies;
 
 	UFUNCTION(BlueprintCallable)
 	void ActivateClosestEnemy();
+
+	UFUNCTION(BlueprintCallable)
+	void DeactivatePreviousEnemy();
 };
