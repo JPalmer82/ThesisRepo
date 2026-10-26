@@ -32,7 +32,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> Root;
 	
-	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UStaticMeshComponent> PuzzleMesh;
 
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))

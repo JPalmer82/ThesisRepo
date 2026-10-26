@@ -325,6 +325,7 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 		//UE_LOG(LogTemp, Error, TEXT("Firing, IsFiring is: %s"), BaseMeshAnimInstance->IsFiring ? TEXT("TRUE") : TEXT("FALSE"));
 		BaseMeshAnimInstance->IsFiring = true;
 		WorldSpaceAnimInstance->IsFiring = true;
+		RevolverAnimInstance->IsFiring = true;
 		
 		//GEngine->AddOnScreenDebugMessage(-3, 2.0f, FColor::Red, TEXT("Shooting"));
 		FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
