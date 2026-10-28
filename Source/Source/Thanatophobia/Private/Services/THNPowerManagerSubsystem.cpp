@@ -44,6 +44,9 @@ void UTHNPowerManagerSubsystem::HandlePowerSlotUpdated(TObjectPtr<ATHNPowerDistr
 				case ResearchAndDevelopment:
 					OnRnDPowerActivated.Broadcast();
 					break;
+				case Security:
+					OnSecurityPowerActivated.Broadcast();
+					break;
 				default:
 					UE_LOG(LogTemp, Error, TEXT("THN: No valid OnPowerActivated delegate found!"))
 			}
@@ -65,6 +68,9 @@ void UTHNPowerManagerSubsystem::HandlePowerSlotUpdated(TObjectPtr<ATHNPowerDistr
 					break;
 				case ResearchAndDevelopment:
 					OnRnDPowerDeactivated.Broadcast();
+					break;
+				case Security:
+					OnSecurityPowerDeactivated.Broadcast();
 					break;
 				default:
 					UE_LOG(LogTemp, Error, TEXT("THN: No valid OnPowerDeactivated delegate found!"))

@@ -6,6 +6,7 @@
 #include "THNPuzzleInfoComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/Image.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/WidgetComponent.h"
 #include "Components/WidgetInteractionComponent.h"
@@ -47,7 +48,6 @@ ATHNDataPoisoningPuzzle::ATHNDataPoisoningPuzzle()
 	WidgetInteractionComponent->SetupAttachment(Widget);
 	
 	OnClickDelegate.AddUniqueDynamic(this, &ATHNDataPoisoningPuzzle::OnClick);
-	
 }
 
 // Called when the game starts or when spawned
@@ -111,6 +111,11 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 			FMath::Lerp(Settings.RelativeScreenSize.X, -Settings.RelativeScreenSize.X, 1 - HitUV.X),
 			FMath::Lerp(Settings.RelativeScreenSize.Y, -Settings.RelativeScreenSize.Y, 1 - HitUV.Y));
 		WidgetInteractionComponent->SetRelativeLocation(NewInteractLocation);
+		
+		FVector2D MousePosition = FVector2D(
+			FMath::Lerp(0, 1200, 1 - HitUV.X),
+			FMath::Lerp(0, 815, 1 - HitUV.Y));
+		DataPoisoningWidget->SetCursorPosition(MousePosition);
 	}
 }
 

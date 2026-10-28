@@ -12,6 +12,7 @@ enum EPoweredRooms
 	Office,
 	Experimentation,
 	ResearchAndDevelopment,
+	Security,
 	RoomCount
 };
 
@@ -23,6 +24,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNExperimentationPowerDeactivatedDelegate);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNRnDPowerActivatedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNRnDPowerDeactivatedDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNSecurityPowerActivatedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTHNSecurityPowerDeactivatedDelegate);
 
 class ATHNPowerDistributor;
 
@@ -54,6 +58,12 @@ public:
 	FTHNRnDPowerActivatedDelegate OnRnDPowerActivated;
 	UPROPERTY(BlueprintAssignable)
 	FTHNRnDPowerDeactivatedDelegate OnRnDPowerDeactivated;
+	
+	//Security
+	UPROPERTY(BlueprintAssignable)
+	FTHNRnDPowerActivatedDelegate OnSecurityPowerActivated;
+	UPROPERTY(BlueprintAssignable)
+	FTHNRnDPowerDeactivatedDelegate OnSecurityPowerDeactivated;
 	
 	bool TryRemovePowerCell();
 	bool TryAddPowerCell();

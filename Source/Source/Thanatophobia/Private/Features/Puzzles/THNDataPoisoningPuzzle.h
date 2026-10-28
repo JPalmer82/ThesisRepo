@@ -8,6 +8,7 @@
 #include "Services/Interfaces/THNInteractableInterface.h"
 #include "THNDataPoisoningPuzzle.generated.h"
 
+class UImage;
 class UTHNInteractionBoxComponent;
 class UTHNDataPoisoningWidget;
 struct FDataPoisoningWord;
@@ -101,7 +102,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWidgetInteractionComponent* WidgetInteractionComponent;
-	
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UDataTable> SentimentTable;

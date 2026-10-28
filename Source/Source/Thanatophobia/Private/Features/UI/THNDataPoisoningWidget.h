@@ -9,6 +9,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "THNDataPoisoningWidget.generated.h"
 
+class UImage;
 class ATHNDataPoisoningPuzzle;
 class UTHNPuzzleManagerSubsystem;
 class UTHNDataPoisoningWord;
@@ -35,6 +36,11 @@ public:
 	
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
 	TObjectPtr<UButton> SelectWordsButton;
+	
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
+	TObjectPtr<UImage> CursorImage;
+	
+	void SetCursorPosition(FVector2D CursorPosition);
 	
 	//bool Initialize(int WordsPerPage, int NumPages);
 	//virtual void NativeOnInitialized() override;

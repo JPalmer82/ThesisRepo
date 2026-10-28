@@ -4,6 +4,8 @@
 #include "Features/UI/THNDataPoisoningWidget.h"
 
 #include "THNDataPoisoningWord.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/Image.h"
 #include "Components/TileView.h"
 #include "Components/WidgetComponent.h"
 #include "Core/THNPuzzleManagerSubsystem.h"
@@ -38,6 +40,8 @@ void UTHNDataPoisoningWidget::NativeConstruct()
 			WordTileViews[i]->WordTileView->AddItem(Words.Last());
 		}
 	}
+	
+	CursorImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), FName("CursorImage"));
 }
 
 void UTHNDataPoisoningWidget::ResetPuzzle()
@@ -85,4 +89,10 @@ void UTHNDataPoisoningWidget::SelectWordsButtonClicked()
 	{
 		PageSwitcher->SetActiveWidgetIndex(PageSwitcher->GetActiveWidgetIndex() + 1);
 	}
+}
+
+void UTHNDataPoisoningWidget::SetCursorPosition(FVector2D CursorPosition)
+{
+	//UCanvasPanelSlot* buh = Cast<UCanvasPanelSlot>(GetWidgetFromName("CursorImage")->Slot);
+	//buh->SetPosition(CursorPosition);
 }
