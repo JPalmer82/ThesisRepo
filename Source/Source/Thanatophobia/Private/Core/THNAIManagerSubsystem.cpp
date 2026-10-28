@@ -23,6 +23,11 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 
 	for (ATHNPossessableCharacter* Enemy : AIEnemies)
 	{
+		if (!ensureMsgf(IsValid(Enemy), TEXT("Enemy was invalid reference in AIEnemies List")))
+		{
+			continue;
+		}
+
 		FHitResult hit;
 		if (!GetWorld()->LineTraceSingleByChannel(hit, Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation(), ECollisionChannel::ECC_Visibility))
 		{
@@ -68,7 +73,7 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 	if (IsValid(ClosestEnemy) && ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->bDoesDroneExist == false)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s was valid"), *ClosestEnemy->GetName())
-		ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->RandomizePossessionPosition();
+		GetWorld()->GetTimerManager().SetTimer(ActivationTimerHandler, this, &UTHNAIManagerSubsystem::DronePossession, ActivationWaitTime);
 
 		if (IsValid(LastActivated))
 		{
@@ -86,4 +91,9 @@ void UTHNAIManagerSubsystem::DeactivatePreviousEnemy()
 		LastActivated->GetComponentByClass<UTHNPossessableActorComponent>()->ClearPossessionPositions();
 		LastActivated = nullptr;
 	}
+}
+
+void UTHNAIManagerSubsystem::DronePossession()
+{
+	ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->RandomizePossessionPosition();
 }

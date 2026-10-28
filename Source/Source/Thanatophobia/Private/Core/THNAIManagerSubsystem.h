@@ -39,4 +39,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DeactivatePreviousEnemy();
+
+	UFUNCTION()
+	void DronePossession();
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Activation")
+	float ActivationWaitTime = 2.0f;
+
+	FTimerHandle ActivationTimerHandler;
 };

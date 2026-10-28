@@ -51,7 +51,19 @@ void ATHNPossessableCharacter::BeginPlay()
 	if (IsValid(AIManager))
 	{
 		AIManager->AIEnemies.Add(this);
-		UE_LOG(LogTemp, Warning, TEXT("Added %s to the AI Manager List"), *this->GetName())
+		UE_LOG(LogTemp, Log, TEXT("Added %s to the AI Manager List"), *this->GetName())
+	}
+}
+
+void ATHNPossessableCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	UTHNAIManagerSubsystem* AIManager = GetGameInstance()->GetSubsystem<UTHNAIManagerSubsystem>();
+	if (IsValid(AIManager))
+	{
+		AIManager->AIEnemies.Remove(this);
+		UE_LOG(LogTemp, Log, TEXT("Removed %s to the AI Manager List"), *this->GetName())
 	}
 }
 
