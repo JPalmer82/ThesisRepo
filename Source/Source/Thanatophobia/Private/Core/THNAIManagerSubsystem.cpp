@@ -72,7 +72,13 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 
 	if (IsValid(ClosestEnemy) && ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->bDoesDroneExist == false)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s was valid"), *ClosestEnemy->GetName())
+		UE_LOG(LogTemp, Error, TEXT("%s was valid"), *ClosestEnemy->GetName());
+
+		if (GetWorld()->GetTimerManager().IsTimerActive(ActivationTimerHandler))
+		{
+			return;
+		}
+
 		GetWorld()->GetTimerManager().SetTimer(ActivationTimerHandler, this, &UTHNAIManagerSubsystem::DronePossession, ActivationWaitTime);
 
 		if (IsValid(LastActivated))
