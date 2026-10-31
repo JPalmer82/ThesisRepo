@@ -54,6 +54,12 @@ void UTHNGameManagerSubsystem::OnIncubatorPuzzleComplete()
 	}
 }
 
+void UTHNGameManagerSubsystem::Debug_ChangeGameFlags(FGameFlags NewGameFlags)
+{
+	CurrentGameFlags = NewGameFlags;
+	OnGameFlagsChanged.Broadcast();
+}
+
 void UTHNGameManagerSubsystem::OnDataPoisoningPuzzleComplete()
 {
 	if (!CurrentGameFlags.OfficePuzzleComplete)

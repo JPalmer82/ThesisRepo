@@ -23,13 +23,13 @@ struct FGameFlags
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IncubatorPuzzleComplete = false;
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool OfficePuzzleComplete = false;
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ExperimentationPuzzleComplete = false;
 };
 
@@ -60,6 +60,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void OnIncubatorPuzzleComplete();
+	
+	UFUNCTION(BlueprintCallable, Category="Debug")
+	void Debug_ChangeGameFlags(FGameFlags NewGameFlags);
 	
 	void RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InOfficePuzzle);
 	
