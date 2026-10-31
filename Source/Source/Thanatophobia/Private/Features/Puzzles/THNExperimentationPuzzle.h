@@ -28,6 +28,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UCameraComponent> Camera;
+	
 private:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> Root;
@@ -40,9 +43,6 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UTHNPuzzleInfoComponent> PuzzleInfoComponent;
-	
-	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
-	TObjectPtr<UCameraComponent> Camera;
 	
 	TObjectPtr<UTHNCameraManagerSubsystem> CameraManagerSubsystem;
 	

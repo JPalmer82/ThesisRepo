@@ -28,6 +28,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TObjectPtr<UTHNInteractionBoxComponent>> InteractionBoxes;
+	
 private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
@@ -38,9 +41,6 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<ATHNPowerCell>> HeldPowerCells;
 	
-	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
-	TArray<TObjectPtr<UTHNInteractionBoxComponent>> InteractionBoxes;
-	
 	UFUNCTION()
 	void OnOfficeInteract(AActor* InitiatorActor);
 	
@@ -49,4 +49,7 @@ private:
 	
 	UFUNCTION()
 	void OnRnDInteract(AActor* InitiatorActor);
+	
+	UFUNCTION()
+	void OnSecurityInteract(AActor* InitiatorActor);
 };

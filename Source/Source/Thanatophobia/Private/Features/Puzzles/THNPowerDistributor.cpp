@@ -22,6 +22,7 @@ ATHNPowerDistributor::ATHNPowerDistributor()
 		FString Name = FString(TEXT("{0}_InteractBox"));
 		Name = FString::Format(*Name, {EnumName.ToString()});
 		UTHNInteractionBoxComponent* NewInteractBox = CreateDefaultSubobject<UTHNInteractionBoxComponent>(FName(Name));
+		NewInteractBox->CreationMethod = EComponentCreationMethod::Instance;
 		NewInteractBox->SetupAttachment(RootComponent);
 		InteractionBoxes.Add(NewInteractBox);
 	}
@@ -29,6 +30,7 @@ ATHNPowerDistributor::ATHNPowerDistributor()
 	InteractionBoxes[EPoweredRooms::Office]->OnBoxInteract.AddUniqueDynamic(this, &ATHNPowerDistributor::OnOfficeInteract);
 	InteractionBoxes[EPoweredRooms::Experimentation]->OnBoxInteract.AddUniqueDynamic(this, &ATHNPowerDistributor::OnExperimentationInteract);
 	InteractionBoxes[EPoweredRooms::ResearchAndDevelopment]->OnBoxInteract.AddUniqueDynamic(this, &ATHNPowerDistributor::OnRnDInteract);
+	InteractionBoxes[EPoweredRooms::Security]->OnBoxInteract.AddUniqueDynamic(this, &ATHNPowerDistributor::OnSecurityInteract);
 }
 
 // Called when the game starts or when spawned
@@ -67,5 +69,10 @@ void ATHNPowerDistributor::OnExperimentationInteract(AActor* InitiatorActor)
 void ATHNPowerDistributor::OnRnDInteract(AActor* InitiatorActor)
 {
 	PowerManagerSubsystem->HandlePowerSlotUpdated(this, EPoweredRooms::ResearchAndDevelopment);
+}
+
+void ATHNPowerDistributor::OnSecurityInteract(AActor* InitiatorActor)
+{
+	PowerManagerSubsystem->HandlePowerSlotUpdated(this, EPoweredRooms::Security);
 }
 
