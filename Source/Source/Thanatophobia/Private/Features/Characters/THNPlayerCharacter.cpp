@@ -185,6 +185,8 @@ void ATHNPlayerCharacter::BeginPlay()
 		AIManager->PlayerCharacter = this;
 		UE_LOG(LogTemp, Warning, TEXT("Added %s to the AI Manager"), *this->GetName())
 	}
+	
+	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
 // Called every frame

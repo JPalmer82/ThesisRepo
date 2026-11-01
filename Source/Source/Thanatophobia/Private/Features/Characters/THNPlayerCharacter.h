@@ -75,8 +75,10 @@ private:
 	UPROPERTY()
 	UTHNGameManagerSubsystem* GameManagerSubsystem;
 
-	UPROPERTY(EditDefaultsOnly, Category="Movement")
+	UPROPERTY(EditDefaultsOnly, Category="THN Movement", meta=(AllowPrivateAccess=true))
 	float MaxSprintSpeed = 800;
+	
+	UPROPERTY(EditDefaultsOnly, Category="THN Movement", meta=(AllowPrivateAccess=true))
 	float MaxWalkSpeed = 600;
 
 	UPROPERTY(EditDefaultsOnly, Category="Animation")
