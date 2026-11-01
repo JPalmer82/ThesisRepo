@@ -45,6 +45,7 @@ void ATHNPoweredDoor::BeginPlay()
 			case EPoweredRooms::Security:
 				PowerManager->OnSecurityPowerActivated.AddUniqueDynamic(this, &ATHNPoweredDoor::OpenDoor);
 				PowerManager->OnSecurityPowerDeactivated.AddUniqueDynamic(this, &ATHNPoweredDoor::CloseDoor);
+				break;
 			default:
 				UE_LOG(LogTemp, Error, TEXT("Unsupported power room type"));
 		}

@@ -22,7 +22,6 @@ ATHNPowerDistributor::ATHNPowerDistributor()
 		FString Name = FString(TEXT("{0}_InteractBox"));
 		Name = FString::Format(*Name, {EnumName.ToString()});
 		UTHNInteractionBoxComponent* NewInteractBox = CreateDefaultSubobject<UTHNInteractionBoxComponent>(FName(Name));
-		NewInteractBox->CreationMethod = EComponentCreationMethod::Instance;
 		NewInteractBox->SetupAttachment(RootComponent);
 		InteractionBoxes.Add(NewInteractBox);
 	}
