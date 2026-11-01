@@ -41,7 +41,8 @@ void UTHNDataPoisoningWidget::NativeConstruct()
 		}
 	}
 	
-	CursorImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), FName("CursorImage"));
+	//CursorImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), FName("CursorImage"));
+	//CursorImage->
 }
 
 void UTHNDataPoisoningWidget::ResetPuzzle()
@@ -93,6 +94,6 @@ void UTHNDataPoisoningWidget::SelectWordsButtonClicked()
 
 void UTHNDataPoisoningWidget::SetCursorPosition(FVector2D CursorPosition)
 {
-	//UCanvasPanelSlot* buh = Cast<UCanvasPanelSlot>(GetWidgetFromName("CursorImage")->Slot);
-	//buh->SetPosition(CursorPosition);
+	UCanvasPanelSlot* buh = Cast<UCanvasPanelSlot>(CursorPanelSlot->Slot);
+	buh->SetPosition(CursorPosition);
 }

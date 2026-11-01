@@ -6,6 +6,8 @@
 #include "THNWordTileView.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/CanvasPanel.h"
+#include "Components/Overlay.h"
 #include "Components/WidgetSwitcher.h"
 #include "THNDataPoisoningWidget.generated.h"
 
@@ -39,6 +41,9 @@ public:
 	
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
 	TObjectPtr<UImage> CursorImage;
+	
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite, Category="UI")
+	TObjectPtr<UOverlay> CursorPanelSlot;
 	
 	void SetCursorPosition(FVector2D CursorPosition);
 	

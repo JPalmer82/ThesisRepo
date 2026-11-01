@@ -113,8 +113,8 @@ void ATHNDataPoisoningPuzzle::Tick(float DeltaTime)
 		WidgetInteractionComponent->SetRelativeLocation(NewInteractLocation);
 		
 		FVector2D MousePosition = FVector2D(
-			FMath::Lerp(0, 1200, 1 - HitUV.X),
-			FMath::Lerp(0, 815, 1 - HitUV.Y));
+			FMath::Lerp(-568, 568, 1 - HitUV.X),
+			FMath::Lerp(-444, 535, 1 - HitUV.Y));
 		DataPoisoningWidget->SetCursorPosition(MousePosition);
 	}
 }
