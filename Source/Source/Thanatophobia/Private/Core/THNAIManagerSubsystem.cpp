@@ -31,7 +31,7 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 		FHitResult hit;
 		if (!GetWorld()->LineTraceSingleByChannel(hit, Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation(), ECollisionChannel::ECC_Visibility))
 		{
-			DrawDebugLine(Enemy->GetWorld(), Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Green, false, 5.0f);
+			//DrawDebugLine(Enemy->GetWorld(), Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Green, false, 5.0f);
 			float PathLength = (PlayerCharacter->GetActorLocation() - Enemy->GetActorLocation()).Length();
 			if (PathLength < ClosestDist)
 			{
@@ -43,7 +43,7 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 		}
 		else
 		{
-			DrawDebugLine(Enemy->GetWorld(), Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Red, false, 5.0f);
+			//DrawDebugLine(Enemy->GetWorld(), Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Red, false, 5.0f);
 		}
 
 		UNavigationPath* ResultPath = UNavigationSystemV1::FindPathToLocationSynchronously(Enemy->GetWorld(), Enemy->GetActorLocation(), PlayerCharacter->GetActorLocation());
