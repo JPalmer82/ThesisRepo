@@ -165,7 +165,7 @@ void ATHNPlayerCharacter::BeginPlay()
 		PauseMenuWidget->AddToViewport();
 	}
 
-	if (IsValid(PauseMenuWidget))
+	if (IsValid(PauseMenuWidget) && PauseMenuWidget->IsInViewport())
 	{
 		//Unpauses game
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
@@ -518,22 +518,22 @@ void ATHNPlayerCharacter::TogglePause(const FInputActionValue& InputActionValue)
 			PlayerController->bShowMouseCursor = true;
 		}
 	}
-	else
-	{
-		if (IsValid(PauseMenuWidget))
-		{
-			//Unpauses game
-			UGameplayStatics::SetGamePaused(GetWorld(), false);
+	//else
+	//{
+	//	if (IsValid(PauseMenuWidget) && PauseMenuWidget->IsInViewport())
+	//	{
+	//		//Unpauses game
+	//		UGameplayStatics::SetGamePaused(GetWorld(), false);
 
-			//resets input
-			FInputModeGameOnly InputMode;
-			PlayerController->SetInputMode(InputMode);
-			PlayerController->bShowMouseCursor = false;
+	//		//resets input
+	//		FInputModeGameOnly InputMode;
+	//		PlayerController->SetInputMode(InputMode);
+	//		PlayerController->bShowMouseCursor = false;
 
-			//removes pause menu widget from screen
-			PauseMenuWidget->RemoveFromParent();
-		}
-	}
+	//		//removes pause menu widget from screen
+	//		PauseMenuWidget->RemoveFromParent();
+	//	}
+	//}
 }
 
 void ATHNPlayerCharacter::HandleReloadEndInput(const FInputActionValue& InputActionValue)

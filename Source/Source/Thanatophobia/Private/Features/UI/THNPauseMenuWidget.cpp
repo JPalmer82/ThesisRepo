@@ -43,7 +43,7 @@ void UTHNPauseMenuWidget::OnSlotPressed(UTHNMainMenuSlotWidget* MenuSlot)
 	UWorld* World = GetWorld();
 	APlayerController* NewGamePlayerController = UGameplayStatics::GetPlayerController(World, 0);
 
-	if (MenuSlot == ResumeSlot)
+	if (MenuSlot == ResumeSlot && this->IsInViewport())
 	{
 		//Unpauses game
 		UGameplayStatics::SetGamePaused(World, false);
