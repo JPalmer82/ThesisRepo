@@ -45,6 +45,8 @@ protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 
+	virtual void NativeOnInitialized() override;
+
 	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
 

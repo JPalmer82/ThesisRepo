@@ -16,7 +16,7 @@ void UTHNAIManagerSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (IsValid(GetWorld()))
+	if (GetWorld()->GetTimerManager().IsTimerActive(ActivationTimerHandler))
 	{
 		GetWorld()->GetTimerManager().ClearTimer(ActivationTimerHandler);
 	}

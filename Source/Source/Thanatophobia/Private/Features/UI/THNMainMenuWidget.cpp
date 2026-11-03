@@ -9,10 +9,15 @@
 void UTHNMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	NewGameSlot->SetFocus();
+}
+
+void UTHNMainMenuWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
 
 	NewGameSlot->OnFocused.AddUObject(this, &UTHNMainMenuWidget::OnSlotFocused);
 	NewGameSlot->OnPressed.AddUObject(this, &UTHNMainMenuWidget::OnSlotPressed);
-	NewGameSlot->SetFocus();
 
 	/*LoadGameSlot->OnFocused.AddUObject(this, &UTHN_MainMenuWidget::OnSlotFocused);
 	LoadGameSlot->OnPressed.AddUObject(this, &UTHN_MainMenuWidget::OnSlotPressed);*/ //For Load Game functionality later if we can
@@ -23,6 +28,7 @@ void UTHNMainMenuWidget::NativeConstruct()
 	QuitSlot->OnFocused.AddUObject(this, &UTHNMainMenuWidget::OnSlotFocused);
 	QuitSlot->OnPressed.AddUObject(this, &UTHNMainMenuWidget::OnSlotPressed);
 }
+
 
 void UTHNMainMenuWidget::OnSlotFocused(UTHNMainMenuSlotWidget* MainMenuSlot, bool bIsFocused)
 {

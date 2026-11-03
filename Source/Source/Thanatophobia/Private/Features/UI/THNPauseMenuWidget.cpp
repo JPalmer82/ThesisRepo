@@ -9,9 +9,13 @@ void UTHNPauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	ResumeSlot->SetFocus();
+}
+
+void UTHNPauseMenuWidget::NativeOnInitialized()
+{
 	ResumeSlot->OnFocused.AddUObject(this, &UTHNPauseMenuWidget::OnSlotFocused);
 	ResumeSlot->OnPressed.AddUObject(this, &UTHNPauseMenuWidget::OnSlotPressed);
-	ResumeSlot->SetFocus();
 
 	MainMenuSlot->OnFocused.AddUObject(this, &UTHNPauseMenuWidget::OnSlotFocused);
 	MainMenuSlot->OnPressed.AddUObject(this, &UTHNPauseMenuWidget::OnSlotPressed);

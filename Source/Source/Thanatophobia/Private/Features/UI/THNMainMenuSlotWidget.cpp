@@ -21,10 +21,13 @@ void UTHNMainMenuSlotWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	SetHighlightState(false);
+}
+
+void UTHNMainMenuSlotWidget::NativeOnInitialized()
+{
 	Button->OnHovered.AddDynamic(this, &UTHNMainMenuSlotWidget::OnButtonHovered);
 	Button->OnPressed.AddDynamic(this, &UTHNMainMenuSlotWidget::OnButtonPressedUpdated);
-
-	SetHighlightState(false);
 }
 
 void UTHNMainMenuSlotWidget::NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent)

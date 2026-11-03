@@ -28,6 +28,8 @@ protected:
 protected:
 	virtual void NativeConstruct() override;
 
+	virtual void NativeOnInitialized() override;
+
 	UFUNCTION()
 	void OnSlotFocused(UTHNMainMenuSlotWidget* MenuSlot, bool bIsFocused);
 
