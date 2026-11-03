@@ -15,6 +15,11 @@ void UTHNAIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 void UTHNAIManagerSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
+
+	if (IsValid(GetWorld()))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ActivationTimerHandler);
+	}
 }
 
 void UTHNAIManagerSubsystem::ActivateClosestEnemy()
@@ -101,5 +106,8 @@ void UTHNAIManagerSubsystem::DeactivatePreviousEnemy()
 
 void UTHNAIManagerSubsystem::DronePossession()
 {
-	ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->RandomizePossessionPosition();
+	if (IsValid(ClosestEnemy))
+	{
+		ClosestEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->RandomizePossessionPosition();
+	}
 }

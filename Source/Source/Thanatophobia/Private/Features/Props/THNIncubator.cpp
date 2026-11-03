@@ -28,6 +28,10 @@ void ATHNIncubator::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (UTHNGameManagerSubsystem* GameManager = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>())
+	{
+		GameManager->TrySwitchGameState(EGameState::Default);
+	}
 }
 
 // Called every frame

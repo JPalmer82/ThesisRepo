@@ -189,6 +189,18 @@ void ATHNPlayerCharacter::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
+void ATHNPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	UTHNAIManagerSubsystem* AIManager = GetGameInstance()->GetSubsystem<UTHNAIManagerSubsystem>();
+	if (IsValid(AIManager))
+	{
+		AIManager->PlayerCharacter = nullptr;
+		UE_LOG(LogTemp, Log, TEXT("Removed %s from the AI Manager List"), *this->GetName())
+	}
+}
+
 // Called every frame
 void ATHNPlayerCharacter::Tick(float DeltaTime)
 {
