@@ -212,7 +212,7 @@ void ATHNPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Log, TEXT("%d"), CurrentBulletIndex);
+	//UE_LOG(LogTemp, Log, TEXT("%d"), CurrentBulletIndex);
 }
 
 // Called to bind functionality to input

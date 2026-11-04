@@ -78,6 +78,9 @@ public:
 	//Add later when this puzzle is made
 	void RegisterExperimentationPuzzle(ATHNExperimentationPuzzle* InExperimentationPuzzle);
 	
+	UFUNCTION(BlueprintCallable)
+	ATHNExperimentationPuzzle* GetExperimentationPuzzle() const { return ExperimentationPuzzle; }
+	
 private:
 	EGameState CurrentGameState = EGameState::Default;
 	
