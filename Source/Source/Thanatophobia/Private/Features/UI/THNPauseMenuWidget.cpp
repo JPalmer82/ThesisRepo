@@ -4,6 +4,7 @@
 #include "Features/UI/THNPauseMenuWidget.h"
 #include "Features/UI/THNMainMenuSlotWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Services/THNGameManagerSubsystem.h"
 
 void UTHNPauseMenuWidget::NativeConstruct()
 {
@@ -63,6 +64,7 @@ void UTHNPauseMenuWidget::OnSlotPressed(UTHNMainMenuSlotWidget* MenuSlot)
 	else if (MenuSlot == MainMenuSlot)
 	{
 		//Returns to MainMenu
+		GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->KillPlayer();
 		UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuLevel"));
 	}
 }

@@ -18,6 +18,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "THNPlayerController.h"
 #include "Animation/THNAnimInstance.h"
 #include "Core/THNCameraManagerSubsystem.h"
 #include "Core/THNGameInstance.h"
@@ -139,6 +140,7 @@ void ATHNPlayerCharacter::BeginPlay()
 			GameManagerSubsystem = GameManager;
 			GameManagerSubsystem->OnGameStateChanged.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
 			GameManagerSubsystem->RegisterPlayerCharacter(this);
+			GameManagerSubsystem->TrySwitchGameState(EGameState::Default);
 		}
 	}
 	else
@@ -153,6 +155,9 @@ void ATHNPlayerCharacter::BeginPlay()
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 	CameraSubsystem->OnPlayerInitialized.Execute(CamComponent);
+	CameraSubsystem->ReturnToDefaultCamera(Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(this, 0)));
+	
+	CurrentInteractComponent = nullptr;
 
 	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);

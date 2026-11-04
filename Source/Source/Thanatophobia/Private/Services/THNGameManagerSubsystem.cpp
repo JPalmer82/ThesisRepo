@@ -3,6 +3,7 @@
 
 #include "Services/THNGameManagerSubsystem.h"
 
+#include "Core/THNCameraManagerSubsystem.h"
 #include "Features/Characters/THNPlayerCharacter.h"
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
 #include "Features/Puzzles/THNExperimentationPuzzle.h"
