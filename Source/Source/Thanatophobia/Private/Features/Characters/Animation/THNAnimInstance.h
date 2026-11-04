@@ -26,6 +26,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool IsReloading = false;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool ShouldResetCylinderPosition = false;
 
 	virtual void NativeInitializeAnimation() override;
 

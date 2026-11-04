@@ -150,7 +150,7 @@ void ATHNPlayerCharacter::BeginPlay()
 	
 	WorldSpaceAnimInstance = Cast<UTHNAnimInstance>(WorldSpaceSkeletalMeshComponent->GetAnimInstance());
 	BaseMeshAnimInstance = Cast<UTHNAnimInstance>(GetMesh()->GetAnimInstance());
-	RevolverAnimInstance = Cast<ATHNRevolver>(Revolver->GetChildActor())->RevolverMesh->GetAnimInstance();
+	RevolverAnimInstance = Cast<UTHNAnimInstance>(Cast<ATHNRevolver>(Revolver->GetChildActor())->RevolverMesh->GetAnimInstance());
 	
 	UTHNCameraManagerSubsystem* CameraSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	UCameraComponent* CamComponent = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
@@ -212,6 +212,7 @@ void ATHNPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UE_LOG(LogTemp, Log, TEXT("%d"), CurrentBulletIndex);
 }
 
 // Called to bind functionality to input
@@ -345,7 +346,7 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 		//UE_LOG(LogTemp, Error, TEXT("Firing, IsFiring is: %s"), BaseMeshAnimInstance->IsFiring ? TEXT("TRUE") : TEXT("FALSE"));
 		BaseMeshAnimInstance->IsFiring = true;
 		WorldSpaceAnimInstance->IsFiring = true;
-		//RevolverAnimInstance->IsFiring = true;
+		RevolverAnimInstance->IsFiring = true;
 		
 		//GEngine->AddOnScreenDebugMessage(-3, 2.0f, FColor::Red, TEXT("Shooting"));
 		FVector LineTraceStartPoint = CameraComponent->GetComponentLocation();
@@ -454,8 +455,11 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 	BaseMeshAnimInstance->Montage_Play(ReloadMontage);
 	WorldSpaceAnimInstance->Montage_Play(ReloadMontage);
 	RevolverAnimInstance->Montage_Play(RevolverReloadMontage);
+	RevolverAnimInstance->ShouldResetCylinderPosition = true;
 	
-
+	//TODO: Remove this once animations are sorted
+	CurrentBulletIndex = 0;
+	
 	for (bool& i : BulletChambers)
 	{
 		i = false;

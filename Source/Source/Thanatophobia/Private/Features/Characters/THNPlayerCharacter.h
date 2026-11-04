@@ -91,7 +91,7 @@ private:
 	UTHNAnimInstance* BaseMeshAnimInstance;
 	
 	UPROPERTY()
-	TObjectPtr<UAnimInstance> RevolverAnimInstance;
+	TObjectPtr<UTHNAnimInstance> RevolverAnimInstance;
 
 	UPROPERTY(EditDefaultsOnly)
 	UAIPerceptionStimuliSourceComponent* StimuliSource;
