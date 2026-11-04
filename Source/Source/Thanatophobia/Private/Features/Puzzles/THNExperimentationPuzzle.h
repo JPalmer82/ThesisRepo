@@ -56,10 +56,10 @@ public:
 	void IncrementGraph2Frequency(float value) { Graph2Frequency += value; }
 	
 	UFUNCTION(BlueprintCallable)
-	void IncrementGraph1Amplitude(float value) { Graph1Frequency += value; }
+	void IncrementGraph1Amplitude(float value) { Graph1Amplitude += value; }
 	
 	UFUNCTION(BlueprintCallable)
-	void IncrementGraph2Amplitude(float value) { Graph1Frequency += value; }
+	void IncrementGraph2Amplitude(float value) { Graph2Amplitude += value; }
 	
 private:
 	UPROPERTY()
