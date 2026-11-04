@@ -138,6 +138,7 @@ void ATHNPlayerCharacter::BeginPlay()
 		{
 			GameManagerSubsystem = GameManager;
 			GameManagerSubsystem->OnGameStateChanged.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnGameStateChanged);
+			GameManagerSubsystem->RegisterPlayerCharacter(this);
 		}
 	}
 	else

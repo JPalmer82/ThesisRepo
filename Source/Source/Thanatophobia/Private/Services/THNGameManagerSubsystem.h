@@ -35,6 +35,7 @@ struct FGameFlags
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnGameStateChangedDelegate, EGameState, PreviousGameState, EGameState, NextGameState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameFlagsChangedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerKilledDelegate);
 
 UCLASS()
 class UTHNGameManagerSubsystem : public UGameInstanceSubsystem
@@ -42,10 +43,14 @@ class UTHNGameManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(BlueprintAssignable)
 	FOnGameStateChangedDelegate OnGameStateChanged;
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnGameFlagsChangedDelegate OnGameFlagsChanged;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerKilledDelegate OnPlayerKilled;
 	
 	bool TrySwitchGameState(const EGameState& NewGameState);
 	
@@ -53,6 +58,8 @@ public:
 	FGameFlags GetGameFlags() const { return CurrentGameFlags; }
 	EGameState GetCurrentGameState() const { return CurrentGameState; }
 	
+	UFUNCTION(BlueprintCallable)
+	void KillPlayer();
 	
 	//These blueprint functions will need to be replaced once the incubator puzzle is updated
 	UFUNCTION(BlueprintCallable)
@@ -90,4 +97,7 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<ATHNExperimentationPuzzle> ExperimentationPuzzle;
+	
+	UPROPERTY()
+	TObjectPtr<ATHNPlayerCharacter> PlayerCharacter;
 };

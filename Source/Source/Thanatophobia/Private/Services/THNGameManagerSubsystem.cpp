@@ -3,7 +3,9 @@
 
 #include "Services/THNGameManagerSubsystem.h"
 
+#include "Features/Characters/THNPlayerCharacter.h"
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
+#include "Features/Puzzles/THNExperimentationPuzzle.h"
 
 void UTHNGameManagerSubsystem::SwitchGameState(EGameState NewGameState)
 {
@@ -18,12 +20,28 @@ bool UTHNGameManagerSubsystem::TrySwitchGameState(const EGameState& NewGameState
 	return true;
 }
 
+void UTHNGameManagerSubsystem::KillPlayer()
+{
+	PlayerCharacter = nullptr;
+	ExperimentationPuzzle = nullptr;
+	OfficePuzzle = nullptr;
+	IncubatorPuzzle = nullptr;
+	
+	TrySwitchGameState(EGameState::Default);
+	CurrentGameFlags = FGameFlags();
+	OnPlayerKilled.Broadcast();
+}
+
 void UTHNGameManagerSubsystem::RegisterIncubatorPuzzle(AActor* InIncubatorPuzzleActor)
 {
 	if (IncubatorPuzzle == nullptr)
 	{
 		IncubatorPuzzle = InIncubatorPuzzleActor;
 		//IncubatorPuzzle->OnIncubatorPuzzleComplete.AddUniqueDynamic(this, &UTHNGameManagerSubsystem::OnIncubatorPuzzleComplete);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("THN: %s is already registered"), *InIncubatorPuzzleActor->GetName());
 	}
 }
 
@@ -34,6 +52,22 @@ void UTHNGameManagerSubsystem::RegisterOfficePuzzle(ATHNDataPoisoningPuzzle* InO
 		OfficePuzzle = InOfficePuzzle;
 		OfficePuzzle->OnDataPoisoningPuzzleComplete.AddUniqueDynamic(this, &UTHNGameManagerSubsystem::OnDataPoisoningPuzzleComplete);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("THN: %s is already registered"), *InOfficePuzzle->GetName());
+	}
+}
+
+void UTHNGameManagerSubsystem::RegisterPlayerCharacter(TObjectPtr<ATHNPlayerCharacter> Player)
+{
+	if (PlayerCharacter == nullptr)
+	{
+		PlayerCharacter = Player;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("THN: %s is already registered"), *Player->GetName());
+	}
 }
 
 void UTHNGameManagerSubsystem::RegisterExperimentationPuzzle(ATHNExperimentationPuzzle* InExperimentationPuzzle)
@@ -41,6 +75,10 @@ void UTHNGameManagerSubsystem::RegisterExperimentationPuzzle(ATHNExperimentation
 	if (ExperimentationPuzzle == nullptr)
 	{
 		ExperimentationPuzzle = InExperimentationPuzzle;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("THN: %s is already registered"), *InExperimentationPuzzle->GetName());
 	}
 }
 
