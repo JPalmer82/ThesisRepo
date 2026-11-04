@@ -381,6 +381,7 @@ void ATHNPlayerCharacter::HandleShootInput(const FInputActionValue& InputActionV
 						DroneParent->GetMovementComponent()->StopActiveMovement();
 					}
 					Drone->DeactivateParent();
+					GetWorld()->GetTimerManager().SetTimer(KilledEnemyTimerHandle, this, &ATHNPlayerCharacter::StopAllMontages, KilledActivationWaitTime);
 					//bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Pawn, TraceParams);
 					//if (bIsHit)
 					//{

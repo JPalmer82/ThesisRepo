@@ -230,6 +230,13 @@ private:
 	
 	TArray<bool> BulletChambers = { true, true, true, true, true, true };
 
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Killing")
+	float KilledActivationWaitTime = 10.0f;
+
+	FTimerHandle KilledEnemyTimerHandle;
+
 	/*****************************************************/
 	/*                    Pause Menu                     */
 	/*****************************************************/

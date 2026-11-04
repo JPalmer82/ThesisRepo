@@ -79,7 +79,7 @@ void UTHNAIManagerSubsystem::ActivateClosestEnemy()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s was valid"), *ClosestEnemy->GetName());
 
-		if (GetWorld()->GetTimerManager().IsTimerActive(ActivationTimerHandler))
+		if (GetWorld()->GetTimerManager().IsTimerActive(ActivationTimerHandler) || GetWorld()->GetTimerManager().IsTimerActive(PlayerCharacter->KilledEnemyTimerHandle))
 		{
 			return;
 		}
