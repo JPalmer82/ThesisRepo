@@ -4,6 +4,7 @@
 #include "Features/Puzzles/THNExperimentationPuzzle.h"
 
 #include "THNPuzzleInfoComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Core/THNCameraManagerSubsystem.h"
 #include "Features/Characters/THNPlayerController.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,6 +33,9 @@ ATHNExperimentationPuzzle::ATHNExperimentationPuzzle()
 	
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	Camera->SetupAttachment(PuzzleMesh);
+	
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>("WidgetComponent");
+	WidgetComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -49,6 +53,11 @@ void ATHNExperimentationPuzzle::BeginPlay()
 void ATHNExperimentationPuzzle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+UTextureRenderTarget2D* ATHNExperimentationPuzzle::GetWidgetRenderTarget()
+{
+	return WidgetComponent->GetRenderTarget();
 }
 
 void ATHNExperimentationPuzzle::OnInteract(AActor* InitiatorActor)

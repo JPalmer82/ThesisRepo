@@ -6,10 +6,26 @@
 #include "GameFramework/Actor.h"
 #include "THNExperimentationPuzzle.generated.h"
 
+class UWidgetComponent;
 class UCameraComponent;
 class UTHNPuzzleInfoComponent;
 class UTHNCameraManagerSubsystem;
 class UTHNInteractionBoxComponent;
+
+USTRUCT(BlueprintType)
+struct FTHNExperimentationWave
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Amplitude;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Frequency;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Phase;
+};
 
 UCLASS()
 class ATHNExperimentationPuzzle : public AActor
@@ -31,35 +47,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCameraComponent> Camera;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Graph1Phase = 0;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UWidgetComponent> WidgetComponent;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Graph2Phase = 0;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Graph1Frequency = 0;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Graph2Frequency = 0;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Graph1Amplitude = 1;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Graph2Amplitude = 1;
-	
-	UFUNCTION(BlueprintCallable)
-	void IncrementGraph1Frequency(float value) { Graph1Frequency += value; }
-	
-	UFUNCTION(BlueprintCallable)
-	void IncrementGraph2Frequency(float value) { Graph2Frequency += value; }
-	
-	UFUNCTION(BlueprintCallable)
-	void IncrementGraph1Amplitude(float value) { Graph1Amplitude += value; }
-	
-	UFUNCTION(BlueprintCallable)
-	void IncrementGraph2Amplitude(float value) { Graph2Amplitude += value; }
+	UTextureRenderTarget2D* GetWidgetRenderTarget();
 	
 private:
 	UPROPERTY()
