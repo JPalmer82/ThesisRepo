@@ -53,9 +53,7 @@ void ATHNExperimentationPuzzle::BeginPlay()
 	
 	PuzzleScreenMaterialInstance = UMaterialInstanceDynamic::Create(PuzzleScreenBaseMaterial, this);
 	PuzzleMesh->SetMaterial(1, PuzzleScreenMaterialInstance);
-	
-	//WidgetComponent->SetMaterial(0, )
-	
+
 	SetActorTickEnabled(false);
 }
 
@@ -63,6 +61,9 @@ void ATHNExperimentationPuzzle::BeginPlay()
 void ATHNExperimentationPuzzle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	UTHNExperimentationWidget* PuzzleWidget = Cast<UTHNExperimentationWidget>(WidgetComponent->GetWidget());
+	PuzzleWidget->UpdateWidget(WaveBL, WaveBR);
 }
 
 UTextureRenderTarget2D* ATHNExperimentationPuzzle::GetWidgetRenderTarget()

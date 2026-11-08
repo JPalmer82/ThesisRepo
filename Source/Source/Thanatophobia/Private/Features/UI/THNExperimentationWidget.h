@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "THNExperimentationWidget.generated.h"
 
+struct FTHNExperimentationWave;
 class UImage;
 /**
  * 
@@ -19,13 +20,21 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterial> WaveBaseMaterial;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterial> WaveSumBaseMaterial;
+	
 	virtual void InitializeWidget(UTextureRenderTarget2D* RT);
+	
+	void UpdateWidget(FTHNExperimentationWave WaveBL, FTHNExperimentationWave WaveBR);
 	
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	TObjectPtr<UImage> Graph_BL_Image;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	TObjectPtr<UImage> Graph_BR_Image;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	TObjectPtr<UImage> Graph_Sum_Image;
 	
 private:
 	UPROPERTY()
@@ -36,4 +45,7 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> GraphBRInstance;
+	
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> GraphSumInstance;
 };

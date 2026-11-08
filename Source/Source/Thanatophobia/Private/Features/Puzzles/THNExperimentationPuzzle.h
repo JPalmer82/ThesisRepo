@@ -18,13 +18,13 @@ struct FTHNExperimentationWave
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Amplitude;
+	float Amplitude = 1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Frequency;
+	float Frequency = 1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Phase;
+	float Phase = 0;
 };
 
 UCLASS()
@@ -51,6 +51,12 @@ public:
 	TObjectPtr<UWidgetComponent> WidgetComponent;
 	
 	UTextureRenderTarget2D* GetWidgetRenderTarget();
+	
+	UPROPERTY(EditAnywhere, Category="Debug")
+	FTHNExperimentationWave WaveBL;
+	
+	UPROPERTY(EditAnywhere, Category="Debug")
+	FTHNExperimentationWave WaveBR;
 	
 private:
 	UPROPERTY()
