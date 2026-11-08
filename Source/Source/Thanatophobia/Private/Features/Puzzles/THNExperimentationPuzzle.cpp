@@ -6,7 +6,9 @@
 #include "THNPuzzleInfoComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/THNCameraManagerSubsystem.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "Features/Characters/THNPlayerController.h"
+#include "Features/UI/THNExperimentationWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Services/THNGameManagerSubsystem.h"
 #include "Utility/THNInteractionBoxComponent.h"
@@ -46,6 +48,14 @@ void ATHNExperimentationPuzzle::BeginPlay()
 	GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->RegisterExperimentationPuzzle(this);
 	CameraManagerSubsystem = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>();
 	
+	//The widget component's render target isn't immediately initialized, so we have to delay initializationw
+	GetWorldTimerManager().SetTimer(WaitForRenderTargetReadyHandle, this, &ATHNExperimentationPuzzle::InitializePuzzleWidget, 1);
+	
+	PuzzleScreenMaterialInstance = UMaterialInstanceDynamic::Create(PuzzleScreenBaseMaterial, this);
+	PuzzleMesh->SetMaterial(1, PuzzleScreenMaterialInstance);
+	
+	//WidgetComponent->SetMaterial(0, )
+	
 	SetActorTickEnabled(false);
 }
 
@@ -83,5 +93,14 @@ void ATHNExperimentationPuzzle::OnInteractEnd(AActor* InitiatorActor)
 		SetActorTickEnabled(false);
 		//UISceneCapture->SetVisibility(false);
 	}
+}
+
+void ATHNExperimentationPuzzle::InitializePuzzleWidget()
+{
+	UE_LOG(LogTemp, Warning, TEXT("InitializePuzzleWidget"));
+	UTHNExperimentationWidget* PuzzleWidget = Cast<UTHNExperimentationWidget>(WidgetComponent->GetWidget());
+	PuzzleWidget->InitializeWidget(WidgetComponent->GetRenderTarget());
+	PuzzleScreenMaterialInstance->SetTextureParameterValue("PuzzleWidget", WidgetComponent->GetRenderTarget());
+	GetWorldTimerManager().ClearTimer(WaitForRenderTargetReadyHandle);
 }
 

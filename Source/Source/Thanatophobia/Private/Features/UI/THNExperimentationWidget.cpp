@@ -3,34 +3,19 @@
 
 #include "Features/UI/THNExperimentationWidget.h"
 
-#include "Components/WidgetComponent.h"
-#include "Features/Puzzles/THNExperimentationPuzzle.h"
-#include "Services/THNGameManagerSubsystem.h"
+#include "Components/Image.h"
 
-void UTHNExperimentationWidget::NativeConstruct()
+void UTHNExperimentationWidget::InitializeWidget(UTextureRenderTarget2D* RT)
 {
-	Super::NativeConstruct();
+	if (RT == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("THN: Experimentation Puzzle Render Target is null!"));
+	}
 	
-	if (UTHNGameManagerSubsystem* GameManger = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>())
-	{
-		if (ATHNExperimentationPuzzle* Puzzle = GameManger->GetExperimentationPuzzle())
-		{
-			if (UTextureRenderTarget2D* buh = Puzzle->GetWidgetRenderTarget())
-			{
-				UE_LOG(LogTemp, Error, TEXT("SUCCESSFULLY INITIALIZED WIDGET"));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("COULD NOT GET RENDER TARGET"));
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("COULD NOT GET PUZZLE"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("COULD NOT GET GAME MANAGER"));
-	}
+	WidgetRenderTarget = RT;
+	GraphBLInstance = UMaterialInstanceDynamic::Create(WaveBaseMaterial, this);
+	Graph_BL_Image->SetBrushFromMaterial(GraphBLInstance);
+	
+	GraphBRInstance = UMaterialInstanceDynamic::Create(WaveBaseMaterial, this);
+	Graph_BR_Image->SetBrushFromMaterial(GraphBRInstance);
 }

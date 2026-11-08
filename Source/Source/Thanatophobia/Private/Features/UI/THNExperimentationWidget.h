@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "THNExperimentationWidget.generated.h"
 
+class UImage;
 /**
  * 
  */
@@ -18,11 +19,21 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterial> WaveBaseMaterial;
 	
-	virtual void NativeConstruct() override;
+	virtual void InitializeWidget(UTextureRenderTarget2D* RT);
+	
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	TObjectPtr<UImage> Graph_BL_Image;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	TObjectPtr<UImage> Graph_BR_Image;
+	
 private:
 	UPROPERTY()
-	TObjectPtr<UMaterialInstance> MaterialInstance;
+	TObjectPtr<UTextureRenderTarget2D> WidgetRenderTarget;
 	
 	UPROPERTY()
-	TObjectPtr<UTextureRenderTarget2D> WidgetRenderTarget;
+	TObjectPtr<UMaterialInstanceDynamic> GraphBLInstance;
+	
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> GraphBRInstance;
 };

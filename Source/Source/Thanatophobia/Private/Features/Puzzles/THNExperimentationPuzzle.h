@@ -67,9 +67,20 @@ private:
 	
 	TObjectPtr<UTHNCameraManagerSubsystem> CameraManagerSubsystem;
 	
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true), Category="Defaults")
+	TObjectPtr<UMaterial> PuzzleScreenBaseMaterial;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialInstanceDynamic> PuzzleScreenMaterialInstance;
+	
+	FTimerHandle WaitForRenderTargetReadyHandle;
+	
 	UFUNCTION()
 	void OnInteract(AActor* InitiatorActor);
 	
 	UFUNCTION()
 	void OnInteractEnd(AActor* InitiatorActor);
+	
+	UFUNCTION()
+	void InitializePuzzleWidget();
 };
