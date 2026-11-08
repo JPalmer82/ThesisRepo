@@ -63,6 +63,10 @@ void ATHNExperimentationPuzzle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	UTHNExperimentationWidget* PuzzleWidget = Cast<UTHNExperimentationWidget>(WidgetComponent->GetWidget());
+	
+	//Clamps maximum amplitude of the sum of waves to ~2.71828
+	WaveBL.Amplitude = FMath::Clamp(WaveBL.Amplitude, -1.35914, 1.35914);
+	WaveBR.Amplitude = FMath::Clamp(WaveBR.Amplitude, -1.35914, 1.35914);
 	PuzzleWidget->UpdateWidget(WaveBL, WaveBR);
 }
 
