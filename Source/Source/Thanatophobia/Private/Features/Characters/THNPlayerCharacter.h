@@ -228,9 +228,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Shooting")
 	int CurrentBulletIndex = 0;
 	
+	UPROPERTY()
 	TArray<bool> BulletChambers = { true, true, true, true, true, true };
 
 public:
+
+	UPROPERTY()
+	int BulletCount = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Killing")
 	float KilledActivationWaitTime = 10.0f;

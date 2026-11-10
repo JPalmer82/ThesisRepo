@@ -462,9 +462,15 @@ void ATHNPlayerCharacter::HandleReloadStartInput(const FInputActionValue& InputA
 	
 	for (bool& i : BulletChambers)
 	{
+		if (i == true)
+		{
+			BulletCount++;
+		}
+
 		i = false;
 	}
 	
+	UE_LOG(LogTemp, Warning, TEXT("BulletCount = %d"), BulletCount);
 	OnRevolverFired.Broadcast(BulletChambers);
 }
 
@@ -577,7 +583,7 @@ void ATHNPlayerCharacter::HandleReloadEndInput(const FInputActionValue& InputAct
 
 void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputActionValue)
 {
-	if (BulletChambers[CurrentBulletIndex] == false)
+	if (BulletChambers[CurrentBulletIndex] == false && BulletCount > 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Loading bullet"))
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Loading bullet"));
@@ -590,6 +596,9 @@ void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputAc
 		{
 			CurrentBulletIndex = 0;
 		}
+
+		BulletCount--;
+
 		UE_LOG(LogTemp, Warning, TEXT("CurrentCylinder = %d"), CurrentBulletIndex)
 		
 		BaseMeshAnimInstance->Montage_JumpToSection("Load", ReloadMontage);
