@@ -67,8 +67,8 @@ void ATHNExperimentationPuzzle::Tick(float DeltaTime)
 	//Clamps maximum amplitude of the sum of waves to ~2.71828
 	WaveBL.Amplitude = FMath::Clamp(WaveBL.Amplitude, -1.35914, 1.35914);
 	WaveBR.Amplitude = FMath::Clamp(WaveBR.Amplitude, -1.35914, 1.35914);
-	WaveBL.Frequency = FMath::Clamp(WaveBL.Frequency, -3.0, 3.0);
-	WaveBR.Frequency = FMath::Clamp(WaveBR.Frequency, -3.0, 3.0);
+	WaveBL.Frequency = FMath::Clamp(WaveBL.Frequency, 0, 5.0);
+	WaveBR.Frequency = FMath::Clamp(WaveBR.Frequency, 0, 5.0);
 	PuzzleWidget->UpdateWidget(WaveBL, WaveBR);
 }
 
