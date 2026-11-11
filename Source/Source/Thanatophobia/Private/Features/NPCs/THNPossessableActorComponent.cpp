@@ -65,7 +65,11 @@ void UTHNPossessableActorComponent::RandomizePossessionPosition()
 	}
 	
 	for (int i = 0; i < NumActiveDronesInBody; i++)
-		ActivePossessionSockets.Add(PossessionSockets[FMath::RandRange(0, PossessionSockets.Num() - 1)]);
+	{
+		//TODO: Check if spot is alreayd occupied
+		int rand = FMath::RandRange(0, PossessionSockets.Num() - 1);
+		ActivePossessionSockets.Add(PossessionSockets[rand]);
+	}
 	
 	AttachDroneToSocket();
 }

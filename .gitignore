@@ -1,5 +1,6 @@
 # Visual Studio 2015 user specific files
 .vs/
+*.sln.DotSettings.user
 
 # Compiled Object files
 *.slo
