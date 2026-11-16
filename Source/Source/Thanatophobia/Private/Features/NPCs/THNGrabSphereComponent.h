@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "THNPossessableCharacter.h"
+
 #include "Components/SphereComponent.h"
 #include "THNGrabSphereComponent.generated.h"
 
@@ -14,6 +17,8 @@ class UTHNGrabSphereComponent : public USphereComponent
 {
 	GENERATED_BODY()
 
+private:
+
 	UFUNCTION()
 	virtual void BeginPlay() override;
 	
@@ -23,5 +28,12 @@ class UTHNGrabSphereComponent : public USphereComponent
 	UFUNCTION() 
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+public:
 	//need a reference to the OwnerEnemy this is attached to as well as their anim instance
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner Enemy")
+	ATHNPossessableCharacter* OwnerEnemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner Enemy Anim Instance")
+	UAnimInstance* OwnerEnemyAnim;
 };
