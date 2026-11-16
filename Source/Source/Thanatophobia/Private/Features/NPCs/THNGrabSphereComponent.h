@@ -22,4 +22,6 @@ class UTHNGrabSphereComponent : public USphereComponent
 
 	UFUNCTION() 
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	//need a reference to the OwnerEnemy this is attached to as well as their anim instance
 };
