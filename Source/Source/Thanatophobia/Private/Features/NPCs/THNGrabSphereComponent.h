@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-#include "THNPossessableCharacter.h"
+#include "Features/Characters/THNPlayerCharacter.h"
 
 #include "Components/SphereComponent.h"
 #include "THNGrabSphereComponent.generated.h"
@@ -32,8 +32,11 @@ public:
 	//need a reference to the OwnerEnemy this is attached to as well as their anim instance
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner Enemy")
-	ATHNPossessableCharacter* OwnerEnemy;
+	class ATHNPossessableCharacter* OwnerEnemy = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner Enemy Anim Instance")
-	UAnimInstance* OwnerEnemyAnim;
+	UAnimInstance* OwnerEnemyAnim = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	ATHNPlayerCharacter* PlayerCharacter = nullptr;
 };

@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "THNGrabSphereComponent.h"
+
 #include "THNPossessableCharacter.generated.h"
 
 class UTHNAnimInstance;
@@ -33,6 +36,9 @@ public:
 	// Called to bind functionality to input
 	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void PlayEnemyGrabAnimation();
+
 
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -48,4 +54,10 @@ private:
 	class UAIPerceptionStimuliSourceComponent* PerceptionStimulusComponent;
 
 	void SetPerceptionStimuliEnabled(bool bStimuliEnabled);
+
+	UPROPERTY(EditDefaultsOnly)
+	UTHNGrabSphereComponent* GrabSphere;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* GrabAnimationMontage;
 };

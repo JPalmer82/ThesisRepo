@@ -33,6 +33,11 @@ ATHNPossessableCharacter::ATHNPossessableCharacter()
 	PerceptionStimulusComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>("PerceptionStimulusComponent");
 	PerceptionStimulusComponent->RegisterForSense(UAISense_Sight::StaticClass());
 	PerceptionStimulusComponent->RegisterForSense(UAISense_Hearing::StaticClass());
+
+	GrabSphere = CreateDefaultSubobject<UTHNGrabSphereComponent>("GrabSphereComponent");
+	GrabSphere->SetupAttachment(GetRootComponent());
+	GrabSphere->OwnerEnemy = this;
+	GrabSphere->OwnerEnemyAnim = NPCAnimInstance;
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +77,11 @@ void ATHNPossessableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATHNPossessableCharacter::PlayEnemyGrabAnimation()
+{
+	NPCAnimInstance->Montage_Play(GrabAnimationMontage);
 }
 
 void ATHNPossessableCharacter::SetPerceptionStimuliEnabled(bool bStimuliEnabled)

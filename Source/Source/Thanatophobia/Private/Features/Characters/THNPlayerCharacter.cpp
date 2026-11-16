@@ -114,6 +114,12 @@ void ATHNPlayerCharacter::StopAllMontages()
 	BaseMeshAnimInstance->StopAllMontages(.2f);
 }
 
+void ATHNPlayerCharacter::PlayGrabbedAnimation()
+{
+	BaseMeshAnimInstance->Montage_Play(GrabbedMontage);
+	WorldSpaceAnimInstance->Montage_Play(GrabbedMontage);
+}
+
 void ATHNPlayerCharacter::OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("THN: New State: %s\n Old State: %s"), *UEnum::GetValueAsString(NewGameState), *UEnum::GetValueAsString(PreviousGameState));

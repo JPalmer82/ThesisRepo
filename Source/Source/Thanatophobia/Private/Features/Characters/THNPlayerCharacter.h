@@ -64,6 +64,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	FOnRevolverFiredDelegate OnRevolverFired;
+
+	UFUNCTION()
+	void PlayGrabbedAnimation();
 	
 private:
 	UFUNCTION()
@@ -83,6 +86,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Animation")
 	UAnimMontage* CrouchMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* GrabbedMontage;
 
 	UPROPERTY()
 	UTHNAnimInstance* WorldSpaceAnimInstance;

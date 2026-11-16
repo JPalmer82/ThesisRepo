@@ -2,12 +2,19 @@
 
 
 #include "Features/NPCs/THNGrabSphereComponent.h"
+#include "THNPossessableCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 void UTHNGrabSphereComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	OnComponentBeginOverlap.AddDynamic(this, &UTHNGrabSphereComponent::OnOverlapBegin);
 	OnComponentEndOverlap.AddDynamic(this, &UTHNGrabSphereComponent::OnOverlapEnd);
+
+	if (ATHNPlayerCharacter* tempPlayer = Cast<ATHNPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	{
+		PlayerCharacter = tempPlayer;
+	}
 }
 
 void UTHNGrabSphereComponent::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
