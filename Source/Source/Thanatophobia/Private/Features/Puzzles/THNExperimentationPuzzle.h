@@ -58,6 +58,12 @@ public:
 	UPROPERTY(EditAnywhere, Category="Debug")
 	FTHNExperimentationWave WaveBR;
 	
+	UPROPERTY(EditAnywhere, Category="Debug")
+	FTHNExperimentationWave TargetWaveBL = FTHNExperimentationWave(-1.35914, 1.545478, 0);
+	
+	UPROPERTY(EditAnywhere, Category="Debug")
+	FTHNExperimentationWave TargetWaveBR = FTHNExperimentationWave(.725554, 4.064833, 0);
+	
 private:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> Root;
@@ -89,4 +95,6 @@ private:
 	
 	UFUNCTION()
 	void InitializePuzzleWidget();
+	
+	void CheckSolution();
 };

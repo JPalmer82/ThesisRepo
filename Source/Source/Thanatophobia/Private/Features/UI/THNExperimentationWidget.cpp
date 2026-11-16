@@ -22,6 +22,14 @@ void UTHNExperimentationWidget::InitializeWidget(UTextureRenderTarget2D* RT)
 	
 	GraphSumInstance = UMaterialInstanceDynamic::Create(WaveSumBaseMaterial, this);
 	Graph_Sum_Image->SetBrushFromMaterial(GraphSumInstance);
+	
+	GraphBLInstance->SetScalarParameterValue("TargetAmplitude", -1.35914);
+	GraphBLInstance->SetScalarParameterValue("TargetFrequency", 1.545478);
+	GraphBLInstance->SetScalarParameterValue("TargetPhase", 0);
+	
+	GraphBRInstance->SetScalarParameterValue("TargetAmplitude", 0.725554);
+	GraphBRInstance->SetScalarParameterValue("TargetFrequency", 4.064833);
+	GraphBRInstance->SetScalarParameterValue("TargetPhase", 0);
 }
 
 void UTHNExperimentationWidget::UpdateWidget(FTHNExperimentationWave WaveBL, FTHNExperimentationWave WaveBR)

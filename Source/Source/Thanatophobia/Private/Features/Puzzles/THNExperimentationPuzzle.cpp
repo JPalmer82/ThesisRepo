@@ -53,7 +53,7 @@ void ATHNExperimentationPuzzle::BeginPlay()
 	
 	PuzzleScreenMaterialInstance = UMaterialInstanceDynamic::Create(PuzzleScreenBaseMaterial, this);
 	PuzzleMesh->SetMaterial(1, PuzzleScreenMaterialInstance);
-
+	
 	SetActorTickEnabled(false);
 }
 
@@ -69,6 +69,9 @@ void ATHNExperimentationPuzzle::Tick(float DeltaTime)
 	WaveBR.Amplitude = FMath::Clamp(WaveBR.Amplitude, -1.35914, 1.35914);
 	WaveBL.Frequency = FMath::Clamp(WaveBL.Frequency, 0, 5.0);
 	WaveBR.Frequency = FMath::Clamp(WaveBR.Frequency, 0, 5.0);
+	
+	CheckSolution();
+	
 	PuzzleWidget->UpdateWidget(WaveBL, WaveBR);
 }
 
@@ -109,5 +112,19 @@ void ATHNExperimentationPuzzle::InitializePuzzleWidget()
 	PuzzleWidget->InitializeWidget(WidgetComponent->GetRenderTarget());
 	PuzzleScreenMaterialInstance->SetTextureParameterValue("PuzzleWidget", WidgetComponent->GetRenderTarget());
 	GetWorldTimerManager().ClearTimer(WaitForRenderTargetReadyHandle);
+}
+
+void ATHNExperimentationPuzzle::CheckSolution()
+{
+	float x = 0;
+	
+	float targetSumVal =
+		TargetWaveBL.Amplitude * sin(TargetWaveBL.Frequency * x + TargetWaveBL.Phase) +
+			TargetWaveBR.Amplitude * sin(TargetWaveBR.Frequency * x + TargetWaveBR.Phase);
+	
+	float actualSumVal = WaveBL.Amplitude * sin(WaveBL.Frequency * x + WaveBL.Phase) +
+			WaveBR.Amplitude * sin(WaveBR.Frequency * x + WaveBR.Phase);
+	 
+	UE_LOG(LogTemp, Warning, TEXT("Target Sum: %f\nActual Sum: %f\nDifference: %f"), targetSumVal, actualSumVal, targetSumVal - actualSumVal);
 }
 
