@@ -34,9 +34,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner Enemy")
 	class ATHNPossessableCharacter* OwnerEnemy = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner Enemy Anim Instance")
-	UAnimInstance* OwnerEnemyAnim = nullptr;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	ATHNPlayerCharacter* PlayerCharacter = nullptr;
 };

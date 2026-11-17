@@ -67,6 +67,9 @@ public:
 
 	UFUNCTION()
 	void PlayGrabbedAnimation();
+
+	UFUNCTION()
+	void OnMontageFinished(UAnimMontage* Montage, bool bInterrupted);
 	
 private:
 	UFUNCTION()
@@ -246,6 +249,9 @@ public:
 	float KilledActivationWaitTime = 10.0f;
 
 	FTimerHandle KilledEnemyTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy Grabbing Player")
+	class ATHNPossessableCharacter* EnemyGrabbing = nullptr;
 
 	/*****************************************************/
 	/*                    Pause Menu                     */

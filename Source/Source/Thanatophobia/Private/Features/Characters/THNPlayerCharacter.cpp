@@ -1,5 +1,3 @@
-
-
 #include "Features/Characters/THNPlayerCharacter.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -41,6 +39,7 @@ ATHNPlayerCharacter::ATHNPlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	GetMesh()->SetupAttachment(GetRootComponent());
 	GetMesh()->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
@@ -116,8 +115,20 @@ void ATHNPlayerCharacter::StopAllMontages()
 
 void ATHNPlayerCharacter::PlayGrabbedAnimation()
 {
-	BaseMeshAnimInstance->Montage_Play(GrabbedMontage);
-	WorldSpaceAnimInstance->Montage_Play(GrabbedMontage);
+	SetActorTickEnabled(true);
+	if (IsValid(GrabbedMontage))
+	{
+		BaseMeshAnimInstance->Montage_Play(GrabbedMontage);
+		WorldSpaceAnimInstance->Montage_Play(GrabbedMontage);
+		BaseMeshAnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnMontageFinished);
+	}
+}
+
+void ATHNPlayerCharacter::OnMontageFinished(UAnimMontage* Montage, bool bInterrupted)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Enemy Grabbed Player!"))
+	SetActorTickEnabled(false);
+	UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuLevel"));
 }
 
 void ATHNPlayerCharacter::OnGameStateChanged(EGameState PreviousGameState, EGameState NewGameState)
@@ -218,7 +229,17 @@ void ATHNPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//UE_LOG(LogTemp, Log, TEXT("%d"), CurrentBulletIndex);
+	if (IsValid(EnemyGrabbing))
+	{
+		FVector PlayerLocation = GetActorLocation();
+		FVector EnemyLocation = EnemyGrabbing->GetActorLocation();
+		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, EnemyLocation);
+		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 15.0);
+		bUseControllerRotationYaw = false;
+		SetActorRotation(NewRotation);
+		GameManagerSubsystem->TrySwitchGameState(EGameState::Paused);
+		SwitchToMappingContext(ReloadInputMappingContext);
+	}
 }
 
 // Called to bind functionality to input

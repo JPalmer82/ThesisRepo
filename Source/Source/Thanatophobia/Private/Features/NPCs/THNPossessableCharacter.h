@@ -55,7 +55,9 @@ private:
 
 	void SetPerceptionStimuliEnabled(bool bStimuliEnabled);
 
-	UPROPERTY(EditDefaultsOnly)
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grab Sphere")
 	UTHNGrabSphereComponent* GrabSphere;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")

@@ -36,8 +36,6 @@ ATHNPossessableCharacter::ATHNPossessableCharacter()
 
 	GrabSphere = CreateDefaultSubobject<UTHNGrabSphereComponent>("GrabSphereComponent");
 	GrabSphere->SetupAttachment(GetRootComponent());
-	GrabSphere->OwnerEnemy = this;
-	GrabSphere->OwnerEnemyAnim = NPCAnimInstance;
 }
 
 // Called when the game starts or when spawned
@@ -49,6 +47,10 @@ void ATHNPossessableCharacter::BeginPlay()
 	ProbeNPCAnimInstance = Cast<UTHNAnimInstance>(ProbeViewMesh->GetAnimInstance());
 	NPCAnimInstance->IsDead = false;
 	ProbeNPCAnimInstance->IsDead = false;
+	if (IsValid(GrabSphere))
+	{
+		GrabSphere->OwnerEnemy = this;
+	}
 
 	PerceptionStimulusComponent->RegisterWithPerceptionSystem();
 
@@ -81,7 +83,10 @@ void ATHNPossessableCharacter::Tick(float DeltaTime)
 
 void ATHNPossessableCharacter::PlayEnemyGrabAnimation()
 {
-	NPCAnimInstance->Montage_Play(GrabAnimationMontage);
+	if (IsValid(GrabAnimationMontage))
+	{
+		NPCAnimInstance->Montage_Play(GrabAnimationMontage);
+	}
 }
 
 void ATHNPossessableCharacter::SetPerceptionStimuliEnabled(bool bStimuliEnabled)

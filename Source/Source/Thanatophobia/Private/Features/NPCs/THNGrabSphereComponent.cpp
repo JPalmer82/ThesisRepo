@@ -3,7 +3,9 @@
 
 #include "Features/NPCs/THNGrabSphereComponent.h"
 #include "THNPossessableCharacter.h"
+#include "THNPossessableActorComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UTHNGrabSphereComponent::BeginPlay()
 {
@@ -20,6 +22,13 @@ void UTHNGrabSphereComponent::BeginPlay()
 void UTHNGrabSphereComponent::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	//Tell Owner and OtherActor's animinstances to play the grab animation of whatever is grabbing the player
+	if (OtherActor == PlayerCharacter && IsValid(PlayerCharacter) && OwnerEnemy->GetComponentByClass<UTHNPossessableActorComponent>()->bDoesDroneExist)
+	{
+		PlayerCharacter->EnemyGrabbing = OwnerEnemy;
+
+		OwnerEnemy->PlayEnemyGrabAnimation();
+		PlayerCharacter->PlayGrabbedAnimation();
+	}
 }
 
 void UTHNGrabSphereComponent::OnOverlapEnd(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
