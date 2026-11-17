@@ -114,17 +114,27 @@ void ATHNExperimentationPuzzle::InitializePuzzleWidget()
 	GetWorldTimerManager().ClearTimer(WaitForRenderTargetReadyHandle);
 }
 
-void ATHNExperimentationPuzzle::CheckSolution()
+bool ATHNExperimentationPuzzle::CheckSolution() const
 {
-	float x = 0;
+	float totalDifference = 0.f;
 	
-	float targetSumVal =
-		TargetWaveBL.Amplitude * sin(TargetWaveBL.Frequency * x + TargetWaveBL.Phase) +
-			TargetWaveBR.Amplitude * sin(TargetWaveBR.Frequency * x + TargetWaveBR.Phase);
+	for (int i = 0; i < 10; i++)
+	{
+		float x = (static_cast<float>(i) / 10) * TWO_PI;
+		float targetSumVal =
+			TargetWaveBL.Amplitude * sin(TargetWaveBL.Frequency * x + TargetWaveBL.Phase) +
+				TargetWaveBR.Amplitude * sin(TargetWaveBR.Frequency * x + TargetWaveBR.Phase);
+		
+		float actualSumVal = WaveBL.Amplitude * sin(WaveBL.Frequency * x + WaveBL.Phase) +
+				WaveBR.Amplitude * sin(WaveBR.Frequency * x + WaveBR.Phase);
+		
+		if (actualSumVal - targetSumVal > .5)
+			return false;
+		
+		totalDifference += actualSumVal - targetSumVal;
+	}
 	
-	float actualSumVal = WaveBL.Amplitude * sin(WaveBL.Frequency * x + WaveBL.Phase) +
-			WaveBR.Amplitude * sin(WaveBR.Frequency * x + WaveBR.Phase);
-	 
-	UE_LOG(LogTemp, Warning, TEXT("Target Sum: %f\nActual Sum: %f\nDifference: %f"), targetSumVal, actualSumVal, targetSumVal - actualSumVal);
+	UE_LOG(LogTemp, Warning, TEXT("PASSED - Difference: %f"), totalDifference);
+	return true;
 }
 

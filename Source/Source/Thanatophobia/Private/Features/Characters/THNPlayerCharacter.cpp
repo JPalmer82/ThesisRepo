@@ -611,10 +611,15 @@ void ATHNPlayerCharacter::HandleLoadBulletInput(const FInputActionValue& InputAc
 		WorldSpaceAnimInstance->Montage_JumpToSection("Load", ReloadMontage);
 		//RevolverAnimInstance->Montage_JumpToSection("Load", RevolverReloadMontage);
 	}
-	else
+	else if (BulletChambers[CurrentBulletIndex] == true)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bullet Already In the Chamber!"))
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Bullet Already In the Chamber!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No bullets left!"))
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("No bullets left!"));
 	}
 	
 	OnRevolverFired.Broadcast(BulletChambers);

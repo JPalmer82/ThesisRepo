@@ -96,5 +96,5 @@ private:
 	UFUNCTION()
 	void InitializePuzzleWidget();
 	
-	void CheckSolution();
+	bool CheckSolution() const;
 };
