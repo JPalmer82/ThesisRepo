@@ -57,6 +57,9 @@ private:
 
 public:
 
+	UPROPERTY(EditDefaultsOnly)
+	bool bIsGrabbing = false;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grab Sphere")
 	UTHNGrabSphereComponent* GrabSphere;
 

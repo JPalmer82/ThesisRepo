@@ -118,6 +118,11 @@ void ATHNPlayerCharacter::StopAllMontages()
 
 void ATHNPlayerCharacter::PlayGrabbedAnimation()
 {
+	if (bHasBeenGrabbed)
+	{
+		return;
+	}
+
 	SetActorTickEnabled(true);
 	if (IsValid(GrabbedMontage))
 	{
@@ -129,6 +134,11 @@ void ATHNPlayerCharacter::PlayGrabbedAnimation()
 
 void ATHNPlayerCharacter::OnMontageFinished(UAnimMontage* Montage, bool bInterrupted)
 {
+	if (bInterrupted)
+	{
+		return;
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Grabbed Player!"))
 	SetActorTickEnabled(false);
 	UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuLevel"));
