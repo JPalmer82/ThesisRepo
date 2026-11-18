@@ -24,9 +24,11 @@
 #include "Features/NPCs/THNPossessableCharacter.h"
 #include "Features/Props/THNRevolver.h"
 #include "Features/Puzzles/THNDataPoisoningPuzzle.h"
+#include "Features/Puzzles/THNExperimentationPuzzle.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Features/Puzzles/THNNeuronPuzzleManager.h"
+#include "Features/Puzzles/THNPuzzleInfoComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Source/Thanatophobia/Thanatophobia.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
@@ -96,6 +98,7 @@ void ATHNPlayerCharacter::SwitchToMappingContext(UInputMappingContext* NewInputM
 		{
 			EnhancedInputSubsystem->ClearAllMappings();
 			EnhancedInputSubsystem->AddMappingContext(NewInputMappingContext, 0);
+			UE_LOG(LogTemp, Warning, TEXT("THN: Switching to %s"), *NewInputMappingContext->GetName());
 		}
 	}
 }
@@ -293,7 +296,15 @@ void ATHNPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(RotateVerticalInputAction, ETriggerEvent::Canceled, this, &ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput);
 		
 		//Office Puzzle
-		EnhancedInputComponent->BindAction(ClickInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleClickInput);
+		EnhancedInputComponent->BindAction(OfficeClickInputAction, ETriggerEvent::Started, this, &ATHNPlayerCharacter::HandleOfficePuzzleClickInput);
+		
+		//Experimentation Puzzle
+		EnhancedInputComponent->BindAction(ClickStartInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleExperimentationClickStartInput);
+		EnhancedInputComponent->BindAction(ClickEndInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleExperimentationClickEndInput);
+		EnhancedInputComponent->BindAction(RightClickStartInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleFreqAdjustmentStartInput);
+		EnhancedInputComponent->BindAction(RightClickEndInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleFreqAdjustmentEndInput);
+		EnhancedInputComponent->BindAction(PhaseAmpAdjustmentInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleWaveAdjustmentInput);
+		EnhancedInputComponent->BindAction(FreqAdjustmentInputAction, ETriggerEvent::Triggered, this, &ATHNPlayerCharacter::HandleFreqAdjustmentInput);
 	}
 }
 
@@ -309,6 +320,9 @@ void ATHNPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionVa
 
 void ATHNPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValue)
 {
+	if (IsLookFrozen)
+		return;
+	
 	//TODO: Add IsCameraControllable bool in the Camera Service to check here
 	FVector2D LookInput = InputActionValue.Get<FVector2D>();
 	
@@ -532,6 +546,15 @@ void ATHNPlayerCharacter::HandleInteractInput(const FInputActionValue& InputActi
 				Cast<ITHNInteractableInterface>(Hit.GetComponent())->OnInteract(this);
 				CurrentInteractComponent = Hit.GetComponent();
 				IsInteracting = true;
+				
+				if (AActor* HitActor = Hit.GetActor())
+				{
+					if (UTHNPuzzleInfoComponent* PuzzleInfoComponent = HitActor->GetComponentByClass<UTHNPuzzleInfoComponent>())
+					{
+						if (IsValid(PuzzleInfoComponent->PuzzleInfo.InputContext))
+							SwitchToMappingContext(PuzzleInfoComponent->PuzzleInfo.InputContext);
+					}
+				}
 			}
 		}
 	}
@@ -742,10 +765,141 @@ void ATHNPlayerCharacter::HandlePuzzleRotateVerticalEndInput(const FInputActionV
 	UE_LOG(LogTemp, Warning, TEXT("Vertical: %f, %f"), RotateInputVector.X, RotateInputVector.Y);
 }
 
-void ATHNPlayerCharacter::HandleClickInput(const FInputActionValue& InputActionValue)
+void ATHNPlayerCharacter::HandleOfficePuzzleClickInput(const FInputActionValue& InputActionValue)
 {
 	//TODO: Store a reference to the puzzles in the game instance to retrieve easier
 	TArray<AActor*> DataPoisoningPuzzles;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATHNDataPoisoningPuzzle::StaticClass(), DataPoisoningPuzzles);
 	Cast<ATHNDataPoisoningPuzzle>(DataPoisoningPuzzles[0])->OnClickDelegate.Broadcast();
+}
+
+void ATHNPlayerCharacter::HandleExperimentationClickStartInput(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("CLICK START"));
+	IsLookFrozen = true;
+	IsAdjustingPhaseAmp = true;
+	
+	UCameraComponent* Cam = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>()->GetCurrentCamera();
+	FVector LineTraceStartPoint = Cam->GetComponentLocation();
+	FVector LineTraceEndPoint = LineTraceStartPoint + Cam->GetForwardVector() * LineTraceDistance;
+
+	FHitResult Hit;
+	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
+	
+	bool bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Interactable, TraceParams);
+	//DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
+	
+	if (bIsHit && Hit.GetComponent())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("THN: HIT COMPONENT: %s"), *Hit.GetComponent()->GetName());
+		if (Hit.GetComponent()->GetName() == "WaveBLInteractionBox")
+		{
+			ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+			if (Puzzle)
+			{
+				Puzzle->SetBLWaveActive(true);
+				Puzzle->SetBRWaveActive(false);
+			}
+		}
+		else if (Hit.GetComponent()->GetName() == "WaveBRInteractionBox")
+		{
+			ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+			if (Puzzle)
+			{
+				Puzzle->SetBLWaveActive(false);
+				Puzzle->SetBRWaveActive(true);
+			}
+		}
+	}
+}
+
+void ATHNPlayerCharacter::HandleExperimentationClickEndInput(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("CLICK END"));
+	IsLookFrozen = false;
+	IsAdjustingPhaseAmp = false;
+	ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+	if (Puzzle)
+	{
+		Puzzle->SetBLWaveActive(false);
+		Puzzle->SetBRWaveActive(false);
+	}
+}
+
+void ATHNPlayerCharacter::HandleWaveAdjustmentInput(const FInputActionValue& InputActionValue)
+{
+	if (!IsLookFrozen)
+		return;
+	
+	if (IsAdjustingPhaseAmp)
+	{
+		ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+		if (Puzzle)
+			Puzzle->AdjustPhaseAmp(InputActionValue.Get<FVector2D>().X, InputActionValue.Get<FVector2D>().Y);
+	}
+	else if (IsAdjustingFrequency)
+	{
+		ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+		if (Puzzle)
+			Puzzle->AdjustFrequency(InputActionValue.Get<FVector2D>().X);
+	}
+}
+
+void ATHNPlayerCharacter::HandleFreqAdjustmentInput(const FInputActionValue& InputActionValue)
+{
+	if (!IsLookFrozen)
+		return;
+}
+
+void ATHNPlayerCharacter::HandleFreqAdjustmentStartInput(const FInputActionValue& InputActionValue)
+{
+	IsLookFrozen = true;
+	IsAdjustingFrequency = true;
+	
+	UCameraComponent* Cam = GetGameInstance()->GetSubsystem<UTHNCameraManagerSubsystem>()->GetCurrentCamera();
+	FVector LineTraceStartPoint = Cam->GetComponentLocation();
+	FVector LineTraceEndPoint = LineTraceStartPoint + Cam->GetForwardVector() * LineTraceDistance;
+
+	FHitResult Hit;
+	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
+	
+	bool bIsHit = GetWorld()->LineTraceSingleByChannel(Hit, LineTraceStartPoint, LineTraceEndPoint, ECC_Interactable, TraceParams);
+	DrawDebugLine(GetWorld(), LineTraceStartPoint, LineTraceEndPoint, FColor::Red, false, 2.0f);
+	
+	if (bIsHit && Hit.GetComponent())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("THN: HIT COMPONENT: %s"), *Hit.GetComponent()->GetName());
+		if (Hit.GetComponent()->GetName() == "WaveBLInteractionBox")
+		{
+			ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+			if (Puzzle)
+			{
+				Puzzle->SetBLWaveActive(true);
+				Puzzle->SetBRWaveActive(false);
+			}
+		}
+		else if (Hit.GetComponent()->GetName() == "WaveBRInteractionBox")
+		{
+			ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+			if (Puzzle)
+			{
+				Puzzle->SetBLWaveActive(false);
+				Puzzle->SetBRWaveActive(true);
+			}
+		}
+	}
+}
+
+void ATHNPlayerCharacter::HandleFreqAdjustmentEndInput(const FInputActionValue& InputActionValue)
+{
+	IsLookFrozen = false;
+	IsAdjustingFrequency = false;
+	ATHNExperimentationPuzzle* Puzzle = GetGameInstance()->GetSubsystem<UTHNGameManagerSubsystem>()->GetExperimentationPuzzle();
+	if (Puzzle)
+	{
+		Puzzle->SetBLWaveActive(false);
+		Puzzle->SetBRWaveActive(false);
+	}
 }

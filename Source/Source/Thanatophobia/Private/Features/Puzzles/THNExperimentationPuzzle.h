@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "THNExperimentationPuzzle.generated.h"
 
+class UBoxComponent;
 class UWidgetComponent;
 class UCameraComponent;
 class UTHNPuzzleInfoComponent;
@@ -59,10 +60,18 @@ public:
 	FTHNExperimentationWave WaveBR;
 	
 	UPROPERTY(EditAnywhere, Category="Debug")
-	FTHNExperimentationWave TargetWaveBL = FTHNExperimentationWave(-1.35914, 1.545478, 0);
+	FTHNExperimentationWave TargetWaveBL = FTHNExperimentationWave(.481618, -3.597067, -8.766235);
 	
 	UPROPERTY(EditAnywhere, Category="Debug")
-	FTHNExperimentationWave TargetWaveBR = FTHNExperimentationWave(.725554, 4.064833, 0);
+	FTHNExperimentationWave TargetWaveBR = FTHNExperimentationWave(.777618, 2.438537, 7.079522);
+	
+	void AdjustPhaseAmp(float PhaseDelta, float AmplitudeDelta);
+	void AdjustFrequency(float FrequencyDelta);
+	void SetBLWaveActive(bool Active);
+	void SetBRWaveActive(bool Active);
+	
+	UPROPERTY(EditAnywhere, Category="Settings")
+	float AdjustmentSensitivity = .5f;
 	
 private:
 	UPROPERTY()
@@ -73,6 +82,24 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UTHNInteractionBoxComponent> InteractionBox;
+	
+	// UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	// TObjectPtr<UBoxComponent> WaveSwitcherCollider;
+	//
+	// UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	// TObjectPtr<UBoxComponent> AmplitudeCollider;
+	//
+	// UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	// TObjectPtr<UBoxComponent> FrequencyCollider;
+	//
+	// UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	// TObjectPtr<UBoxComponent> PhaseCollider;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UBoxComponent> WaveBLInteractionBox;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UBoxComponent> WaveBRInteractionBox;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UTHNPuzzleInfoComponent> PuzzleInfoComponent;
@@ -87,6 +114,10 @@ private:
 	
 	FTimerHandle WaitForRenderTargetReadyHandle;
 	
+	bool BLWaveActive = false;
+	bool BRWaveActive = false;
+	bool IsPuzzleComplete = false;
+	
 	UFUNCTION()
 	void OnInteract(AActor* InitiatorActor);
 	
@@ -96,5 +127,5 @@ private:
 	UFUNCTION()
 	void InitializePuzzleWidget();
 	
-	bool CheckSolution() const;
+	bool CheckSolution();
 };

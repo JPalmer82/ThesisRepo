@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputMappingContext.h"
 #include "Components/ActorComponent.h"
 #include "Camera/CameraComponent.h"
 #include "THNPuzzleInfoComponent.generated.h"
@@ -11,6 +12,7 @@ struct FPuzzleInfo
 {
 	FQuat InitialCameraRotation;
 	UCameraComponent* Camera;
+	UInputMappingContext* InputContext;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -28,4 +30,7 @@ protected:
 
 public:	
 	FPuzzleInfo PuzzleInfo;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UInputMappingContext> PuzzleInputMappingContext;
 };

@@ -26,4 +26,7 @@ public:
 	
 	virtual void OnInteract(AActor* InitiatorActor) override;
 	virtual void OnInteractEnd(AActor* InitiatorActor) override;
+	
+	void DisableInteraction();
+	void EnableInteraction();
 };

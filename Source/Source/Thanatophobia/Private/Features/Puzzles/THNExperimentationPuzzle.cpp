@@ -11,6 +11,7 @@
 #include "Features/UI/THNExperimentationWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Services/THNGameManagerSubsystem.h"
+#include "Source/Thanatophobia/Thanatophobia.h"
 #include "Utility/THNInteractionBoxComponent.h"
 
 class UTHNPuzzleInfoComponent;
@@ -30,6 +31,36 @@ ATHNExperimentationPuzzle::ATHNExperimentationPuzzle()
 	InteractionBox->SetupAttachment(RootComponent);
 	InteractionBox->OnBoxInteract.AddUniqueDynamic(this, &ATHNExperimentationPuzzle::OnInteract);
 	InteractionBox->OnBoxInteractEnd.AddUniqueDynamic(this, &ATHNExperimentationPuzzle::OnInteractEnd);
+	
+	WaveBLInteractionBox = CreateDefaultSubobject<UBoxComponent>("WaveBLInteractionBox");
+	WaveBRInteractionBox = CreateDefaultSubobject<UBoxComponent>("WaveBRInteractionBox");
+	WaveBLInteractionBox->SetupAttachment(RootComponent);
+	WaveBRInteractionBox->SetupAttachment(RootComponent);
+	WaveBLInteractionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WaveBRInteractionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WaveBLInteractionBox->SetCollisionResponseToChannel(ECC_Interactable, ECR_Block);
+	WaveBRInteractionBox->SetCollisionResponseToChannel(ECC_Interactable, ECR_Block);
+	
+	//Adjustment buttons
+	// WaveSwitcherCollider = CreateDefaultSubobject<UBoxComponent>("WaveSwitcherCollider");
+	// AmplitudeCollider = CreateDefaultSubobject<UBoxComponent>("AmplitudeCollider");
+	// FrequencyCollider = CreateDefaultSubobject<UBoxComponent>("FrequencyCollider");
+	// PhaseCollider = CreateDefaultSubobject<UBoxComponent>("PhaseCollider");
+	//
+	// WaveSwitcherCollider->SetupAttachment(RootComponent);
+	// AmplitudeCollider->SetupAttachment(RootComponent);
+	// FrequencyCollider->SetupAttachment(RootComponent);
+	// PhaseCollider->SetupAttachment(RootComponent);
+	//
+	// WaveSwitcherCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
+	// AmplitudeCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
+	// FrequencyCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
+	// PhaseCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
+	//
+	// WaveSwitcherCollider->SetCollisionResponseToChannel(ECC_Interactable, ECR_Ignore);
+	// AmplitudeCollider->SetCollisionResponseToChannel(ECC_Interactable, ECR_Ignore);
+	// FrequencyCollider->SetCollisionResponseToChannel(ECC_Interactable, ECR_Ignore);
+	// PhaseCollider->SetCollisionResponseToChannel(ECC_Interactable, ECR_Ignore);
 	
 	PuzzleInfoComponent = CreateDefaultSubobject<UTHNPuzzleInfoComponent>("PuzzleInfoComponent");
 	
@@ -67,17 +98,55 @@ void ATHNExperimentationPuzzle::Tick(float DeltaTime)
 	//Clamps maximum amplitude of the sum of waves to ~2.71828
 	WaveBL.Amplitude = FMath::Clamp(WaveBL.Amplitude, -1.35914, 1.35914);
 	WaveBR.Amplitude = FMath::Clamp(WaveBR.Amplitude, -1.35914, 1.35914);
-	WaveBL.Frequency = FMath::Clamp(WaveBL.Frequency, 0, 5.0);
-	WaveBR.Frequency = FMath::Clamp(WaveBR.Frequency, 0, 5.0);
+	WaveBL.Frequency = FMath::Clamp(WaveBL.Frequency, -5.f, 5.0);
+	WaveBR.Frequency = FMath::Clamp(WaveBR.Frequency, -5.f, 5.0);
 	
-	CheckSolution();
-	
-	PuzzleWidget->UpdateWidget(WaveBL, WaveBR);
+	if (!IsPuzzleComplete)
+	{
+		CheckSolution();
+		PuzzleWidget->UpdateWidget(WaveBL, WaveBR);
+	}
 }
 
 UTextureRenderTarget2D* ATHNExperimentationPuzzle::GetWidgetRenderTarget()
 {
 	return WidgetComponent->GetRenderTarget();
+}
+
+void ATHNExperimentationPuzzle::AdjustPhaseAmp(float PhaseDelta, float AmplitudeDelta)
+{
+	if (BLWaveActive)
+	{
+		WaveBL.Phase += PhaseDelta * AdjustmentSensitivity;
+		WaveBL.Amplitude += AmplitudeDelta * AdjustmentSensitivity;
+	}
+	else if (BRWaveActive)
+	{
+		WaveBR.Phase += PhaseDelta * AdjustmentSensitivity;
+		WaveBR.Amplitude += AmplitudeDelta * AdjustmentSensitivity;
+	}
+}
+
+void ATHNExperimentationPuzzle::AdjustFrequency(float FrequencyDelta)
+{
+	if (BLWaveActive)
+	{
+		WaveBL.Frequency += FrequencyDelta * AdjustmentSensitivity;
+	}
+	else if (BRWaveActive)
+	{
+		WaveBR.Frequency += FrequencyDelta * AdjustmentSensitivity;
+	}
+}
+
+void ATHNExperimentationPuzzle::SetBLWaveActive(bool Active)
+{
+	BLWaveActive = Active;
+}
+
+void ATHNExperimentationPuzzle::SetBRWaveActive(bool Active)
+{
+	BRWaveActive = Active;
 }
 
 void ATHNExperimentationPuzzle::OnInteract(AActor* InitiatorActor)
@@ -88,7 +157,7 @@ void ATHNExperimentationPuzzle::OnInteract(AActor* InitiatorActor)
 		ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		CameraManagerSubsystem->LookAtTargetWithRadius(PlayerController, this, 45, GetComponentByClass<UTHNPuzzleInfoComponent>()->PuzzleInfo);
 		SetActorTickEnabled(true);
-		//UISceneCapture->SetVisibility(true);
+		InteractionBox->DisableInteraction();
 	}
 }
 
@@ -101,7 +170,7 @@ void ATHNExperimentationPuzzle::OnInteractEnd(AActor* InitiatorActor)
 		ATHNPlayerController* PlayerController = Cast<ATHNPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		CameraManagerSubsystem->ReturnToDefaultCamera(PlayerController);
 		SetActorTickEnabled(false);
-		//UISceneCapture->SetVisibility(false);
+		InteractionBox->EnableInteraction();
 	}
 }
 
@@ -114,7 +183,7 @@ void ATHNExperimentationPuzzle::InitializePuzzleWidget()
 	GetWorldTimerManager().ClearTimer(WaitForRenderTargetReadyHandle);
 }
 
-bool ATHNExperimentationPuzzle::CheckSolution() const
+bool ATHNExperimentationPuzzle::CheckSolution()
 {
 	float totalDifference = 0.f;
 	
@@ -131,10 +200,17 @@ bool ATHNExperimentationPuzzle::CheckSolution() const
 		if (actualSumVal - targetSumVal > .5)
 			return false;
 		
-		totalDifference += actualSumVal - targetSumVal;
+		totalDifference += FMath::Abs(actualSumVal - targetSumVal);
 	}
 	
+	//Check that frequencies are in correct direction
+	if (WaveBL.Frequency * TargetWaveBL.Frequency < 0.f || WaveBR.Frequency * TargetWaveBR.Frequency < 0.f || totalDifference > .8)
+	{
+		return false;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("PASSED - Difference: %f"), totalDifference);
+	GEngine->AddOnScreenDebugMessage(0, 8, FColor::Red, TEXT("PUZZLE COMPLETE"));
+	IsPuzzleComplete = true;
 	return true;
 }
 

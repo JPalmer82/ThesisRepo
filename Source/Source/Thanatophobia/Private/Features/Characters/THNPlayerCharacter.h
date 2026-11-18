@@ -152,6 +152,19 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Controls")
 	UInputAction* PauseInputAction;
+	
+	//Experimentation Puzzle
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* ClickStartInputAction;
+	
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* ClickEndInputAction;
+	
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* RightClickStartInputAction;
+	
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* RightClickEndInputAction;
 
 	//Reload Actions
 	UPROPERTY(EditAnywhere, Category = "Controls")
@@ -184,7 +197,13 @@ private:
 	
 	//Office Puzzle
 	UPROPERTY(EditAnywhere, Category = "Controls")
-	UInputAction* ClickInputAction;
+	UInputAction* OfficeClickInputAction;
+	
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* PhaseAmpAdjustmentInputAction;
+		
+	UPROPERTY(EditAnywhere, Category = "Controls")
+	UInputAction* FreqAdjustmentInputAction;
 	
 	//Revolver
 	UPROPERTY(EditAnywhere, Category="Reload")
@@ -297,7 +316,15 @@ private:
 	void HandlePuzzleRotateVerticalEndInput(const FInputActionValue& InputActionValue);
 	
 	//Office Puzzle
-	void HandleClickInput(const FInputActionValue& InputActionValue);
+	void HandleOfficePuzzleClickInput(const FInputActionValue& InputActionValue);
+	
+	//Experimentation Puzzle
+	void HandleExperimentationClickStartInput(const FInputActionValue& InputActionValue);
+	void HandleExperimentationClickEndInput(const FInputActionValue& InputActionValue);
+	void HandleWaveAdjustmentInput(const FInputActionValue& InputActionValue);
+	void HandleFreqAdjustmentInput(const FInputActionValue& InputActionValue);
+	void HandleFreqAdjustmentStartInput(const FInputActionValue& InputActionValue);
+	void HandleFreqAdjustmentEndInput(const FInputActionValue& InputActionValue);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -308,6 +335,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	UPrimitiveComponent* CurrentInteractComponent;
 	bool IsInteracting = false;
+	bool IsLookFrozen = false;
+	bool IsAdjustingFrequency = false;
+	bool IsAdjustingPhaseAmp = false;
 
 public:	
 	// Called every frame

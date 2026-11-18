@@ -20,3 +20,13 @@ void UTHNInteractionBoxComponent::OnInteractEnd(AActor* InitiatorActor)
 {
 	OnBoxInteractEnd.Broadcast(InitiatorActor);
 }
+
+void UTHNInteractionBoxComponent::DisableInteraction()
+{
+	SetCollisionResponseToChannel(ECC_Interactable, ECR_Ignore);
+}
+
+void UTHNInteractionBoxComponent::EnableInteraction()
+{
+	SetCollisionResponseToChannel(ECC_Interactable, ECR_Block);
+}
