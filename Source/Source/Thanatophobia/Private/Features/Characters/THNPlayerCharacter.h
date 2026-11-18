@@ -93,6 +93,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* GrabbedMontage;
 
+
 	UPROPERTY()
 	UTHNAnimInstance* WorldSpaceAnimInstance;
 
@@ -241,6 +242,9 @@ private:
 	TArray<bool> BulletChambers = { true, true, true, true, true, true };
 
 public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	bool bHasBeenGrabbed = false;
 
 	UPROPERTY()
 	int BulletCount = 0;

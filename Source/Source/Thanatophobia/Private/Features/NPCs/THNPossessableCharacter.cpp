@@ -83,6 +83,13 @@ void ATHNPossessableCharacter::Tick(float DeltaTime)
 
 void ATHNPossessableCharacter::PlayEnemyGrabAnimation()
 {
+	if (bIsGrabbing)
+	{
+		return;
+	}
+
+	bIsGrabbing = true;
+
 	if (IsValid(GrabAnimationMontage))
 	{
 		NPCAnimInstance->Montage_Play(GrabAnimationMontage);

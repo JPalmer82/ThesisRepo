@@ -27,7 +27,9 @@ void UTHNGrabSphereComponent::OnOverlapBegin(UPrimitiveComponent * OverlappedCom
 		PlayerCharacter->EnemyGrabbing = OwnerEnemy;
 
 		OwnerEnemy->PlayEnemyGrabAnimation();
+		OwnerEnemy->bIsGrabbing = true;
 		PlayerCharacter->PlayGrabbedAnimation();
+		PlayerCharacter->bHasBeenGrabbed = true;
 	}
 }
 
