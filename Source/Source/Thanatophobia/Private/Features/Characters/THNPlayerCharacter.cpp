@@ -128,6 +128,7 @@ void ATHNPlayerCharacter::PlayGrabbedAnimation()
 	{
 		BaseMeshAnimInstance->Montage_Play(GrabbedMontage);
 		WorldSpaceAnimInstance->Montage_Play(GrabbedMontage);
+		SetActorTickEnabled(false);
 		BaseMeshAnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ATHNPlayerCharacter::OnMontageFinished);
 	}
 }
@@ -140,7 +141,6 @@ void ATHNPlayerCharacter::OnMontageFinished(UAnimMontage* Montage, bool bInterru
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Grabbed Player!"))
-	SetActorTickEnabled(false);
 	UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuLevel"));
 }
 
